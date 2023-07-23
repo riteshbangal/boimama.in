@@ -1,0 +1,22 @@
+server:
+  servlet:
+    context-path: /api
+
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  data:
+    cassandra:
+      configFile: /cassandra/config/keyspaces-application.conf
+      keyspaceName: boimama
+      schema-action: NONE
+
+app:
+  openapi:
+    dev-url: http://localhost:8080/api
+    prod-url: https://boimama-api.com/api
+
+# Reference: https://springdoc.org/#properties
+springdoc:
+  swagger-ui:
+    path: /swagger.html  # swagger-ui custom path
