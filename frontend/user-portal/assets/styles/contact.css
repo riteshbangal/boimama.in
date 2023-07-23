@@ -1,0 +1,84 @@
+/* Contact Us Page */
+.contact {
+  background: var(--background-primary);
+  padding: 10px;
+  margin-bottom: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 10px 10px hsla(0, 0%, 0%, 0.05);
+  transition: 0.25s ease;
+  padding: 50px 50px 50px 50px;
+  color: var(--foreground-secondary);
+}
+
+.aside .contact {
+  padding: 50px 0px 0px 0px;
+}
+
+.contact:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 10px hsla(0, 0%, 0%, 0.1);
+}
+
+.contact input[type=text],
+input[type=email],
+textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  margin-top: 6px;
+  margin-bottom: 16px;
+  resize: vertical;
+  background: var(--action-primary);
+  color: var(--foreground-secondary);
+  font: inherit;
+}
+
+.contact input[type=text]:focus,
+input[type=email]:focus,
+textarea:focus {
+  outline: 2px solid;
+  outline-offset: 0;
+}
+
+.contact input::placeholder {
+  color: var(--foreground-secondary);
+}
+
+.contact input[type=submit] {
+  background-color: var(--foreground-secondary);
+  color: var(--action-primary);
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font: inherit;
+}
+
+.contact input[type=submit]:hover {
+  background-color: var(--foreground-primary);
+}
+
+/* style for dark theme */
+.dark-theme .contact textarea::placeholder {
+  color: var(--foreground-secondary);
+}
+
+@media (min-width: 1024px) {
+  .main {
+    display: grid;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .aside .contact .h2 {
+    margin: 0;
+  }
+}
+
+@media (max-width: 500px) {
+  .contact {
+    padding: 50px 10px 50px 10px;
+  }
+}

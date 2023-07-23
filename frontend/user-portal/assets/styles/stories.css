@@ -1,0 +1,112 @@
+/* Paragraph Section for story pages */
+.main .container {
+    grid-template-columns: unset;
+    /* No side panel */
+}
+
+.stories .stories-top-panel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Style the view button */
+.stories-top-panel .view-stories-btn {
+    margin-bottom: 3rem;
+    display: flex;
+}
+
+
+.view-stories-btn .view-btn {
+    border: none;
+    outline: none;
+    padding: 6px 8px;
+    background: var(--background-secondary);
+    color: var(--foreground-primary);
+    cursor: pointer;
+}
+
+.view-stories-btn .view-btn:hover {
+    background-color: var(--action-primary);
+}
+
+.view-stories-btn .view-btn.active {
+    background-color: var(--foreground-primary);
+    color: var(--background-secondary);
+}
+
+
+.stories .list-view {
+    display: block;
+}
+
+.stories .grid-view {
+    display: grid;
+    box-sizing: border-box;
+    grid-template-columns: auto auto;
+    padding: 10px;
+    gap: 1rem;
+    min-width: 100px;
+}
+
+.stories .grid-view .story-card {
+    display: block;
+}
+
+.stories .grid-view .story-banner-img {
+    height: 175px;
+}
+
+.stories .list-view .story-card {
+    display: grid;
+}
+
+@media (max-width: 549px) {
+
+    .stories-top-panel .view-stories-btn,
+    .stories .grid-view {
+        display: none;
+    }
+}
+
+@media (max-width: 549px) {
+    .stories .grid-view .story-banner-img {
+        display: none;
+    }
+
+    .stories .grid-view .story-name {
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+    }
+}
+
+@media (min-width: 550px) {
+    .stories .grid-view .story-name {
+        height: 80px;
+        overflow: hidden;
+    }
+}
+
+@media (min-width: 850px) {
+    .view-stories-btn .view-btn {
+        padding: 9px 10px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .view-stories-btn .view-btn {
+        padding: 9px 12px;
+    }
+
+    .stories .grid-view {
+        grid-template-columns: auto auto auto;
+    }
+}
+
+@media (min-width: 1424px) {
+    .view-stories-btn .view-btn {
+        padding: 12px 16px;
+    }
+}

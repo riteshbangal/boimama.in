@@ -1,2 +1,1 @@
-# boimama.in
-End to end design and development for boimama.in
+An end to end web development project for boimama.in

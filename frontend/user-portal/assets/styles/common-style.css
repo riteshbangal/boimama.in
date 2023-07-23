@@ -1,0 +1,79 @@
+/* Paragraph Section for common pages */
+.common-appearance {
+  background: var(--background-primary);
+  padding: 10px;
+  margin-bottom: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 10px 10px hsla(0, 0%, 0%, 0.05);
+  transition: 0.25s ease;
+  padding: 50px 50px 50px 50px;
+  color: var(--foreground-secondary);
+}
+
+.common-appearance:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 10px hsla(0, 0%, 0%, 0.1);
+}
+
+.common-appearance h2 {
+  padding-bottom: 30px;
+  color: var(--foreground-primary);
+}
+
+.common-appearance .h2 label {
+  color: var(--action-primary);
+  padding-right: 5px;
+}
+
+.common-appearance p {
+  padding-bottom: 30px;
+}
+
+.common-appearance li {
+  list-style: decimal-leading-zero;
+  list-style-position: inside;
+  padding-top: 10px;
+}
+
+.common-appearance ol p {
+  padding: 5px 0 0 30px;
+}
+
+.contact {
+  background: var(--background-primary);
+  border-radius: 10px;
+  box-shadow: 0 10px 10px hsla(0, 0%, 0%, 0.05);
+  transition: 0.25s ease;
+  padding-top: 50px;
+  color: var(--foreground-secondary);
+}
+
+.contact:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 10px hsla(0, 0%, 0%, 0.1);
+}
+
+
+@media (max-width: 1024px) {
+  .common-appearance ol p {
+    padding: 5px 0 0 25px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .main {
+    display: grid;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .aside .contact .h2 {
+    margin: 0;
+  }
+}
+
+@media (max-width: 500px) {
+  .common-appearance {
+    padding: 50px 10px 50px 10px;
+  }
+}

@@ -1,0 +1,125 @@
+/* Paragraph Section for story pages */
+.story-panel {
+  background: var(--background-primary);
+  padding: 10px;
+  margin-bottom: 1rem;
+  border-radius: 10px;
+  box-shadow: 0 10px 10px hsla(0, 0%, 0%, 0.05);
+  transition: 0.25s ease;
+  padding: 50px 50px 50px 50px;
+  color: var(--foreground-secondary);
+}
+
+.story-panel:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 10px hsla(0, 0%, 0%, 0.1);
+}
+
+.story-panel h2 {
+  padding-bottom: 30px;
+  color: var(--foreground-primary);
+}
+
+.story-panel .h2 label {
+  color: var(--action-primary);
+  padding-right: 5px;
+}
+
+.story-panel p {
+  padding-bottom: 30px;
+}
+
+.story-panel li {
+  list-style: decimal-leading-zero;
+  list-style-position: inside;
+  padding-top: 10px;
+}
+
+.story-panel ol p {
+  padding: 5px 0 0 30px;
+}
+
+.author-metadata,
+.story-metadata {
+  background: var(--background-primary);
+  border-radius: 10px;
+  box-shadow: 0 10px 10px hsla(0, 0%, 0%, 0.05);
+  transition: 0.25s ease;
+  padding: 40px 0px 40px 0px;
+  color: var(--foreground-secondary);
+  justify-items: center;
+  display: grid;
+  gap: 1rem;
+}
+
+.author-metadata:hover,
+.story-metadata:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 10px hsla(0, 0%, 0%, 0.1);
+}
+
+.author-metadata img {
+  border: 3px solid var(--foreground-primary);
+  border-radius: 50%;
+}
+
+.author-metadata span {
+  align-items: start;
+}
+
+.story-metadata .reading-status {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  font-size: small;
+}
+
+@media (max-width: 1024px) {
+  .story-panel ol p {
+    padding: 5px 0 0 25px;
+  }
+
+  .mobile-story-metadata {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 30px;
+  }
+
+  .mobile-story-metadata .left .right {
+    display: grid;
+  }
+}
+
+@media (min-width: 1024px) {
+  .main {
+    display: grid;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .mobile-story-metadata {
+    display: none;
+  }
+
+  .aside .h2 {
+    margin-bottom: 2rem;
+  }
+}
+
+@media (max-width: 800px) {
+  .main {
+    padding: 2rem 0 2rem 0;
+  }
+}
+
+@media (max-width: 500px) {
+  .main {
+    padding: 1rem 0 1rem 0;
+  }
+
+  .story-panel {
+    padding: 50px 10px 50px 10px;
+  }
+}
