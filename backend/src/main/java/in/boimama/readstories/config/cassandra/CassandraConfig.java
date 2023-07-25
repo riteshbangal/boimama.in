@@ -20,7 +20,7 @@ import java.security.NoSuchAlgorithmException;
 @Configuration
 public class CassandraConfig {
 
-    private static final Logger LOG = LoggerFactory.getLogger(CassandraConfig.class);
+    private static final Logger logger = LoggerFactory.getLogger(CassandraConfig.class);
 
     @Autowired
     private ResourceLoader resourceLoader;
@@ -34,7 +34,7 @@ public class CassandraConfig {
     @Primary
     public @Bean CqlSession session() throws NoSuchAlgorithmException, IOException {
 
-        LOG.debug("Building CQL Session for keyspace/cassandra database.");
+        logger.debug("Building CQL Session for keyspace/cassandra database.");
         return CqlSession.builder()
                 .withConfigLoader(DriverConfigLoader.fromFile(getDriverConfig()))
                 .withSslContext(SSLContext.getDefault())
@@ -48,11 +48,11 @@ public class CassandraConfig {
                 .getResource("classpath:" + cassandraConfigFile);
         try {
             if (cassandraConfigResource.exists()) {
-                LOG.info("Resource exists!");
+                logger.info("Resource exists!");
                 return cassandraConfigResource.getFile();
             }
         } catch (IOException exception) {
-            LOG.error("Unable to load keyspace configuration file");
+            logger.error("Unable to load keyspace configuration file");
         }
         return new File(System.getProperty("user.dir")
                 + "/src/main/resources"

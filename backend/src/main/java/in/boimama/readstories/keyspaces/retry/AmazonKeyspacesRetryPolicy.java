@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
 @ThreadSafe
 public class AmazonKeyspacesRetryPolicy implements RetryPolicy {
 
-    private static final Logger LOG = LoggerFactory.getLogger(AmazonKeyspacesRetryPolicy.class);
+    private static final Logger logger = LoggerFactory.getLogger(AmazonKeyspacesRetryPolicy.class);
 
     @VisibleForTesting
     public static final String RETRYING_ON_READ_TIMEOUT = "[{}] Retrying on read timeout on same host (consistency: {}, required responses: {}, received responses: {}, data retrieved: {}, retries: {})";
@@ -110,7 +110,7 @@ public class AmazonKeyspacesRetryPolicy implements RetryPolicy {
 
         RetryDecision decision = determineRetryDecision(retryCount);
 
-        LOG.trace(RETRYING_ON_READ_TIMEOUT, logPrefix, cl, blockFor, received, false, retryCount);
+        logger.trace(RETRYING_ON_READ_TIMEOUT, logPrefix, cl, blockFor, received, false, retryCount);
 
         return decision;
 
@@ -135,7 +135,7 @@ public class AmazonKeyspacesRetryPolicy implements RetryPolicy {
 
         RetryDecision decision = determineRetryDecision(retryCount);
 
-        LOG.trace(RETRYING_ON_WRITE_TIMEOUT, logPrefix, cl, blockFor, received, false, retryCount);
+        logger.trace(RETRYING_ON_WRITE_TIMEOUT, logPrefix, cl, blockFor, received, false, retryCount);
 
         return decision;
     }
@@ -157,7 +157,7 @@ public class AmazonKeyspacesRetryPolicy implements RetryPolicy {
 
         RetryDecision decision = determineRetryDecision(retryCount);
 
-        LOG.trace(RETRYING_ON_UNAVAILABLE, logPrefix, cl, required, alive, retryCount);
+        logger.trace(RETRYING_ON_UNAVAILABLE, logPrefix, cl, required, alive, retryCount);
 
         return decision;
     }
@@ -173,7 +173,7 @@ public class AmazonKeyspacesRetryPolicy implements RetryPolicy {
 
         RetryDecision decision = determineRetryDecision(retryCount);
 
-        LOG.trace(RETRYING_ON_ABORTED, logPrefix, retryCount, error);
+        logger.trace(RETRYING_ON_ABORTED, logPrefix, retryCount, error);
 
         return decision;
     }
@@ -189,7 +189,7 @@ public class AmazonKeyspacesRetryPolicy implements RetryPolicy {
 
         RetryDecision decision = determineRetryDecision(retryCount);
 
-        LOG.trace(RETRYING_ON_ERROR, logPrefix, retryCount, error);
+        logger.trace(RETRYING_ON_ERROR, logPrefix, retryCount, error);
 
         return decision;
     }

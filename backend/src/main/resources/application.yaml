@@ -3,13 +3,16 @@ server:
     context-path: /api
 
 spring:
-  main:
-    allow-bean-definition-overriding: true
   data:
     cassandra:
       configFile: /cassandra/config/keyspaces-application.conf
       keyspaceName: boimama
       schema-action: NONE
+  main:
+    allow-bean-definition-overriding: true
+  mvc:
+    contentnegotiation:
+      defaultContentType: application/json
 
 app:
   openapi:

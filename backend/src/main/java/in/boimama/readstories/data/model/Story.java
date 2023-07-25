@@ -1,5 +1,6 @@
 package in.boimama.readstories.data.model;
 
+import in.boimama.readstories.dto.Response;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.cassandra.core.cql.PrimaryKeyType;
 import org.springframework.data.cassandra.core.mapping.*;
@@ -14,7 +15,7 @@ import java.util.UUID;
  * Stores the story information retrievable by the story ID and Name
  */
 @Table(value = "story")
-public class Story {
+public class Story implements Response {
 
     @PrimaryKey
     private StoryPrimaryKey storyPrimaryKey;

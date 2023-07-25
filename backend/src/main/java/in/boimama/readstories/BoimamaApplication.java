@@ -8,10 +8,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class BoimamaApplication {
 
-    private static final Logger LOG = LoggerFactory.getLogger(BoimamaApplication.class);
+    private static final Logger logger = LoggerFactory.getLogger(BoimamaApplication.class);
 
     public static void main(String[] args) {
-        LOG.debug("Hello Boimama.in!");
+        logger.debug("Hello Boimama.in!");
         SpringApplication.run(BoimamaApplication.class, args);
     }
 }
