@@ -14,4 +14,10 @@ public interface StoryRepository extends CassandraRepository<Story, StoryPrimary
 
     Story findByTitle(final String title);
 
+    /**
+     * This method doesn't throw any error, if resource doesn't exist
+     *
+     * @param storyId
+     */
+    void deleteByStoryId(final UUID storyId);
 }

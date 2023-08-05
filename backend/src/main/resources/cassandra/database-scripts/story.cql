@@ -25,3 +25,5 @@ WITH CUSTOM_PROPERTIES = {
 };
 
 ALTER TABLE "boimama"."story" ADD TAGS {'application' : 'boimama.in'};
+
+ALTER TABLE "boimama"."story" ADD ("story_image_path" text);

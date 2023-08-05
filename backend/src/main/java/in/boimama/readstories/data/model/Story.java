@@ -64,9 +64,18 @@ public class Story implements Response {
     @CassandraType(type = Name.INT)
     private int lengthInMins;
 
+    /*
+     * Note: Unused. Since, serving images via URL from a cloud-based storage service like AWS S3 or Azure Blob Storage
+     * is considered to be faster and more scalable compared to storing images as blobs/bytes directly in the database.
+     */
     @Column("story_image")
     @CassandraType(type = Name.BLOB)
     private byte[] image;
+
+    @Column("story_image_path")
+    @CassandraType(type = Name.TEXT)
+    private String imagePath;
+
 
     public StoryPrimaryKey getStoryPrimaryKey() {
         return storyPrimaryKey;
@@ -170,5 +179,13 @@ public class Story implements Response {
 
     public void setImage(byte[] image) {
         this.image = image;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 }

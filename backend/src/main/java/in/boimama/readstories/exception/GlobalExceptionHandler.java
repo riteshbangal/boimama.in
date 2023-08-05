@@ -21,5 +21,12 @@ public class GlobalExceptionHandler {
                 HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(ApplicationException.class)
+    public ResponseEntity<ErrorResponse> handleException(ApplicationException exception) {
+        logger.error(exception.getMessage(), exception);
+        return new ResponseEntity<>(new ErrorResponse(ResponseCode.GENERIC_SERVER_ERROR.getResponseCode(), exception.getMessage()),
+                HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
     // Add more @ExceptionHandler methods for specific exception types as needed
 }

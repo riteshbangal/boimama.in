@@ -7,7 +7,9 @@ import in.boimama.readstories.data.UserRepository;
 import in.boimama.readstories.data.model.Story;
 import in.boimama.readstories.data.model.StoryPrimaryKey;
 import in.boimama.readstories.data.model.User;
+import in.boimama.readstories.dto.StoryRequest;
 import in.boimama.readstories.dto.StoryResponse;
+import in.boimama.readstories.exception.ApplicationException;
 import in.boimama.readstories.utils.ModelMapperHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,14 +40,7 @@ public class StoryService {
     @Autowired(required = true)
     private ModelMapperHelper modelMapperHelper;
 
-    private static byte[] getImageBytes() throws IOException {
-        File file = new File(System.getProperty("user.dir") + "/src/main/resources/author.jpg");
-        byte[] bytes = new byte[(int) file.length()];
-        FileInputStream inputStream = new FileInputStream(file);
-        inputStream.read(bytes);
-        inputStream.close();
-        return bytes;
-    }
+
 
     public StoryResponse getStory(String storyId) {
         final Story story = storyRepository.findByStoryId(UUID.fromString(storyId));
@@ -56,6 +51,18 @@ public class StoryService {
 
         logger.debug("Story found against id: {}", storyId);
         return modelMapperHelper.mapStory(story, StoryResponse.class);
+    }
+
+    public boolean deleteStory(String storyId) {
+        try {
+            logger.debug("Story found against id: {}", storyId);
+            storyRepository.deleteByStoryId(UUID.fromString(storyId)); // Doesn't throw any error, if resource doesn't exist!
+            logger.debug("Deleted story with id: {}", storyId);
+        } catch (Exception exception) {
+            logger.error("Unable to delete story with id: {}", storyId, exception);
+            return Boolean.FALSE;
+        }
+        return Boolean.TRUE;
     }
 
     public Story getStory(String storyId, String storyName) {
@@ -75,7 +82,33 @@ public class StoryService {
         return storyRepository.findByTitle(storyTitle);
     }
 
-    public void addStory() throws IOException {
+    public StoryResponse addStory(final StoryRequest pRequest) throws ApplicationException {
+        Story story = new Story();
+
+        story.setStoryId(UUID.randomUUID());
+        story.setStoryName(pRequest.getTitle());
+        story.setTitle(pRequest.getTitle());
+        story.setLengthInMins(15);
+        story.setDescription("story description");
+        story.setAuthorIds(List.copyOf(List.of(UUID.randomUUID())));
+        story.setAuthorNames(List.copyOf(List.of("Ritesh")));
+        story.setRating(4);
+        story.setCategory("Comedy");
+        story.setPublishedDate(LocalDate.now());
+        story.setContent("বিজয়টা jet যে এত বড় চোর; না না বলা ভালো, ছ্যাঁচোড় হবে; সেটা স্বপ্নেও ভাবি নি। আমারই বংশের রক্ত, যে ওর শরীরেও বইছে; এ কথা ভাবলেই ঘেন্না হয়। আমার স্ত্রী, গত-দশ বছর ধরে ধরে, খুটিনাটি বিষয় বিষয়");
+        story.setImage(getImageBytes());
+
+        StoryPrimaryKey storyPrimaryKey = new StoryPrimaryKey();
+        storyPrimaryKey.setStoryId(story.getStoryId());
+        storyPrimaryKey.setStoryName(story.getStoryName());
+        story.setStoryPrimaryKey(storyPrimaryKey);
+
+        storyRepository.insert(story);
+        return modelMapperHelper.mapStory(story, StoryResponse.class);
+    }
+
+    public StoryResponse addStory() throws ApplicationException {
+
 
         Story story = new Story();
 
@@ -98,6 +131,7 @@ public class StoryService {
         story.setStoryPrimaryKey(storyPrimaryKey);
 
         storyRepository.insert(story);
+        return modelMapperHelper.mapStory(story, StoryResponse.class);
     }
 
     public void addUser(String user) {
@@ -115,17 +149,16 @@ public class StoryService {
         System.out.println("Primary Key: " + userOut.getUsername());
     }
 
-    public String getCount() {
-        CqlSession cqlSession = null;
+    private static byte[] getImageBytes() throws ApplicationException {
+        File file = new File(System.getProperty("user.dir") + "/src/main/resources/author.jpg");
+        byte[] bytes = new byte[(int) file.length()];
         try {
-            cqlSession = cassandraConfig.session();
-            int count = cqlSession.execute("SELECT * FROM boimama.user").all().size();
-
-            System.out.println("Number of hosts: " + count);
-            return "Number of hosts: " + count;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return e.getMessage();
+            FileInputStream inputStream = new FileInputStream(file);
+            inputStream.read(bytes);
+            inputStream.close();
+        } catch (IOException e) {
+            throw new ApplicationException(e);
         }
+        return bytes;
     }
 }

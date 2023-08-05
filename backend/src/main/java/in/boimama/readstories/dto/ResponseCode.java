@@ -5,7 +5,8 @@ public enum ResponseCode {
     GENERIC_APPLICATION_ERROR(1001, "Generic Application Error"),
     GENERIC_CLIENT_VALIDATION_ERROR(1002, "Generic Client Validation Error"),
     GENERIC_SERVER_ERROR(1003, "Generic Server Error"),
-    STORY_NOT_FOUND(1204, "Story Not Found");
+    STORY_NOT_FOUND(1204, "Story Not Found"),
+    STORY_NOT_ADDED(1205, "Story Not added");
     // Add more response codes as needed.
 
     private final int responseCode;

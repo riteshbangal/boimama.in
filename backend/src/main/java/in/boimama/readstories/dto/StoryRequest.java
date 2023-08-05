@@ -1,16 +1,24 @@
 package in.boimama.readstories.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+//import javax.validation.constraints.NotBlank;
+
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-public class StoryResponse implements Response {
+@Schema(requiredProperties = { "content" })
+public class StoryRequest {
 
-    private UUID id;
+    @Schema(description = "Title of the story", required = true, maxLength = 5)
     private String title;
+
     private String category;
+
+    @Schema(description = "Description of the story", nullable = false)
     private String description;
+
+    @Schema(description = "Content of the story", required = true)
     private String content;
     private LocalDate publishedDate;
     private List<UUID> authorIds;
@@ -18,14 +26,6 @@ public class StoryResponse implements Response {
     private int rating;
     private int lengthInMins;
     private String imagePath;
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
 
     public String getTitle() {
         return title;
@@ -110,8 +110,7 @@ public class StoryResponse implements Response {
     @Override
     public String toString() {
         return "StoryResponse{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
+                "title='" + title + '\'' +
                 ", category='" + category + '\'' +
                 ", description='" + description + '\'' +
                 ", content='" + content + '\'' +
