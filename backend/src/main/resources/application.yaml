@@ -13,6 +13,11 @@ spring:
   mvc:
     contentnegotiation:
       defaultContentType: application/json
+  security:
+    user:
+      name: admin
+      password: boimama
+      roles: ADMIN
 
 app:
   openapi:

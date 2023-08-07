@@ -21,6 +21,7 @@ public class ModelMapperHelper {
         storyResponse.setRating(storyDAO.getRating());
         storyResponse.setLengthInMins(storyDAO.getLengthInMins());
         storyResponse.setImagePath(storyDAO.getImagePath());
+        storyResponse.setImage(storyDAO.getImage());
 
         return storyResponse;
     }

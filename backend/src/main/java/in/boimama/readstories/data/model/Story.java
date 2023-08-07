@@ -1,15 +1,17 @@
 package in.boimama.readstories.data.model;
 
 import in.boimama.readstories.dto.Response;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.cassandra.core.cql.PrimaryKeyType;
-import org.springframework.data.cassandra.core.mapping.*;
+import org.springframework.data.cassandra.core.mapping.CassandraType;
 import org.springframework.data.cassandra.core.mapping.CassandraType.Name;
+import org.springframework.data.cassandra.core.mapping.Column;
+import org.springframework.data.cassandra.core.mapping.PrimaryKey;
+import org.springframework.data.cassandra.core.mapping.Table;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
+// TODO: Use Lombok to eliminate boilerplate code
 /**
  * Model that represents the story table in Cassandra.
  * Stores the story information retrievable by the story ID and Name

@@ -1,10 +1,12 @@
 package in.boimama.readstories.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+// TODO: Use Lombok to eliminate boilerplate code
 public class StoryResponse implements Response {
 
     private UUID id;
@@ -18,6 +20,8 @@ public class StoryResponse implements Response {
     private int rating;
     private int lengthInMins;
     private String imagePath;
+    @JsonIgnore
+    private byte[] image;
 
     public UUID getId() {
         return id;
@@ -105,6 +109,14 @@ public class StoryResponse implements Response {
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
+    }
+
+    public byte[] getImage() {
+        return image;
+    }
+
+    public void setImage(byte[] image) {
+        this.image = image;
     }
 
     @Override
