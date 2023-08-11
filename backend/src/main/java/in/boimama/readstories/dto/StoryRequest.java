@@ -7,11 +7,15 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
 
+@Component
+@RequestScope
 public class StoryRequest {
 
     @Schema(description = "Title of the story", required = true, minLength = 5, maxLength = 50)
@@ -31,8 +35,7 @@ public class StoryRequest {
 
     @Schema(description = "Content of the story")
     @NotNull(message = "'content' is missing in request body")
-    @Size(min=10, message = "'description' should be at least 10 character")
-    @Size(max=500, message = "'description' should not be greater than 500 characters")
+    @Size(min=10, message = "'content' should be at least 10 character")
     private String content;
 
     @Schema(description = "Published date of the story. In case of empty input, it will pick current date")

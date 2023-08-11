@@ -6,6 +6,7 @@ import in.boimama.readstories.dto.StoryResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.hibernate.validator.constraints.UUID;
 import org.slf4j.Logger;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 import static in.boimama.readstories.dto.ResponseCode.GENERIC_APPLICATION_ERROR;
 import static in.boimama.readstories.dto.ResponseCode.STORY_NOT_ADDED;
 import static in.boimama.readstories.dto.ResponseCode.STORY_NOT_FOUND;
+import static in.boimama.readstories.dto.ResponseCode.STORY_NOT_UPDATED;
 
 @RestController
 @RequestMapping("/story")
@@ -48,8 +51,9 @@ public class StoryController extends AbstractController {
 
     @PostMapping(path = "/add", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE  }, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<Response> addStory(@Valid @ModelAttribute StoryRequest request) {
-        final StoryResponse response = storyService.addStory(request);
+    public ResponseEntity<Response> addStory(@Valid @ModelAttribute("storyRequest") StoryRequest pStoryRequest, HttpServletRequest pHttpRequest) {
+        final StoryResponse response = storyService.addStory(pStoryRequest,
+                getServerPath(pHttpRequest), getContextPath(pHttpRequest));
         if (response == null) {
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(getErrorResponse(STORY_NOT_ADDED));
         }
@@ -99,4 +103,26 @@ public class StoryController extends AbstractController {
 
         return new ResponseEntity<>(response.getImage(), headers, HttpStatus.OK);
     }
+
+
+    @PutMapping(path = "/{id}/update", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE  }, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity<Response> updateStory(@UUID(message = "Story id must be a valid UUID") @PathVariable(name = "id") String storyId,
+                                                @Valid @ModelAttribute("storyRequest") StoryRequest pStoryRequest) {
+        /**
+         * Check if the story is present against the id,
+         * And if presents, then do update operation. Else, return 404.
+         */
+        /*final StoryResponse storyResponse = storyService.getStory(storyId);
+        if (storyResponse == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(getErrorResponse(STORY_NOT_FOUND));
+        }*/
+
+        final StoryResponse response = storyService.updateStory(storyId, pStoryRequest);
+        if (response == null) {
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(getErrorResponse(STORY_NOT_UPDATED));
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
 }

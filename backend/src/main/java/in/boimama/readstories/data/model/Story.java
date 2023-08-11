@@ -1,10 +1,10 @@
 package in.boimama.readstories.data.model;
 
-import in.boimama.readstories.dto.Response;
+import org.springframework.data.cassandra.core.cql.PrimaryKeyType;
 import org.springframework.data.cassandra.core.mapping.CassandraType;
 import org.springframework.data.cassandra.core.mapping.CassandraType.Name;
 import org.springframework.data.cassandra.core.mapping.Column;
-import org.springframework.data.cassandra.core.mapping.PrimaryKey;
+import org.springframework.data.cassandra.core.mapping.PrimaryKeyColumn;
 import org.springframework.data.cassandra.core.mapping.Table;
 
 import java.time.LocalDate;
@@ -17,22 +17,15 @@ import java.util.UUID;
  * Stores the story information retrievable by the story ID and Name
  */
 @Table(value = "story")
-public class Story implements Response {
+public class Story {
 
-    @PrimaryKey
-    private StoryPrimaryKey storyPrimaryKey;
-
-    @Column("id")
+    @PrimaryKeyColumn(name = "story_id", ordinal = 0, type = PrimaryKeyType.PARTITIONED)
     @CassandraType(type = Name.UUID)
     private UUID storyId;
 
-    @Column("story_name")
-    @CassandraType(type = Name.TEXT)
-    private String storyName;
-
     @Column("story_title")
     @CassandraType(type = Name.TEXT)
-    private String title;
+    private String storyTitle;
 
     @Column("story_category")
     @CassandraType(type = Name.TEXT)
@@ -78,15 +71,6 @@ public class Story implements Response {
     @CassandraType(type = Name.TEXT)
     private String imagePath;
 
-
-    public StoryPrimaryKey getStoryPrimaryKey() {
-        return storyPrimaryKey;
-    }
-
-    public void setStoryPrimaryKey(StoryPrimaryKey storyPrimaryKey) {
-        this.storyPrimaryKey = storyPrimaryKey;
-    }
-
     public UUID getStoryId() {
         return storyId;
     }
@@ -95,20 +79,12 @@ public class Story implements Response {
         this.storyId = storyId;
     }
 
-    public String getStoryName() {
-        return storyName;
+    public String getStoryTitle() {
+        return storyTitle;
     }
 
-    public void setStoryName(String storyName) {
-        this.storyName = storyName;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
+    public void setStoryTitle(String storyTitle) {
+        this.storyTitle = storyTitle;
     }
 
     public String getCategory() {

@@ -64,6 +64,8 @@ public class RestControllerAspect {
         final HashMap<String, Object> parameters = new HashMap<>();
         final String[] parameterNames = signature.getParameterNames();
         for (int i = 0; i < parameterNames.length; i++) {
+            if (HttpServletRequest.class.isAssignableFrom(joinPoint.getArgs()[i].getClass()))
+                continue; // Ignore if it's HttpServletRequest parameter
             parameters.put(parameterNames[i], joinPoint.getArgs()[i]);
         }
         return parameters;

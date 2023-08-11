@@ -1,17 +1,17 @@
 CREATE TABLE "boimama"."story"(
-	"id" uuid,
-	"story_name" text,
-	"story_description" text,
-	"published_date" date,
-	"author_names" list<text>,
-	"author_ids" list<uuid>,
-	"story_image" blob,
-	"story_content" text,
-	"story_rating" int,
-	"story_category" text,
+	"story_id" uuid,
 	"story_title" text,
+	"published_date" date,
+	"story_category" text,
+	"story_content" text,
+	"story_description" text,
+	"story_image" blob,
+	"story_image_path" text,
 	"story_length_in_mins" int,
-	PRIMARY KEY("id", "story_name"))
+	"story_rating" int,
+	"author_ids" list<uuid>,
+	"author_names" list<text>,
+	PRIMARY KEY(("story_id"), "story_title"))
 WITH CUSTOM_PROPERTIES = {
 	'capacity_mode':{
 		'throughput_mode':'PAY_PER_REQUEST'
@@ -22,8 +22,11 @@ WITH CUSTOM_PROPERTIES = {
 	'encryption_specification':{
 		'encryption_type':'AWS_OWNED_KMS_KEY'
 	}
-};
-
-ALTER TABLE "boimama"."story" ADD TAGS {'application' : 'boimama.in'};
-
-ALTER TABLE "boimama"."story" ADD ("story_image_path" text);
+}
+AND CLUSTERING ORDER BY("story_title" ASC)
+AND TAGS = {'application' : 'boimama.in'}
+---
+ALTER TABLE "boimama"."story" ADD TAGS {'environments' : 'development qa production'}
+---
+SELECT * FROM boimama.story;
+---

@@ -11,7 +11,7 @@ public class ModelMapperHelper {
     public <S, D> StoryResponse mapStory(Story storyDAO, Class<D> storyDTO) throws ApplicationException { // TODO: Fix the Generic type
         final StoryResponse storyResponse = new StoryResponse();
         storyResponse.setId(storyDAO.getStoryId());
-        storyResponse.setTitle(storyDAO.getTitle());
+        storyResponse.setTitle(storyDAO.getStoryTitle());
         storyResponse.setCategory(storyDAO.getCategory());
         storyResponse.setDescription(storyDAO.getDescription());
         storyResponse.setContent(storyDAO.getContent());

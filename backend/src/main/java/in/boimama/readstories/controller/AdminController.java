@@ -30,6 +30,8 @@ public class AdminController extends AbstractController {
     @DeleteMapping(value = "/delete-all-stories")
     @ResponseBody
     public ResponseEntity<?> deleteAllStories() {
+        // TODO: Fix this. Caused by: com.datastax.oss.driver.api.core.servererrors.WriteTimeoutException:
+        //  Cassandra timeout during SIMPLE write query at consistency LOCAL_QUORUM (2 replica were required but only 0 acknowledged the write)
         if (storyService.deleteAllStories()) {
             return ResponseEntity.ok().body("Deleted all stories!");
         }

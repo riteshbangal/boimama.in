@@ -12,6 +12,10 @@ import static in.boimama.readstories.utils.ApplicationConstants.AVERAGE_READING_
  */
 public class ApplicationUtils {
 
+    public static boolean isEmpty(Object pObject) {
+        return pObject == null;
+    }
+
     // Method to estimate story length in minutes
     public static int estimateStoryLengthInMinutes(String storyText) {
         if (storyText == null || storyText.isEmpty()) {
