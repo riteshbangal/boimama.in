@@ -2,7 +2,6 @@ package in.boimama.readstories.service;
 
 import in.boimama.readstories.config.cassandra.CassandraConfig;
 import in.boimama.readstories.data.StoryRepository;
-import in.boimama.readstories.data.UserRepository;
 import in.boimama.readstories.data.model.Story;
 import in.boimama.readstories.dto.StoryRequest;
 import in.boimama.readstories.dto.StoryResponse;
@@ -32,9 +31,6 @@ public class StoryService {
 
     @Autowired(required = true)
     private StoryRepository storyRepository;
-
-    @Autowired(required = true)
-    private UserRepository sampleUserRepository;
 
     @Autowired(required = true)
     private ModelMapperHelper modelMapperHelper;
@@ -115,20 +111,12 @@ public class StoryService {
         }
 
         logger.debug("Story to be update have id: {}", storyId);
-        if (storyRepository.findByStoryIdAndTitle(UUID.fromString(storyId),
-                pRequest.getTitle()).stream().findAny().isPresent()
-                || storyRepository.isStoryWithSameAuthorsAlreadyExists(pRequest.getTitle(),
+        if (storyRepository.isStoryWithSameAuthorsAlreadyExists(pRequest.getTitle(),
                 pRequest.getAuthorIds().stream().map(UUID::fromString).toList())) {
-            // TODO: Need to send some message to the user about NO UPDATE of title value
-            logger.debug("Story: {} with same title ({}) or story title & authors {} combination already exists",
+            logger.debug("Story: {} with same title ({}) and authors {} already exists",
                     storyId, pRequest.getTitle(), pRequest.getAuthorIds());
         } else {
-            // TODO: Need to check. This is creating duplicate entries with update api.
-            //  A clustering column that is part of your primary key,
-            //  it could potentially lead to issues with updating or overwriting existing records.
-            //  Clustering columns determine the physical order of data within a partition,
-            //  and updates to clustering columns can result in new records being inserted rather than updating the existing ones.
-            //story.setStoryTitle(pRequest.getTitle());
+            story.setStoryTitle(pRequest.getTitle());
         }
         story.setLengthInMins(estimateStoryLengthInMinutes(pRequest.getContent()));
         story.setDescription(pRequest.getDescription());

@@ -71,6 +71,22 @@ public class Story {
     @CassandraType(type = Name.TEXT)
     private String imagePath;
 
+    /**
+     * This is used as a Clustering column.
+     * Use of clustering columns to sort rows within a partition key to improve the performance of your queries.
+     *
+     * A clustering column that is part of your primary key,
+     * it could potentially lead to issues with updating or overwriting existing records.
+     * Clustering columns determine the physical order of data within a partition,
+     * and updates to clustering columns can result in new records being inserted rather than updating the existing ones.
+     *
+     * Important Note: As per current design this column will be always static,
+     * and it is being introduced to avoid above issue.
+     */
+    @Column("version")
+    @CassandraType(type = Name.INT)
+    private int version = 1;
+
     public UUID getStoryId() {
         return storyId;
     }
@@ -165,5 +181,13 @@ public class Story {
 
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
+    }
+
+    public int getVersion() {
+        return version;
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
     }
 }
