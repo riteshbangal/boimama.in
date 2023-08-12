@@ -70,6 +70,12 @@ public class StoryController extends AbstractController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping(value = "/all")
+    @ResponseBody
+    public ResponseEntity<?> getAllStories() {
+        return ResponseEntity.ok(storyService.getAllStories());
+    }
+
     @DeleteMapping(value = "/{id}")
     @ResponseBody
     public ResponseEntity<Response> deleteStory(@UUID(message = "Story id must be a valid UUID") @PathVariable(name = "id") String storyId) {

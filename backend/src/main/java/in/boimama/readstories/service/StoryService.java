@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static in.boimama.readstories.utils.ApplicationConstants.UNCATEGORIZED_TYPE;
@@ -75,6 +77,15 @@ public class StoryService {
 
         logger.debug("Story found against id: {}", storyId);
         return modelMapperHelper.mapStory(story, StoryResponse.class);
+    }
+
+    public List<StoryResponse> getAllStories() {
+        final List<StoryResponse> storiesResponse = new ArrayList<>();
+        storyRepository.findAll()
+                .forEach(story -> storiesResponse.add(modelMapperHelper.mapStory(story, StoryResponse.class)));
+        if (isEmpty(storiesResponse))
+            logger.warn("No story found!");
+        return storiesResponse;
     }
 
     public boolean deleteStory(String storyId) {

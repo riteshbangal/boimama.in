@@ -4,6 +4,7 @@ import in.boimama.readstories.exception.ApplicationServerException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Collection;
 
 import static in.boimama.readstories.utils.ApplicationConstants.AVERAGE_READING_SPEED;
 
@@ -14,6 +15,10 @@ public class ApplicationUtils {
 
     public static boolean isEmpty(Object pObject) {
         return pObject == null;
+    }
+
+    public static boolean isEmpty(Collection<?> pCollectionObject) {
+        return pCollectionObject == null || pCollectionObject.isEmpty();
     }
 
     // Method to estimate story length in minutes
