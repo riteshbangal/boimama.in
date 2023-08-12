@@ -26,8 +26,15 @@ public class GlobalExceptionHandler {
                 exception.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(ApplicationException.class)
-    public ResponseEntity<ErrorResponse> handleException(ApplicationException exception) {
+    @ExceptionHandler(ApplicationClientException.class)
+    public ResponseEntity<ErrorResponse> handleException(ApplicationClientException exception) {
+        logger.error(exception.getMessage(), exception);
+        return new ResponseEntity<>(new ErrorResponse(ResponseCode.GENERIC_CLIENT_VALIDATION_ERROR.getResponseCode(),
+                exception.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ApplicationServerException.class)
+    public ResponseEntity<ErrorResponse> handleException(ApplicationServerException exception) {
         logger.error(exception.getMessage(), exception);
         return new ResponseEntity<>(new ErrorResponse(ResponseCode.GENERIC_SERVER_ERROR.getResponseCode(),
                 exception.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -49,5 +56,4 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(new ErrorResponse(ResponseCode.GENERIC_CLIENT_VALIDATION_ERROR.getResponseCode(),
                 exception.getMessage()), HttpStatus.BAD_REQUEST);
     }
-
 }

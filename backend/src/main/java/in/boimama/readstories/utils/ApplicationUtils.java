@@ -1,6 +1,6 @@
 package in.boimama.readstories.utils;
 
-import in.boimama.readstories.exception.ApplicationException;
+import in.boimama.readstories.exception.ApplicationServerException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -27,11 +27,11 @@ public class ApplicationUtils {
         return (totalWords < AVERAGE_READING_SPEED) ? 1 : (totalWords / AVERAGE_READING_SPEED);
     }
 
-    public static byte[] getImageBytes(MultipartFile pStoryImageFile) throws ApplicationException {
+    public static byte[] getImageBytes(MultipartFile pStoryImageFile) throws ApplicationServerException {
         try {
             return (pStoryImageFile != null) ? pStoryImageFile.getBytes() : new byte[0];
         } catch (IOException e) {
-            throw new ApplicationException(e);
+            throw new ApplicationServerException(e);
         }
     }
 

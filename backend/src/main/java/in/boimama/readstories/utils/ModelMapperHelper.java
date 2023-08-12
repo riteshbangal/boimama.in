@@ -2,13 +2,13 @@ package in.boimama.readstories.utils;
 
 import in.boimama.readstories.data.model.Story;
 import in.boimama.readstories.dto.StoryResponse;
-import in.boimama.readstories.exception.ApplicationException;
+import in.boimama.readstories.exception.ApplicationServerException;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ModelMapperHelper {
 
-    public <S, D> StoryResponse mapStory(Story storyDAO, Class<D> storyDTO) throws ApplicationException { // TODO: Fix the Generic type
+    public <S, D> StoryResponse mapStory(Story storyDAO, Class<D> storyDTO) throws ApplicationServerException { // TODO: Fix the Generic type
         final StoryResponse storyResponse = new StoryResponse();
         storyResponse.setId(storyDAO.getStoryId());
         storyResponse.setTitle(storyDAO.getStoryTitle());

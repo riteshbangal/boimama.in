@@ -5,6 +5,7 @@ package in.boimama.readstories.exception;
 
 
 /**
+ * This exception class is used to handle server side errors.
  * This class is wrapper over Runtime Exception.
  * Packer will throw a runtime exception, if incorrect parameters are being passed.
  *
@@ -12,7 +13,7 @@ package in.boimama.readstories.exception;
  * @version 1.0
  * @since <24-July-2023>
  */
-public class ApplicationException extends RuntimeException {
+public class ApplicationServerException extends RuntimeException {
 
     /**
      * The Constant serialVersionUID.
@@ -24,7 +25,7 @@ public class ApplicationException extends RuntimeException {
      *
      * @param errorMessage the error message
      */
-    public ApplicationException(final String errorMessage) {
+    public ApplicationServerException(final String errorMessage) {
         super(errorMessage);
     }
 
@@ -34,7 +35,7 @@ public class ApplicationException extends RuntimeException {
      * @param errorMessage the error message
      * @param cause        the cause
      */
-    public ApplicationException(final String errorMessage, final Throwable cause) {
+    public ApplicationServerException(final String errorMessage, final Throwable cause) {
         super(errorMessage, cause);
     }
 
@@ -44,7 +45,7 @@ public class ApplicationException extends RuntimeException {
      * @param cause the cause
      */
 
-    public ApplicationException(Throwable cause) {
+    public ApplicationServerException(Throwable cause) {
         super(cause);
     }
 }

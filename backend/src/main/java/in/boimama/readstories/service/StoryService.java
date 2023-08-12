@@ -6,7 +6,8 @@ import in.boimama.readstories.data.UserRepository;
 import in.boimama.readstories.data.model.Story;
 import in.boimama.readstories.dto.StoryRequest;
 import in.boimama.readstories.dto.StoryResponse;
-import in.boimama.readstories.exception.ApplicationException;
+import in.boimama.readstories.exception.ApplicationClientException;
+import in.boimama.readstories.exception.ApplicationServerException;
 import in.boimama.readstories.utils.ModelMapperHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +41,15 @@ public class StoryService {
 
     public StoryResponse addStory(final StoryRequest pRequest,
                                   final String pServerPath,
-                                  final String pContextPath) throws ApplicationException {
+                                  final String pContextPath) throws ApplicationServerException {
+
+        if (storyRepository.isStoryWithSameAuthorsAlreadyExists(pRequest.getTitle(),
+                pRequest.getAuthorIds().stream().map(UUID::fromString).toList())) {
+            logger.error("Story with same title ({}) and authors {} already exists",
+                    pRequest.getTitle(), pRequest.getAuthorIds());
+            throw new ApplicationClientException("Story with same title and authors already exists");
+        }
+
         final Story story = new Story();
         final UUID storyId = UUID.randomUUID();
 
@@ -88,7 +97,7 @@ public class StoryService {
         try {
             logger.info("Deleting all stories");
             // storyRepository.deleteAll(); // CassandraInvalidQueryException: Query; CQL [TRUNCATE story];
-            storyRepository.findAll().forEach(storyRepository::delete);
+            storyRepository.findAll().forEach(storyRepository::delete);  // ArrayIndexOutOfBoundsException: Index 12 out of bounds for length 12 - when duplicate ids present
             logger.info("Deleted all stories");
         } catch (Exception exception) {
             logger.error("Unable to delete all stories!", exception);
@@ -98,15 +107,29 @@ public class StoryService {
     }
 
     public StoryResponse updateStory(final String storyId,
-                                     final StoryRequest pRequest) throws ApplicationException {
+                                     final StoryRequest pRequest) throws ApplicationServerException {
         final Story story = storyRepository.findByStoryId(UUID.fromString(storyId));
         if (story == null) {
             logger.error("Story not found against id: {}", storyId);
-            throw new ApplicationException("Story not found against id: " + storyId);
+            throw new ApplicationServerException("Story not found against id: " + storyId);
         }
 
         logger.debug("Story to be update have id: {}", storyId);
-        //story.setStoryTitle(pRequest.getTitle()); // TODO: Need to check. This might creating duplicate entries with update api.
+        if (storyRepository.findByStoryIdAndTitle(UUID.fromString(storyId),
+                pRequest.getTitle()).stream().findAny().isPresent()
+                || storyRepository.isStoryWithSameAuthorsAlreadyExists(pRequest.getTitle(),
+                pRequest.getAuthorIds().stream().map(UUID::fromString).toList())) {
+            // TODO: Need to send some message to the user about NO UPDATE of title value
+            logger.debug("Story: {} with same title ({}) or story title & authors {} combination already exists",
+                    storyId, pRequest.getTitle(), pRequest.getAuthorIds());
+        } else {
+            // TODO: Need to check. This is creating duplicate entries with update api.
+            //  A clustering column that is part of your primary key,
+            //  it could potentially lead to issues with updating or overwriting existing records.
+            //  Clustering columns determine the physical order of data within a partition,
+            //  and updates to clustering columns can result in new records being inserted rather than updating the existing ones.
+            //story.setStoryTitle(pRequest.getTitle());
+        }
         story.setLengthInMins(estimateStoryLengthInMinutes(pRequest.getContent()));
         story.setDescription(pRequest.getDescription());
         story.setAuthorIds(pRequest.getAuthorIds().stream().map(UUID::fromString).toList());
