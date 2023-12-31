@@ -9,6 +9,11 @@ public class ApplicationConstants {
     // Define constant fields here
     public static final String UNCATEGORIZED_TYPE = "Uncategorized";
 
+    // List of common image file extensions
+    public static final String[] IMAGE_FILE_EXTENSIONS = {"jpg", "jpeg", "png", "gif", "bmp"};
+
+    public static final String DEFAULT_IMAGE_FILE_EXTENSION = "jpg";
+
     public static final int AVERAGE_READING_SPEED = 100; // Default average reading speed in words per minute.
 
 

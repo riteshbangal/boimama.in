@@ -97,17 +97,23 @@ public class StoryController extends AbstractController {
     @GetMapping(path = "/{id}/image", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
     public ResponseEntity<?> getStoryCoverImage(@UUID(message = "Story id must be a valid UUID") @PathVariable(name = "id") String storyId) {
-        final StoryResponse response = storyService.getStory(storyId);
-        if (response == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(getErrorResponse(STORY_NOT_FOUND));
-        }
 
         // Create HttpHeaders and set Content-Type, Content-Disposition headers
         final HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.IMAGE_JPEG); // Set the appropriate content type
         // headers.setContentDispositionFormData("attachment", storyId + ".jpg"); // Specify filename for download
 
-        return new ResponseEntity<>(response.getImage(), headers, HttpStatus.OK);
+        byte[] storyImage = storyService.getStoryImage(storyId);
+        if (storyImage != null) { // If image not retrieved through S3 Bucket, try to fetch it from Database.
+            return new ResponseEntity<>(storyImage, headers, HttpStatus.OK);
+        }
+
+        final StoryResponse response = storyService.getStory(storyId);
+        if (response == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(getErrorResponse(STORY_NOT_FOUND));
+        }
+        storyImage = response.getImage();
+        return new ResponseEntity<>(storyImage, headers, HttpStatus.OK);
     }
 
 
@@ -119,10 +125,10 @@ public class StoryController extends AbstractController {
          * Check if the story is present against the id,
          * And if presents, then do update operation. Else, return 404.
          */
-        /*final StoryResponse storyResponse = storyService.getStory(storyId);
+        final StoryResponse storyResponse = storyService.getStory(storyId);
         if (storyResponse == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(getErrorResponse(STORY_NOT_FOUND));
-        }*/
+        }
 
         final StoryResponse response = storyService.updateStory(storyId, pStoryRequest);
         if (response == null) {

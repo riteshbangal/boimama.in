@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Project related temporary files ###
+temp_story_image.jpg

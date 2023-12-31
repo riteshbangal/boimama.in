@@ -29,7 +29,15 @@ public class RestControllerAspect {
     @Autowired
     private ObjectMapper mapper;
 
+    @Pointcut("within(in.boimama.readstories.controller.AdminController)")
+    public void adminControllerPointcut() {
+    }
+
     @Pointcut("within(in.boimama.readstories.controller.StoryController)")
+    public void storyControllerPointcut() {
+    }
+
+    @Pointcut("adminControllerPointcut() || storyControllerPointcut()")
     public void pointcut() {
     }
 

@@ -1,6 +1,7 @@
 package in.boimama.readstories.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -9,7 +10,9 @@ import java.util.UUID;
 // TODO: Use Lombok to eliminate boilerplate code
 public class StoryResponse implements Response {
 
+    @NotNull(message = "'story id' is can not be null in response body")
     private UUID id;
+
     private String title;
     private String category;
     private String description;

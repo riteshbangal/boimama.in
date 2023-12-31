@@ -7,12 +7,14 @@ import in.boimama.readstories.dto.StoryRequest;
 import in.boimama.readstories.dto.StoryResponse;
 import in.boimama.readstories.exception.ApplicationClientException;
 import in.boimama.readstories.exception.ApplicationServerException;
+import in.boimama.readstories.utils.AwsImageManager;
 import in.boimama.readstories.utils.ModelMapperHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +22,7 @@ import java.util.UUID;
 
 import static in.boimama.readstories.utils.ApplicationConstants.UNCATEGORIZED_TYPE;
 import static in.boimama.readstories.utils.ApplicationUtils.estimateStoryLengthInMinutes;
-import static in.boimama.readstories.utils.ApplicationUtils.getImageBytes;
+import static in.boimama.readstories.utils.ApplicationUtils.getFileBytes;
 import static in.boimama.readstories.utils.ApplicationUtils.isEmpty;
 
 @Service
@@ -28,11 +30,16 @@ public class StoryService {
 
     private static final Logger logger = LoggerFactory.getLogger(StoryService.class);
 
+    public static final String STORY_COVER_IMAGE_DIRECTORY_NAME = "story-cover-images";
+
     @Autowired(required = true)
     private CassandraConfig cassandraConfig;
 
     @Autowired(required = true)
     private StoryRepository storyRepository;
+
+    @Autowired(required = false)
+    private AwsImageManager awsImageManager;
 
     @Autowired(required = true)
     private ModelMapperHelper modelMapperHelper;
@@ -62,7 +69,11 @@ public class StoryService {
         story.setPublishedDate(LocalDate.now());
         story.setContent(pRequest.getContent());
         story.setImagePath(pServerPath + pContextPath + "/story/" + storyId + "/image");
-        story.setImage(getImageBytes(pRequest.getStoryImage())); // TODO: Store it into S3 instead of database
+
+        // Store image into Database
+        story.setImage(getFileBytes(pRequest.getStoryImage()));
+        // Store image into S3 Bucket
+        awsImageManager.uploadImage(STORY_COVER_IMAGE_DIRECTORY_NAME, storyId.toString(), pRequest.getStoryImage());
 
         storyRepository.insert(story);
         return modelMapperHelper.mapStory(story, StoryResponse.class);
@@ -77,6 +88,17 @@ public class StoryService {
 
         logger.debug("Story found against id: {}", storyId);
         return modelMapperHelper.mapStory(story, StoryResponse.class);
+    }
+
+    public byte[] getStoryImage(String storyId) {
+        final File imageFile = awsImageManager.getImage(STORY_COVER_IMAGE_DIRECTORY_NAME + "/" + storyId);
+        if (imageFile == null) {
+            logger.warn("Image not found into AWS S3 Bucket against id: {}", storyId);
+            return null;
+        }
+
+        logger.debug("Image found into AWS S3 Bucket against id: {}", storyId);
+        return getFileBytes(imageFile);
     }
 
     public List<StoryResponse> getAllStories() {
@@ -137,7 +159,7 @@ public class StoryService {
                 (isEmpty(story.getCategory()) ? UNCATEGORIZED_TYPE : story.getCategory()) : pRequest.getCategory());
         story.setPublishedDate(pRequest.getPublishedDate() == null ? story.getPublishedDate() : pRequest.getPublishedDate());
         story.setContent(pRequest.getContent());
-        story.setImage(getImageBytes(pRequest.getStoryImage())); // TODO: Store it into S3 instead of database
+        story.setImage(getFileBytes(pRequest.getStoryImage()));
 
         storyRepository.save(story);
         return modelMapperHelper.mapStory(story, StoryResponse.class);

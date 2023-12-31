@@ -24,6 +24,10 @@ app:
     dev-url: http://localhost:8080/api
     prod-url: https://boimama-api.com/api
 
+aws:
+  region: eu-central-1
+  data-bucket: boimama-data
+
 # Reference: https://springdoc.org/#properties
 springdoc:
   swagger-ui:
