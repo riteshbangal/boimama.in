@@ -5,6 +5,9 @@
         </encoder>
     </appender>
 
+    <!-- Set logging for out-of-the box components (library) -->
+    <logger name="org.springframework.data.cassandra" level="DEBUG" />
+
     <!-- Set logging for application based on packages -->
     <logger name="in.boimama.readstories" level="DEBUG" />
     <logger name="in.boimama.readstories.utils" level="INFO" />

@@ -50,12 +50,20 @@ public class CassandraConfig {
             if (cassandraConfigResource.exists()) {
                 logger.info("Resource exists!");
                 return cassandraConfigResource.getFile();
+                /**
+                 * TODO: This is giving java.io.FileNotFoundException with docker container:
+                 * class path resource [cassandra/config/keyspaces-application.conf] cannot be resolved to absolute file path
+                 * because it does not reside in the file system: jar:file:/app/boimama-app.jar!/BOOT-INF/classes!/cassandra/config/keyspaces-application.conf
+                 *
+                 * Fix this!
+                 */
             }
         } catch (IOException exception) {
-            logger.error("Unable to load keyspace configuration file");
+            logger.error("Unable to load keyspace configuration file", exception);
         }
-        return new File(System.getProperty("user.dir")
-                + "/src/main/resources"
-                + cassandraConfigFile);
+
+        logger.debug("Could not find the cassandra configuration file inside classpath! " +
+                "Looking for system directory.");
+        return new File("/app" + cassandraConfigFile); // TODO: Temporary workaround for the above exception!
     }
 }
