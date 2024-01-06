@@ -32,5 +32,9 @@ build/
 ### VS Code ###
 .vscode/
 
+### SAM ###
+.aws-sam/
+*.toml
+
 ### Project related temporary files ###
 temp_story_image.jpg

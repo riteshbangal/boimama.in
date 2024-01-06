@@ -20,3 +20,6 @@ Spring Boot best practices to create Production grade microservices:
 14. Faster Boot up
 15. Reactive programming
 
+### Things to do as best practices
+01. Unit tests
+02. Sonar for code quality

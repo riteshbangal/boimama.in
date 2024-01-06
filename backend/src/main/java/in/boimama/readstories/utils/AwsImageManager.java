@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
-import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.S3Exception;
 
 import java.io.File;
 import java.io.IOException;
@@ -77,7 +77,7 @@ public class AwsImageManager {
 
         try {
             s3Client.getObject(request, tempImageFile.toPath());
-        } catch (NoSuchKeyException exception) {
+        } catch (S3Exception exception) {
             logger.error("Unable to find image file from S3 Bucket!", exception);
             return null;
         }

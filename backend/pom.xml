@@ -65,6 +65,14 @@
             <version>${aws.s3.version}</version>
         </dependency>
 
+        <!-- Allows Java applications written for SpringBoot 3 to run in AWS Lambda -->
+        <dependency>
+            <groupId>com.amazonaws.serverless</groupId>
+            <artifactId>aws-serverless-java-container-springboot3</artifactId>
+            <version>2.0.0-M2</version>
+        </dependency>
+
+
         <!-- For Unit Tests -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
