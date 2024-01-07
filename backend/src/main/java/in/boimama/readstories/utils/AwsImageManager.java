@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
-import software.amazon.awssdk.services.s3.model.NoSuchKeyException;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.S3Exception;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,6 +23,10 @@ public class AwsImageManager {
 
     private static final Logger logger = LoggerFactory.getLogger(AwsImageManager.class);
 
+
+    @Value("${app.passAwsCredentials}")
+    private boolean passAwsCredentials;
+
     @Value("${aws.data-bucket}")
     private String bucketName;
 
@@ -33,6 +37,11 @@ public class AwsImageManager {
     }
 
     public String uploadImage(String imageDirectory, String imageName, MultipartFile imageFile) throws ApplicationServerException {
+        if (!passAwsCredentials) {
+            logger.info("Skipping image uploaded into S3 Bucket!");
+            return "Skipping image uploaded into S3 Bucket!";
+        }
+
         File localFile;
         try {
             localFile = File.createTempFile("temp", null);
@@ -50,6 +59,10 @@ public class AwsImageManager {
     }
 
     public void uploadImage(String imageDirectory, String imageName, File imageFile) {
+        if (!passAwsCredentials) {
+            logger.info("Skipping image uploaded into S3 Bucket!");
+            return;
+        }
 
         imageName = hasImageExtension(getFileExtension(imageName)) ?
                 imageName : imageName + "." + DEFAULT_IMAGE_FILE_EXTENSION;
@@ -62,6 +75,11 @@ public class AwsImageManager {
     }
 
     public File getImage(String imageName) {
+        if (!passAwsCredentials) {
+            logger.info("Skipping image uploaded into S3 Bucket!");
+            return null;
+        }
+
         imageName = hasImageExtension(getFileExtension(imageName)) ?
                 imageName : imageName + "." + DEFAULT_IMAGE_FILE_EXTENSION;
         final GetObjectRequest request = GetObjectRequest.builder()
@@ -77,7 +95,7 @@ public class AwsImageManager {
 
         try {
             s3Client.getObject(request, tempImageFile.toPath());
-        } catch (NoSuchKeyException exception) {
+        } catch (S3Exception exception) {
             logger.error("Unable to find image file from S3 Bucket!", exception);
             return null;
         }

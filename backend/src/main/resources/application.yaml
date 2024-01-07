@@ -20,6 +20,7 @@ spring:
       roles: ADMIN
 
 app:
+  passAwsCredentials: false
   openapi:
     dev-url: http://localhost:8080/api
     prod-url: https://boimama-api.com/api
