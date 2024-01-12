@@ -423,6 +423,44 @@ header .btn-group {
 
 /* End: Index Page Header */
 
+/* Load Stories Spinner */
+.load-stories {
+  color: var(--foreground-secondary);
+  padding-left: 25%;
+}
+
+.load-stories .message {
+  padding-top: 20px;
+}
+
+.loader {
+  border: 16px solid var(--background-primary);;
+  border-radius: 50%;
+  border-top: 16px solid var(--foreground-secondary);;
+  width: 120px;
+  height: 120px;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  animation: spin 2s linear infinite;
+}
+
+@-webkit-keyframes spin {
+  0% {
+    -webkit-transform: rotate(0deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 /* Main Body: Stories Section */
 .main {
   background: var(--background-secondary);
