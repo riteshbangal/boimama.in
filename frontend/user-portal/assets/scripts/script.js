@@ -105,8 +105,11 @@ function loadmoreStories(stories) {
 
 // import { TIMEOUT_SEC } from "./config";
 const TIMEOUT_SEC = 30;
-const mainContainerAsideElement = document.querySelector(".main .container .aside").innerHTML;
-const mainContainerAsideElementDisplayStyle = document.querySelector(".main .container .aside").style.display;
+
+const mainContainerAsideElement = document.querySelector(".main .container .aside");
+const mainContainerAsideHtml = mainContainerAsideElement ? mainContainerAsideElement.innerHTML : null;
+const mainContainerAsideElementDisplayStyle = mainContainerAsideElement ? mainContainerAsideElement.style.display : 'none';
+
 const mainContainerStoriesElementDisplayStyle = document.querySelector(".main .container .stories").style.display;
 
 function renderLoadingScreen() {
@@ -115,14 +118,17 @@ function renderLoadingScreen() {
         <h3 class="message">Loading stories..</h3>`;
 
   document.querySelector(".main .container .stories").style.display = "none";
-  document.querySelector(".main .container .aside").style.display = "none";
+  if (mainContainerAsideElement)
+    mainContainerAsideElement.style.display = "none";
 }
 
 function loadElements() {
   document.querySelector(".load-stories").style.display = "none";
 
-  document.querySelector(".main .container .aside").style.display = mainContainerAsideElementDisplayStyle;
-  document.querySelector(".main .container .aside").innerHTML = mainContainerAsideElement;
+  if (mainContainerAsideElement) {
+    mainContainerAsideElement.style.display = mainContainerAsideElementDisplayStyle;
+    mainContainerAsideElement.innerHTML = mainContainerAsideHtml;
+  }
 }
 
 function renderError() {
@@ -173,7 +179,8 @@ async function getData() {
              ${storyRatingSpan}
           </span>`;
 
-    document.querySelector(".story-card .story-content-wrapper .story-name").href = "/" + storyItem.title; // TODO: Correct Story URL
+    let storyPath = window.location.href.includes("/pages") ? "./story.html" : "./pages/story.html"
+    document.querySelector(".story-card .story-content-wrapper .story-name").href = storyPath + "?story=" + storyItem.id; // TODO: Story URL should have story-title. Update backend to support this
     document.querySelector(".story-card .story-content-wrapper .story-name").innerText = storyItem.title;
     document.querySelector(".story-card .story-content-wrapper .story-text").innerText = storyItem.content;
 
