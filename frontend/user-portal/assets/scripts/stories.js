@@ -1,5 +1,5 @@
 // View on stories page: List/Grid
-localStorage.setItem("currentStoryItems", LOAD_ITEMS_COUNT);
+// localStorage.setItem("currentStoryItems", LOAD_ITEMS_COUNT); // Moved to script.js; Clean this up later! 
 localStorage.setItem("story-view", "list"); // Default
 const storyCardGroupClassList =
   document.querySelector(".story-card-group").classList;
