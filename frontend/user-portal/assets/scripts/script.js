@@ -62,12 +62,6 @@ setTimeout(function () {
   }
 }, 2000);
 
-
-
-
-
-
-
 // Changes for 'scroll to the top button'
 let scrollTop = document.getElementById("top");
 
