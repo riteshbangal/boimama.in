@@ -427,6 +427,7 @@ header .btn-group {
 .load-stories {
   color: var(--foreground-secondary);
   padding-left: 25%;
+  width: max-content;
 }
 
 .load-stories .message {

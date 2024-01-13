@@ -95,17 +95,22 @@ function loadElements() {
 }
 
 function renderError() {
-  document.querySelector().innerHTML = `
-        <h3 class="message">Something wrong! </h3>
-        <h3>Plese try again later.</h3>`;
+  document.querySelector(".load-stories").innerHTML = `
+        <h3 class="message">Something wrong!</h3>
+        <h4>Plese try again.</h4>`;
 }
 
 export async function buildStoriesHTML() {
   let dataResponse = null;
   try {
-    //const username = new URLSearchParams(window.location.search).get('username');
-    dataResponse = await fetchData("http://localhost:8080/api/story/all");
-    // dataResponse = await fetchData("https://api-gw.boimama.in/story/all");
+    const searchText = new URLSearchParams(window.location.search).get('searchText');
+    if (searchText) {  // searchText is non-empty
+      dataResponse = await fetchData("http://localhost:8080/api/story/search?searchText=" + searchText);
+      //dataResponse = await fetchData("https://api-gw.boimama.in/story/search?searchText=" + searchText);
+    } else { // searchText is empty or null; Fetch all;
+      dataResponse = await fetchData("http://localhost:8080/api/story/all");
+      //dataResponse = await fetchData("https://api-gw.boimama.in/story/all");
+    }
   } catch (error) {
     renderError();
     return;

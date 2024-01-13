@@ -54,8 +54,8 @@
                 <div class="flex-wrapper">
 
                     <div class="header-search-bar">
-                        <form action="./stories.html#stories">
-                            <input type="text" placeholder=" Search Stories " name="search" class="search-text">
+                        <form action="./stories.html" id="searchForm">
+                            <input type="text" placeholder=" Search Stories " name="searchText" class="search-text">
                             <button class="search-button"><i class="fa fa-search"> </i></button>
                         </form>
                     </div>
@@ -133,8 +133,10 @@
             <!-- Main Body: Shows story-loading spinner -->
             <div class="load-stories"></div>
 
-
+            <!-- Main Body: Main Container -->
             <div class="container">
+
+                <!-- TODO: Add story image here -->
 
                 <div id="story-panel" class="story-panel">
                     <h2 class="h2 story-name"><label>|</label> Cocomelon and Dragon</h2>
@@ -170,15 +172,6 @@
                         <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni hic porro dicta accusantium
                             delectus vitae quae, eius quidem cum nemo, error tenetur modi, id animi labore veniam corrupti
                             maxime eum.</p>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Veritatis deleniti reprehenderit error
-                            repellat ipsam corporis iure deserunt nesciunt explicabo, molestiae fugiat, consectetur
-                            excepturi dolor velit recusandae eveniet ullam fugit repudiandae.</p>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sunt sint illum quod labore unde,
-                            nesciunt adipisci! Doloribus, maiores esse quam id sed eveniet corporis eos ratione, beatae
-                            ducimus aspernatur officiis.</p>
-                        <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Fuga, ut deleniti magni voluptatum
-                            quibusdam officiis ipsa ullam ducimus a ipsam voluptates repudiandae necessitatibus repellat
-                            dolorum itaque eum sequi quidem at.</p>
                     </div>
                 </div>
 
@@ -292,6 +285,7 @@
     <!-- custom js link -->
     <!-- <script type="module" src="../assets/scripts/script.js"></script> -->
     <script type="module" src="../assets/scripts/story.js"></script>
+    <script src="../assets/scripts/search.js"></script>
 
     <!-- Sending email usinhg smtp -->
     <!-- <script src="https://smtpjs.com/v3/smtp.js"></script> -->
