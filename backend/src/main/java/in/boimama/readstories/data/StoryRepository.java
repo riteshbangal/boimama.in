@@ -28,6 +28,9 @@ public interface StoryRepository extends CassandraRepository<Story, UUID> {
     @Query("SELECT * FROM story WHERE story_id = ?0 and story_title = ?1 ALLOW FILTERING")
     List<Story> findByStoryIdAndTitle(final UUID storyId, final String storyTitle);
 
+    @Query("SELECT * FROM story WHERE story_category = ?0 ALLOW FILTERING")
+    List<Story> findByStoryCategory(final String storyCategory);
+
     default List<List<UUID>> findAuthorIdsByStoryTitle(final String storyTitle) {
         return findByStoryTitle(storyTitle).stream()
                 .map(Story::getAuthorIds)

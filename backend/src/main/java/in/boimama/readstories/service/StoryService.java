@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static in.boimama.readstories.utils.ApplicationConstants.UNCATEGORIZED_TYPE;
 import static in.boimama.readstories.utils.ApplicationUtils.estimateStoryLengthInMinutes;
@@ -105,6 +106,52 @@ public class StoryService {
         final List<StoryResponse> storiesResponse = new ArrayList<>();
         storyRepository.findAll()
                 .forEach(story -> storiesResponse.add(modelMapperHelper.mapStory(story, StoryResponse.class)));
+        if (isEmpty(storiesResponse))
+            logger.warn("No story found!");
+        return storiesResponse;
+    }
+
+    public List<StoryResponse> searchStories(final String pSearchText) {
+        /**
+         * This is not a recommended practice!
+         * AWS Keyspace (Cassandra) doesn't support operator LIKE.
+         * TODO: Hence we need some better integrated solution for searching.
+         * For now do it via Java coding! Get all stories and match them with the search keyword!
+         */
+        final List<StoryResponse> storiesResponse = storyRepository.findAll().stream()
+                .filter(story -> story.getStoryTitle().toLowerCase().contains(pSearchText.toLowerCase())
+                        || story.getDescription().toLowerCase().contains(pSearchText.toLowerCase())
+                        || story.getContent().toLowerCase().contains(pSearchText.toLowerCase())
+                        || story.getAuthorNames().stream()
+                        .anyMatch(authorName -> authorName.toLowerCase().contains(pSearchText.toLowerCase()))
+                        || story.getCategory().toLowerCase().contains(pSearchText.toLowerCase())
+                )
+                .map(story -> modelMapperHelper.mapStory(story, StoryResponse.class))
+                .collect(Collectors.toList());
+        if (isEmpty(storiesResponse))
+            logger.warn("No story found!");
+        return storiesResponse;
+    }
+
+    public List<StoryResponse> searchStoriesByCategory(final String pStoryCategory) {
+        final List<StoryResponse> storiesResponse = new ArrayList<>();
+        /**
+         * This is not a recommended practice!
+         * AWS Keyspace (Cassandra) doesn't support operator LIKE.
+         * TODO: Hence we need some better integrated solution for searching.
+         * For now do it via Java coding! Get all stories and match them with the search keyword!
+         */
+        storyRepository.findAll().stream()
+                .filter(story -> story.getCategory().toLowerCase().contains(pStoryCategory.toLowerCase()))
+                .forEach(story -> storiesResponse.add(modelMapperHelper.mapStory(story, StoryResponse.class)));
+        /**
+         * AWS Keyspace (Cassandra) doesn't support operator LIKE.
+         * And due to case-sensitive search, this is not working as expected!
+         */
+        /*
+        storyRepository.findByStoryCategory(pStoryCategory)
+                .forEach(story -> storiesResponse.add(modelMapperHelper.mapStory(story, StoryResponse.class)));
+        */
         if (isEmpty(storiesResponse))
             logger.warn("No story found!");
         return storiesResponse;

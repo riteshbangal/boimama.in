@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import org.hibernate.validator.constraints.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,6 +35,7 @@ import static in.boimama.readstories.dto.ResponseCode.STORY_NOT_FOUND;
 import static in.boimama.readstories.dto.ResponseCode.STORY_NOT_UPDATED;
 
 @RestController
+@CrossOrigin(origins = "http://127.0.0.1:5500") // TODO: Temporary Change
 @RequestMapping("/story")
 @Validated // Enable validation for this controller
 public class StoryController extends AbstractController {
@@ -74,6 +78,15 @@ public class StoryController extends AbstractController {
     @ResponseBody
     public ResponseEntity<?> getAllStories() {
         return ResponseEntity.ok(storyService.getAllStories());
+    }
+
+    @GetMapping(value = "/search")
+    @ResponseBody
+    public ResponseEntity<?> getStories(@NotEmpty(message = "Search input must be a valid") @RequestParam(name = "searchText") String searchText,
+                                        @RequestParam(name = "categorySearch", required = false) boolean isCategorySearch) {
+        if (isCategorySearch)
+            return ResponseEntity.ok(storyService.searchStoriesByCategory(searchText));
+        return ResponseEntity.ok(storyService.searchStories(searchText));
     }
 
     @DeleteMapping(value = "/{id}")
