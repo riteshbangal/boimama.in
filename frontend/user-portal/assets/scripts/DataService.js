@@ -33,7 +33,7 @@ export function loadmoreStories(stories) {
       // Hide load button after fully load.
       if (currentItems >= stories.length) {
         setTimeout(function () {
-          console.log("going to disable load-more button");
+          // console.log("going to disable load-more button");
           event.target.classList.add("loaded");
         }, LOADING_TIME_IN_MILLISECONDS);
       }
@@ -84,12 +84,22 @@ export function renderLoadingScreen() {
     mainContainerStoryElement.style.display = "none";
 }
 
-function loadElements() {
-  document.querySelector(".load-stories").style.display = "none";
+function loadElements(_storyItems) {
+  if (Array.isArray(_storyItems) && _storyItems.length > 0) { // This is for stories.html page
+    document.querySelector(".load-stories").style.display = "none";
+    mainContainerStoriesElement.style.display = mainContainerStoriesElementDisplayStyle;
+  } else if (mainContainerStoriesElement) { // This is for stories.html page
+    mainContainerStoriesElement.style.display = "none";
+    document.querySelector(".load-stories").innerHTML = `
+        <h3 class="message">No story found!</h3>
+        <h4>Go for another search.</h4>`;
+  } else if (mainContainerStoryElement) { // This is for story.html page
+    document.querySelector(".load-stories").style.display = "none";
+    mainContainerStoryElement.style.display =  mainContainerStoryElementDisplayStyle;
+  }
 
-  if (mainContainerAsideElement) {
-    mainContainerAsideElement.style.display =
-      mainContainerAsideElementDisplayStyle;
+  if (mainContainerAsideElement) { // This is for index.html and story.html page
+    mainContainerAsideElement.style.display = mainContainerAsideElementDisplayStyle;
     mainContainerAsideElement.innerHTML = mainContainerAsideHtml;
   }
 }
@@ -103,8 +113,17 @@ function renderError() {
 export async function buildStoriesHTML() {
   let dataResponse = null;
   try {
+    const searchCategory = new URLSearchParams(window.location.search).get('category');
+    const searchTag = new URLSearchParams(window.location.search).get('tag');
     const searchText = new URLSearchParams(window.location.search).get('searchText');
-    if (searchText) {  // searchText is non-empty
+
+    if (searchCategory) { // category is non-empty
+      dataResponse = await fetchData("http://localhost:8080/api/story/search?searchText=" + searchCategory + "&categorySearch=true");
+      //dataResponse = await fetchData("https://api-gw.boimama.in/story/search?searchText=" + searchCategory + "&categorySearch=true");
+    } else if (searchTag) {  // tag is non-empty
+      dataResponse = await fetchData("http://localhost:8080/api/story/search?searchText=" + searchTag + "&categorySearch=true");
+      //dataResponse = await fetchData("https://api-gw.boimama.in/story/search?searchText=" + searchTag + "&categorySearch=true");
+    } else if (searchText) {  // searchText is non-empty
       dataResponse = await fetchData("http://localhost:8080/api/story/search?searchText=" + searchText);
       //dataResponse = await fetchData("https://api-gw.boimama.in/story/search?searchText=" + searchText);
     } else { // searchText is empty or null; Fetch all;
@@ -120,10 +139,7 @@ export async function buildStoriesHTML() {
   const storyItems = dataResponse;
 
   // Load elements post successful API call
-  loadElements();
-
-  mainContainerStoriesElement.style.display =
-    mainContainerStoriesElementDisplayStyle;
+  loadElements(storyItems);
 
   let storyCardElememnt = ``;
 
@@ -220,9 +236,6 @@ export async function buildStoryHTML() {
 
   // Load elements post successful API call
   loadElements();
-
-  mainContainerStoryElement.style.display =
-    mainContainerStoryElementDisplayStyle;
 
   document.querySelector(
     ".story-panel .story-name"
