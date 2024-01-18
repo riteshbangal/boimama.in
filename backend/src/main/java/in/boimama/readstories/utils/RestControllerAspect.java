@@ -33,11 +33,15 @@ public class RestControllerAspect {
     public void adminControllerPointcut() {
     }
 
+    @Pointcut("within(in.boimama.readstories.controller.AuthorController)")
+    public void authorControllerPointcut() {
+    }
+
     @Pointcut("within(in.boimama.readstories.controller.StoryController)")
     public void storyControllerPointcut() {
     }
 
-    @Pointcut("adminControllerPointcut() || storyControllerPointcut()")
+    @Pointcut("adminControllerPointcut() || authorControllerPointcut() || storyControllerPointcut()")
     public void pointcut() {
     }
 

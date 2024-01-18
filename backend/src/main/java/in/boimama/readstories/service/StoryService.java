@@ -187,10 +187,10 @@ public class StoryService {
         final Story story = storyRepository.findByStoryId(UUID.fromString(storyId));
         if (story == null) {
             logger.error("Story not found against id: {}", storyId);
-            throw new ApplicationServerException("Story not found against id: " + storyId);
+            throw new ApplicationClientException("Story not found against id: " + storyId);
         }
 
-        logger.debug("Story to be update have id: {}", storyId);
+        logger.debug("Story to be updated, have id: {}", storyId);
         if (storyRepository.isStoryWithSameAuthorsAlreadyExists(pRequest.getTitle(),
                 pRequest.getAuthorIds().stream().map(UUID::fromString).toList())) {
             logger.debug("Story: {} with same title ({}) and authors {} already exists",

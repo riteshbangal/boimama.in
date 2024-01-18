@@ -47,29 +47,15 @@ export function loadmoreStories(stories) {
 // import { TIMEOUT_SEC } from "./config";
 const TIMEOUT_SEC = 30;
 
-const mainContainerAsideElement = document.querySelector(
-  ".main .container .aside"
-);
-const mainContainerAsideHtml = mainContainerAsideElement
-  ? mainContainerAsideElement.innerHTML
-  : null;
-const mainContainerAsideElementDisplayStyle = mainContainerAsideElement
-  ? mainContainerAsideElement.style.display
-  : "none";
+const mainContainerAsideElement = document.querySelector(".main .container .aside");
+const mainContainerAsideHtml = mainContainerAsideElement ? mainContainerAsideElement.innerHTML : null;
+const mainContainerAsideElementDisplayStyle = mainContainerAsideElement ? mainContainerAsideElement.style.display : "none";
 
-const mainContainerStoriesElement = document.querySelector(
-  ".main .container .stories"
-);
-const mainContainerStoriesElementDisplayStyle = mainContainerStoriesElement
-  ? mainContainerStoriesElement.style.display
-  : "none";
+const mainContainerStoriesElement = document.querySelector(".main .container .stories");
+const mainContainerStoriesElementDisplayStyle = mainContainerStoriesElement ? mainContainerStoriesElement.style.display : "none";
 
-const mainContainerStoryElement = document.querySelector(
-  ".main .container .story-panel"
-);
-const mainContainerStoryElementDisplayStyle = mainContainerStoryElement
-  ? mainContainerStoryElement.style.display
-  : "none";
+const mainContainerStoryElement = document.querySelector(".main .container .story-panel");
+const mainContainerStoryElementDisplayStyle = mainContainerStoryElement ? mainContainerStoryElement.style.display : "none";
 
 export function renderLoadingScreen() {
   document.querySelector(".load-stories").innerHTML = `
@@ -95,7 +81,7 @@ function loadElements(_storyItems) {
         <h4>Go for another search.</h4>`;
   } else if (mainContainerStoryElement) { // This is for story.html page
     document.querySelector(".load-stories").style.display = "none";
-    mainContainerStoryElement.style.display =  mainContainerStoryElementDisplayStyle;
+    mainContainerStoryElement.style.display = mainContainerStoryElementDisplayStyle;
   }
 
   if (mainContainerAsideElement) { // This is for index.html and story.html page
@@ -162,43 +148,29 @@ export async function buildStoriesHTML() {
       }
     }
     document.querySelector(".story-content-metadata-top").innerHTML = `
-          <button class="story-topic text-tiny">${storyItem.category}</button>
-          <span>
-             ${storyRatingSpan}
-          </span>`;
+        <a class="story-topic text-tiny">${storyItem.category}</a>
+        <span>
+            ${storyRatingSpan}
+        </span>`;
 
-    let storyPath = window.location.href.includes("/pages")
-      ? "./story.html"
-      : "./pages/story.html";
-    document.querySelector(
-      ".story-card .story-content-wrapper .story-name"
-    ).href = storyPath + "?story=" + storyItem.id; // TODO: Story URL should have story-title. Update backend to support this
-    document.querySelector(
-      ".story-card .story-content-wrapper .story-name"
-    ).innerText = storyItem.title;
-    document.querySelector(
-      ".story-card .story-content-wrapper .story-text"
-    ).innerText = storyItem.content;
+    let storyPath = window.location.href.includes("/pages") ? "./story.html" : "./pages/story.html";
+    document.querySelector(".story-card .story-content-wrapper .story-name")
+      .href = storyPath + "?story=" + storyItem.id; // TODO: Story URL should have story-title. Update backend to support this
+    document.querySelector(".story-card .story-content-wrapper .story-name").innerText = storyItem.title;
+    document.querySelector(".story-card .story-content-wrapper .story-text").innerText = storyItem.content;
 
-    let authorImageElement = document.querySelector(
-      ".story-card .author-details .author-image"
-    );
+    let authorImageElement = document.querySelector(".story-card .author-details .author-image");
     authorImageElement.src = storyItem.imagePath; // TODO: Correct
     authorImageElement.alt = storyItem.title; // TODO: Correct
 
-    let authorNameElement = document.querySelector(
-      ".story-card .author-details .author-name"
-    );
-    authorNameElement.href = storyItem.imagePath; // TODO: Correct
+    let authorNameElement = document.querySelector(".story-card .author-details .author-name");
+    authorNameElement.href = "#"; // TODO: Correct
     authorNameElement.innerText = storyItem.authorNames[0]; // TODO: Correct
 
-    document.querySelector(".story-card .story-publish-date").innerText =
-      formatDate(storyItem.publishedDate);
-    document.querySelector(".story-card .story-length").innerText =
-      storyItem.lengthInMins + " mins";
+    document.querySelector(".story-card .story-publish-date").innerText = formatDate(storyItem.publishedDate);
+    document.querySelector(".story-card .story-length").innerText = storyItem.lengthInMins + " mins";
 
-    storyCardElememnt =
-      storyCardElememnt +
+    storyCardElememnt = storyCardElememnt +
       `<div class="story-card">` +
       document.querySelector(".story-card").innerHTML +
       `</div>`;
@@ -221,9 +193,7 @@ export async function buildStoryHTML() {
      */
     const storyId = new URLSearchParams(window.location.search).get('story');
     console.log('Story ID:', storyId);
-    dataResponse = await fetchData(
-      "http://localhost:8080/api/story/" + storyId
-    );
+    dataResponse = await fetchData("http://localhost:8080/api/story/" + storyId);
     // dataResponse = await fetchData("https://api-gw.boimama.in/story/" + storyId);
   } catch (error) {
     renderError();
@@ -237,22 +207,16 @@ export async function buildStoryHTML() {
   // Load elements post successful API call
   loadElements();
 
-  document.querySelector(
-    ".story-panel .story-name"
-  ).innerHTML = `<label>|</label> ${storyItem.title}`;
+  document.querySelector(".story-panel .story-name").innerHTML = `<label>|</label> ${storyItem.title}`;
 
-  let authorNameMobileElement = document.querySelector(
-    ".story-panel .mobile-story-metadata .author-name"
-  );
+  let authorNameMobileElement = document.querySelector(".story-panel .mobile-story-metadata .author-name");
   authorNameMobileElement.href = storyItem.imagePath; // TODO: Correct
   authorNameMobileElement.innerText = storyItem.authorNames[0]; // TODO: Correct
 
-  document.querySelector(
-    ".story-panel .mobile-story-metadata .story-publish-date"
-  ).innerText = formatDate(storyItem.publishedDate);
-  document.querySelector(
-    ".story-panel .mobile-story-metadata .story-length"
-  ).innerText = storyItem.lengthInMins + " mins";
+  document.querySelector(".story-panel .mobile-story-metadata .story-publish-date")
+    .innerText = formatDate(storyItem.publishedDate);
+  document.querySelector(".story-panel .mobile-story-metadata .story-length")
+    .innerText = storyItem.lengthInMins + " mins";
 
   let storyRatingSpan = ``;
   for (let index = 0; index < 5; index++) {
@@ -265,33 +229,24 @@ export async function buildStoryHTML() {
   }
 
   const storyRatingSpanHtml = `
-        <span>
-            ${storyRatingSpan}
-        </span>`;
-  document.querySelector(
-    ".story-panel .mobile-story-metadata .story-rating"
-  ).innerHTML = storyRatingSpanHtml;
-  document.querySelector(".aside .story-metadata .story-rating").innerHTML =
-    storyRatingSpanHtml;
+      <span>
+          ${storyRatingSpan}
+      </span>`;
+  document.querySelector(".story-panel .mobile-story-metadata .story-rating").innerHTML = storyRatingSpanHtml;
+  document.querySelector(".aside .story-metadata .story-rating").innerHTML = storyRatingSpanHtml;
 
-  document.querySelector(".story-panel .story-content").innerHTML =
-    storyItem.content;
+  document.querySelector(".story-panel .story-content").innerHTML = storyItem.content;
 
-  document.querySelector(
-    ".aside .story-metadata .story-publish-date"
-  ).innerText = formatDate(storyItem.publishedDate);
-  document.querySelector(".aside .story-metadata .story-length").innerText =
-    storyItem.lengthInMins + " mins";
+  document.querySelector(".aside .story-metadata .story-publish-date")
+    .innerText = formatDate(storyItem.publishedDate);
+  document.querySelector(".aside .story-metadata .story-length")
+    .innerText = storyItem.lengthInMins + " mins";
 
-  let authorImageElement = document.querySelector(
-    ".aside .author-metadata .author-image"
-  );
+  let authorImageElement = document.querySelector(".aside .author-metadata .author-image");
   authorImageElement.src = storyItem.imagePath; // TODO: Correct
   authorImageElement.alt = storyItem.title; // TODO: Correct
 
-  let authorNameElement = document.querySelector(
-    ".aside .author-metadata .author-name"
-  );
+  let authorNameElement = document.querySelector(".aside .author-metadata .author-name");
   authorNameElement.href = storyItem.imagePath; // TODO: Correct
   authorNameElement.innerText = storyItem.authorNames[0]; // TODO: Correct
 }

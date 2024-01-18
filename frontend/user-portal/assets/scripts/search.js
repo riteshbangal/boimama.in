@@ -3,12 +3,12 @@
 // Add a submit event listener to the form
 document.getElementById('searchForm').addEventListener('submit', function (event) {
     // Prevent the default form submission behavior
-   event.preventDefault();
+    event.preventDefault();
 
     // Get the search input value
     var searchText = document.querySelector(".search-text").value;
     if (!searchText) { // TODO: Prevent XSS attack
-       return; // Nothing happens if it's invalid input! 
+        return; // Nothing happens if it's invalid input! 
     }
 
     /**
