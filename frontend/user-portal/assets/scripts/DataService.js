@@ -46,6 +46,8 @@ export function loadmoreStories(stories) {
 // Start: Backend API call, fetch data and load HTML content for stories
 // import { TIMEOUT_SEC } from "./config";
 const TIMEOUT_SEC = 30;
+const API_BASE_URL = "http://localhost:8080/api";
+// const API_BASE_URL = "https://api-gw.boimama.in";
 
 const mainContainerAsideElement = document.querySelector(".main .container .aside");
 const mainContainerAsideHtml = mainContainerAsideElement ? mainContainerAsideElement.innerHTML : null;
@@ -104,17 +106,13 @@ export async function buildStoriesHTML() {
     const searchText = new URLSearchParams(window.location.search).get('searchText');
 
     if (searchCategory) { // category is non-empty
-      dataResponse = await fetchData("http://localhost:8080/api/story/search?searchText=" + searchCategory + "&categorySearch=true");
-      //dataResponse = await fetchData("https://api-gw.boimama.in/story/search?searchText=" + searchCategory + "&categorySearch=true");
+      dataResponse = await fetchData(API_BASE_URL + "/story/search?searchText=" + searchCategory + "&categorySearch=true");
     } else if (searchTag) {  // tag is non-empty
-      dataResponse = await fetchData("http://localhost:8080/api/story/search?searchText=" + searchTag + "&categorySearch=true");
-      //dataResponse = await fetchData("https://api-gw.boimama.in/story/search?searchText=" + searchTag + "&categorySearch=true");
+      dataResponse = await fetchData(API_BASE_URL + "/story/search?searchText=" + searchTag + "&categorySearch=true");
     } else if (searchText) {  // searchText is non-empty
-      dataResponse = await fetchData("http://localhost:8080/api/story/search?searchText=" + searchText);
-      //dataResponse = await fetchData("https://api-gw.boimama.in/story/search?searchText=" + searchText);
+      dataResponse = await fetchData(API_BASE_URL + "/story/search?searchText=" + searchText);
     } else { // searchText is empty or null; Fetch all;
-      dataResponse = await fetchData("http://localhost:8080/api/story/all");
-      //dataResponse = await fetchData("https://api-gw.boimama.in/story/all");
+      dataResponse = await fetchData(API_BASE_URL + "/story/all");
     }
   } catch (error) {
     renderError();
@@ -160,12 +158,12 @@ export async function buildStoriesHTML() {
     document.querySelector(".story-card .story-content-wrapper .story-text").innerText = storyItem.content;
 
     let authorImageElement = document.querySelector(".story-card .author-details .author-image");
-    authorImageElement.src = storyItem.imagePath; // TODO: Correct
-    authorImageElement.alt = storyItem.title; // TODO: Correct
+    authorImageElement.src = API_BASE_URL + "/author/" + storyItem.authorIds[0] + "/image";
+    authorImageElement.alt = storyItem.authorNames[0];
 
     let authorNameElement = document.querySelector(".story-card .author-details .author-name");
-    authorNameElement.href = "#"; // TODO: Correct
-    authorNameElement.innerText = storyItem.authorNames[0]; // TODO: Correct
+    authorNameElement.href = window.location.href.includes("/pages") ? "./coming-soon.html#coming-soon" : "./pages/coming-soon.html#coming-soon";
+    authorNameElement.innerText = storyItem.authorNames[0];
 
     document.querySelector(".story-card .story-publish-date").innerText = formatDate(storyItem.publishedDate);
     document.querySelector(".story-card .story-length").innerText = storyItem.lengthInMins + " mins";
@@ -193,8 +191,7 @@ export async function buildStoryHTML() {
      */
     const storyId = new URLSearchParams(window.location.search).get('story');
     console.log('Story ID:', storyId);
-    dataResponse = await fetchData("http://localhost:8080/api/story/" + storyId);
-    // dataResponse = await fetchData("https://api-gw.boimama.in/story/" + storyId);
+    dataResponse = await fetchData(API_BASE_URL + "/story/" + storyId);
   } catch (error) {
     renderError();
     return;
@@ -210,8 +207,8 @@ export async function buildStoryHTML() {
   document.querySelector(".story-panel .story-name").innerHTML = `<label>|</label> ${storyItem.title}`;
 
   let authorNameMobileElement = document.querySelector(".story-panel .mobile-story-metadata .author-name");
-  authorNameMobileElement.href = storyItem.imagePath; // TODO: Correct
-  authorNameMobileElement.innerText = storyItem.authorNames[0]; // TODO: Correct
+  authorNameMobileElement.href = "./coming-soon.html#coming-soon";
+  authorNameMobileElement.innerText = storyItem.authorNames[0];
 
   document.querySelector(".story-panel .mobile-story-metadata .story-publish-date")
     .innerText = formatDate(storyItem.publishedDate);
@@ -243,12 +240,12 @@ export async function buildStoryHTML() {
     .innerText = storyItem.lengthInMins + " mins";
 
   let authorImageElement = document.querySelector(".aside .author-metadata .author-image");
-  authorImageElement.src = storyItem.imagePath; // TODO: Correct
-  authorImageElement.alt = storyItem.title; // TODO: Correct
+  authorImageElement.src = API_BASE_URL + "/author/" + storyItem.authorIds[0] + "/image";
+  authorImageElement.alt = storyItem.authorNames[0];
 
   let authorNameElement = document.querySelector(".aside .author-metadata .author-name");
-  authorNameElement.href = storyItem.imagePath; // TODO: Correct
-  authorNameElement.innerText = storyItem.authorNames[0]; // TODO: Correct
+  authorNameElement.href = "./coming-soon.html#coming-soon";
+  authorNameElement.innerText = storyItem.authorNames[0];
 }
 // End: Backend API call, fetch data and load HTML content for a single story
 
