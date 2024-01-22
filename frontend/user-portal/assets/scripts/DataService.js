@@ -1,12 +1,12 @@
 // Load More Stories Button
-const LOAD_ITEMS_COUNT = 3;
+const LOAD_ITEMS_COUNT = 9;
 localStorage.setItem("currentStoryItems", LOAD_ITEMS_COUNT);
 
 const LOADING_TIME_IN_MILLISECONDS = 2000;
 
 export function loadmoreStories(stories) {
   let loadmoreButton = document.querySelector(".load-more.btn");
-  let currentItems = 3;
+  let currentItems = LOAD_ITEMS_COUNT;
 
   if (loadmoreButton) {
     loadmoreButton.addEventListener("click", (event) => {
@@ -126,16 +126,18 @@ export async function buildStoriesHTML() {
   loadElements(storyItems);
 
   let storyCardElememnt = ``;
+  let storyTopics = [];
 
   storyItems.forEach((storyItem) => {
     // console.log(storyItem);
 
-    let storyCardBannerElement = document.querySelector(
-      ".story-card .story-card-banner .story-banner-img"
-    );
-    storyCardBannerElement.src = storyItem.imagePath;
-    storyCardBannerElement.alt = storyItem.title;
-
+    let storyCardBannerElements = document.querySelectorAll(".story-card .story-card-banner .story-banner-img, " + 
+                                                            ".story-card .story-card-banner-mobile .story-banner-img");
+    storyCardBannerElements.forEach(storyCardBannerElement => {
+      storyCardBannerElement.src = storyItem.imagePath;
+      storyCardBannerElement.alt = storyItem.title;
+    });
+ 
     let storyRatingSpan = ``;
     for (let index = 0; index < 5; index++) {
       if (storyItem.rating > index) {
@@ -150,6 +152,8 @@ export async function buildStoriesHTML() {
         <span>
             ${storyRatingSpan}
         </span>`;
+
+    storyTopics.push(storyItem.category);
 
     let storyPath = window.location.href.includes("/pages") ? "./story.html" : "./pages/story.html";
     document.querySelector(".story-card .story-content-wrapper .story-name")
@@ -178,6 +182,38 @@ export async function buildStoriesHTML() {
 
   const stories = [...document.querySelectorAll(".story-card")];
   loadmoreStories(stories);
+
+
+  // Prepare Story topics for the side panels
+  const ionIcons = [ // TODO: select as per relevancy 
+    'alarm', 'at', 'basketball', 'beer', 'bicycle', 'book', 'brush', 'cafe', 'camera', 'car',
+    'cloud', 'desktop', 'flash', 'football', 'globe', 'hammer', 'heart', 'home', 'ice-cream', 'key'
+  ]; // Array of possible ion-icon names
+
+  let storyTopicsHtml = ``;
+  findTopOccurringElements(storyTopics, 4).forEach(storyTopic => {
+    storyTopicsHtml = storyTopicsHtml + `
+        <a href="./pages/stories.html?category=${storyTopic}" class="topic-btn">
+          <div class="icon-box">
+            <ion-icon name="${ionIcons[Math.floor(Math.random() * ionIcons.length)]}"></ion-icon>
+          </div>
+          <p>${storyTopic}</p>
+        </a>`;
+  });
+
+  if (document.querySelector(".aside .topics")) {
+    document.querySelector(".aside .topics").innerHTML = `<h2 class="h2">Topics</h2> ${storyTopicsHtml}`;
+  }
+
+  // Prepare Story tags for the side panels
+  let storyTagsHtml = ``;
+  findTopOccurringElements(storyTopics).forEach(storyTopic => {
+    storyTagsHtml = storyTagsHtml + `
+        <a href="./pages/stories.html?tag=${storyTopic}"><button class="hashtag">#${storyTopic}</button></a>`;
+  });
+  if (document.querySelector(".aside .tags .wrapper")) {
+    document.querySelector(".aside .tags .wrapper").innerHTML = storyTagsHtml;
+  }
 }
 // End: Backend API call, fetch data and load HTML content for stories
 
@@ -232,7 +268,9 @@ export async function buildStoryHTML() {
   document.querySelector(".story-panel .mobile-story-metadata .story-rating").innerHTML = storyRatingSpanHtml;
   document.querySelector(".aside .story-metadata .story-rating").innerHTML = storyRatingSpanHtml;
 
-  document.querySelector(".story-panel .story-content").innerHTML = storyItem.content;
+  const storyContent = storyItem.content;
+  const stringWithHtmlLineBreak = storyContent.replace(/\n/g, '<br>'); // Convert \n into <br> for HTML rendering
+  document.querySelector(".story-panel .story-content").innerHTML = stringWithHtmlLineBreak;
 
   document.querySelector(".aside .story-metadata .story-publish-date")
     .innerText = formatDate(storyItem.publishedDate);
@@ -295,4 +333,25 @@ function formatDate(inputDate) {
   const day = dateObject.getDate();
 
   return `${month} ${day}, ${year}`;
+}
+
+function findTopOccurringElements(arr, topCount) {
+  let elementCount = {};
+
+  // Count occurrences of each element
+  arr.forEach(element => {
+    elementCount[element] = (elementCount[element] || 0) + 1;
+  });
+
+  // Convert the element count object to an array of [element, count] pairs
+  let countArray = Object.entries(elementCount);
+
+  // Sort the array based on the count in descending order
+  countArray.sort((a, b) => b[1] - a[1]);
+
+  // Extract the top elements
+  let topElements = countArray.slice(0, topCount);
+
+  // Return only the elements (discard the counts)
+  return topElements.map(pair => pair[0]);
 }

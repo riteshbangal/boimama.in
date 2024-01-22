@@ -510,6 +510,18 @@ header .btn-group {
   display: none;
 }
 
+.story-card-banner-mobile {
+  display: block;
+  padding-bottom: 15px;
+}
+
+.story-card-banner-mobile  .story-banner-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  max-height: 250px;
+}
+
 .story-content-wrapper {
   padding: 10px 5px;
 }
@@ -811,6 +823,10 @@ footer .wrapper {
     display: block;
     overflow: hidden;
     border-radius: 5px;
+  }
+
+  .story-card-banner-mobile {
+    display: none;
   }
 
   .story-banner-img {

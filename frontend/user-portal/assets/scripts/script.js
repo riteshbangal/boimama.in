@@ -70,7 +70,18 @@ let menu = document.querySelector("#menu");
 let header = document.querySelector(".header");
 
 const init = function () {
-  renderLoadingScreen(); // Waiting while loading server data.
+
+  // Get the current page pathname
+  const currentPage = window.location.pathname;
+
+  // Define a regular expression pattern for home page or index page
+  const storiesPageIndexPattern = /(\/|\/index\.html|\/stories\.html)$/;
+  
+  // Check if the current page matches the pattern
+  if (storiesPageIndexPattern.test(currentPage)) {
+    renderLoadingScreen(); // Waiting while loading server data.
+    buildStoriesHTML(); // API call, fetch data and load HTML content for stories
+  }
 
   menu.onclick = function toggleHeader() {
     menu.classList.toggle("fa-times");
@@ -87,7 +98,5 @@ const init = function () {
       scrollTop.style.display = "none";
     }
   };
-
-  buildStoriesHTML(); // API call, fetch data and load HTML content for stories
 };
 init();

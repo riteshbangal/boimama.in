@@ -11,6 +11,7 @@ let header = document.querySelector(".header");
 
 const init = function () {
     renderLoadingScreen(); // Waiting while loading server data.
+    buildStoryHTML(); // API call, fetch data and load HTML content for a single story
   
     menu.onclick = function toggleHeader() {
       menu.classList.toggle("fa-times");
@@ -26,9 +27,7 @@ const init = function () {
       } else {
         scrollTop.style.display = "none";
       }
-    };
-  
-    buildStoryHTML(); // API call, fetch data and load HTML content for a single story
+    };  
   };
   init();
   
