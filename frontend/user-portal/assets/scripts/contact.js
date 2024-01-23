@@ -1,28 +1,84 @@
+
+
+
 document
   .querySelector(".contact-form")
   .addEventListener("submit", function (event) {
+    // Remove the 'error' class when the user clicks on the input
+    // TODO: document.getElementById('visitorEmail').classList.remove('error-input');
+
     event.preventDefault();
 
-    let name = document.getElementById("vistorName").value;
-    let email = document.getElementById("vistorEmail").value;
-    let phone = document.getElementById("vistorPhone").value;
+    let messageElement = document.querySelector(".contact-form .message");
+
+    // Get form values
+    let visitorName = document.getElementById("visitorName").value;
+    let visitorEmail = document.getElementById("visitorEmail").value;
+    let visitorPhone = document.getElementById("visitorPhone").value;
     let message = document.getElementById("message").value;
 
-    const data = { username: "example" };
+    // Create an object to hold the form data
+    var formData = {
+      name: visitorName,
+      email: visitorEmail,
+      phone: visitorPhone,
+      message: message
+    };
 
-    // TODO: Implemnt/Fix this
-    Email.send({
-      Host: "smtp.elasticemail.com",
-      Username: "noreply_test@boimama.in",
-      Password: "0C7CB05D671FFE181608132DB04E9AA4C472",
-      To: "riteshbangal@gmail.com",
-      From: "noreply_test@boimama.in",
-      Subject: "This is the subject",
-      Body: "And this is the body",
-    }).then((message) => {
-      // alert(message);
-      let messageElement = document.querySelector(".contact-form .message");
-      messageElement.innerHTML = `<div class="message" style="margin-bottom:3rem; color:red">${message}</div>`;
+    // Make a POST request using the Fetch API
+    fetch('http://localhost:8080/api/user/contact', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formData)
+    })
+    .then(response => {
+      if (response.status === 400) {
+        throw new Error('Please validate your inputs!');
+      }
+      if (!response.ok) {
+        throw new Error('Something went wrong! Please try after sometimes.');
+      }
+      return response.json();
+    })
+    .then(data => {
+      const responseMessage = data["response"];
+      // console.log('Response Message:', responseMessage);
+      if ("success".localeCompare(responseMessage) !== 0) {
+        throw new Error('Received unsuccessful response');
+      }
+
+      // Display success message in HTML page
+      messageElement.innerHTML = `
+          <div class="message" style="margin-bottom:2rem; color:green">
+            Your message has been sent and will be answered as soon as possible.
+          </div>`;
+      // Optionally, you can reset the form after a successful submission
+      // document.getElementById("contact-form").reset();
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      // Display error message in HTML page
+      messageElement.innerHTML = `<div class="message" style="margin-bottom:2rem; color:red">${error}</div>`;
     });
-    console.log("message sent");
   });
+
+// TODO: Input validation
+function validateInputs() {
+  
+  // Check if the input is empty, then add the 'error' class and display an error message
+  var emailInput = document.getElementById('visitorEmail');
+  if (emailInput.value.trim() === '') {
+    emailInput.placeholder = "Please enter your email id";
+    emailInput.classList.add('error-input');
+    // TODO: Fix this JS Validation.
+  }
+
+  // Email validation (basic regex)
+  var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(visitorEmail)) {
+      //alert('Please enter a valid email address');
+      return;
+  }
+}

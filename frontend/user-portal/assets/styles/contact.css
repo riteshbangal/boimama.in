@@ -60,6 +60,12 @@ textarea:focus {
   background-color: var(--foreground-primary);
 }
 
+/* Add a class for the red border */
+.error-input {
+  border: 1px solid red;
+  color: red;
+}
+
 /* style for dark theme */
 .dark-theme .contact textarea::placeholder {
   color: var(--foreground-secondary);
