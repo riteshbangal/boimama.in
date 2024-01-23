@@ -29,10 +29,10 @@ public class AuthorRequest {
     @Size(max=50, message = "'username' should not be greater than 50 characters")
     private String username;
 
-    @Schema(description = "Biography of the author", required = true, minLength = 10, maxLength = 500)
+    @Schema(description = "Biography of the author", required = true, minLength = 10, maxLength = 5000)
     @NotNull(message = "'biography' is missing in request body")
     @Size(min=10, message = "'biography' should be at least 10 character")
-    @Size(max=500, message = "'biography' should not be greater than 500 characters")
+    @Size(max=5000, message = "'biography' should not be greater than 5000 characters")
     private String biography;
 
     @Schema(description = "Number of followers of the author")
@@ -47,9 +47,7 @@ public class AuthorRequest {
     private MultipartFile authorImage;
 
     @Schema(description = "Published work(s) of the author", required = false)
-    //@NotNull(message = "Published work(s) must not be null")
-    //@NotEmpty(message = "Published work(s) must not be empty")
-    @NonEmptyStringList(message = "Published work(s) must be non-empty strings, with 2-50 characters", minLength = 2, maxLength = 50)
+    @NonEmptyStringList(message = "Published work(s) must be non-empty strings, with 2-500 characters", minLength = 2, maxLength = 500)
     private List<String> publishedWorks;
 
     @Schema(description = "Contact details of the author", required = false, minLength = 10, maxLength = 500)

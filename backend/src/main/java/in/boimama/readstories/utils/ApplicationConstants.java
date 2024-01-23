@@ -7,6 +7,9 @@ public class ApplicationConstants {
     }
 
     // Define constant fields here
+    public static final String SUCCESS_MESSAGE = "success";
+    public static final String FAILURE_MESSAGE = "failure";
+
     public static final String UNCATEGORIZED_TYPE = "Uncategorized";
 
     // List of common image file extensions

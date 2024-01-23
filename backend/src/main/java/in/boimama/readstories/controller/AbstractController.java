@@ -4,6 +4,7 @@ import in.boimama.readstories.dto.ErrorResponse;
 import in.boimama.readstories.dto.ResponseCode;
 import in.boimama.readstories.service.AuthorService;
 import in.boimama.readstories.service.StoryService;
+import in.boimama.readstories.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -14,6 +15,9 @@ public abstract class AbstractController {
 
     @Autowired
     StoryService storyService;
+
+    @Autowired
+    UserService userService;
 
     protected ErrorResponse getErrorResponse(ResponseCode responseCode) {
         return new ErrorResponse(responseCode.getResponseCode(), responseCode.getMessage());
