@@ -128,7 +128,7 @@ export async function buildStoriesHTML() {
   let storyCardElememnt = ``;
   let storyTopics = [];
 
-  storyItems.forEach((storyItem) => {
+  storyItems.forEach((storyItem, storyIndex) => {
     // console.log(storyItem);
 
     let storyCardBannerElements = document.querySelectorAll(".story-card .story-card-banner .story-banner-img, " + 
@@ -173,9 +173,12 @@ export async function buildStoriesHTML() {
     document.querySelector(".story-card .story-publish-date").innerText = utils.formatDate(storyItem.publishedDate);
     document.querySelector(".story-card .story-length").innerText = storyItem.lengthInMins + " mins";
 
-    storyCardElememnt = storyCardElememnt +
-      `<div class="story-card">` +
-      document.querySelector(".story-card").innerHTML +
+ 
+    let storyCardDiv = (storyIndex >= loadMoreStoriesCount)
+      ? `<div class="story-card" style="display:none">` : `<div class="story-card">`;
+    storyCardElememnt = storyCardElememnt + 
+      storyCardDiv +
+        document.querySelector(".story-card").innerHTML +
       `</div>`;
   });
 

@@ -617,10 +617,12 @@ header .btn-group {
 
 
 /* Start: Load More Function */
-/* TODO: Handle this hardcoded value to dynamic */
+/* 
+ * Note: Is handled in DataService.js
 .story-card-group .story-card:nth-child(2)~.story-card {
   display: none;
-}
+} 
+*/
 
 .loading {
   display: none;
