@@ -1,22 +1,25 @@
-// Load More Stories Button
-const LOAD_ITEMS_COUNT = 9;
-localStorage.setItem("currentStoryItems", LOAD_ITEMS_COUNT);
+import config from '../../configuration/config.js'; // Configurations
+import constants  from './constants.js'; // Constants
+import utils from './utils.js'; // Utility functions
 
-const LOADING_TIME_IN_MILLISECONDS = 2000;
+// Decide environment's associated configurations.
+const environment = utils.containsAny(window.location.host, constants.LOCAL_HOSTS) ? "development" : "production";
+const currentConfig = config[environment];
+// console.log("Environment: ", environment, "and API:", currentConfig.apiUrl );
+
+// Load More Stories Button
+const loadMoreStoriesCount = constants.LOAD_MORE_ITEMS_COUNT;
+localStorage.setItem("currentStoryItems", loadMoreStoriesCount);
 
 export function loadmoreStories(stories) {
   let loadmoreButton = document.querySelector(".load-more.btn");
-  let currentItems = LOAD_ITEMS_COUNT;
+  let currentItems = loadMoreStoriesCount;
 
   if (loadmoreButton) {
     loadmoreButton.addEventListener("click", (event) => {
       event.target.classList.add("show-loader");
 
-      for (
-        let index = currentItems;
-        index < currentItems + LOAD_ITEMS_COUNT;
-        index++
-      ) {
+      for (let index = currentItems; index < currentItems + loadMoreStoriesCount; index++) {
         setTimeout(function () {
           event.target.classList.remove("show-loader");
           if (stories[index]) {
@@ -25,17 +28,17 @@ export function loadmoreStories(stories) {
               stories[index].style.display = "block";
             }
           }
-        }, LOADING_TIME_IN_MILLISECONDS);
+        }, constants.LOADING_TIME_IN_MILLISECONDS);
       }
 
-      currentItems += LOAD_ITEMS_COUNT;
+      currentItems += loadMoreStoriesCount;
 
       // Hide load button after fully load.
       if (currentItems >= stories.length) {
         setTimeout(function () {
           // console.log("going to disable load-more button");
           event.target.classList.add("loaded");
-        }, LOADING_TIME_IN_MILLISECONDS);
+        }, constants.LOADING_TIME_IN_MILLISECONDS);
       }
 
       localStorage.setItem("currentStoryItems", currentItems);
@@ -44,10 +47,7 @@ export function loadmoreStories(stories) {
 }
 
 // Start: Backend API call, fetch data and load HTML content for stories
-// import { TIMEOUT_SEC } from "./config";
-const TIMEOUT_SEC = 30;
-const API_BASE_URL = "http://localhost:8080/api";
-// const API_BASE_URL = "https://api-gw.boimama.in";
+const API_BASE_URL = currentConfig.apiUrl;
 
 const mainContainerAsideElement = document.querySelector(".main .container .aside");
 const mainContainerAsideHtml = mainContainerAsideElement ? mainContainerAsideElement.innerHTML : null;
@@ -134,7 +134,8 @@ export async function buildStoriesHTML() {
     let storyCardBannerElements = document.querySelectorAll(".story-card .story-card-banner .story-banner-img, " + 
                                                             ".story-card .story-card-banner-mobile .story-banner-img");
     storyCardBannerElements.forEach(storyCardBannerElement => {
-      storyCardBannerElement.src = storyItem.imagePath;
+      // storyCardBannerElement.src = API_BASE_URL + storyItem.imagePath; // TODO: Fix database entries and use this line, and delete below line.
+      storyCardBannerElement.src = storyItem.imagePath.includes("http") ? storyItem.imagePath : API_BASE_URL + storyItem.imagePath; // Workaround!
       storyCardBannerElement.alt = storyItem.title;
     });
  
@@ -169,7 +170,7 @@ export async function buildStoriesHTML() {
     authorNameElement.href = window.location.href.includes("/pages") ? "./coming-soon.html#coming-soon" : "./pages/coming-soon.html#coming-soon";
     authorNameElement.innerText = storyItem.authorNames[0];
 
-    document.querySelector(".story-card .story-publish-date").innerText = formatDate(storyItem.publishedDate);
+    document.querySelector(".story-card .story-publish-date").innerText = utils.formatDate(storyItem.publishedDate);
     document.querySelector(".story-card .story-length").innerText = storyItem.lengthInMins + " mins";
 
     storyCardElememnt = storyCardElememnt +
@@ -183,7 +184,6 @@ export async function buildStoriesHTML() {
   const stories = [...document.querySelectorAll(".story-card")];
   loadmoreStories(stories);
 
-
   // Prepare Story topics for the side panels
   const ionIcons = [ // TODO: select as per relevancy 
     'alarm', 'at', 'basketball', 'beer', 'bicycle', 'book', 'brush', 'cafe', 'camera', 'car',
@@ -191,7 +191,7 @@ export async function buildStoriesHTML() {
   ]; // Array of possible ion-icon names
 
   let storyTopicsHtml = ``;
-  findTopOccurringElements(storyTopics, 4).forEach(storyTopic => {
+  utils.findTopOccurringElements(storyTopics, 4).forEach(storyTopic => {
     storyTopicsHtml = storyTopicsHtml + `
         <a href="./pages/stories.html?category=${storyTopic}" class="topic-btn">
           <div class="icon-box">
@@ -207,7 +207,7 @@ export async function buildStoriesHTML() {
 
   // Prepare Story tags for the side panels
   let storyTagsHtml = ``;
-  findTopOccurringElements(storyTopics).forEach(storyTopic => {
+  utils.findTopOccurringElements(storyTopics).forEach(storyTopic => {
     storyTagsHtml = storyTagsHtml + `
         <a href="./pages/stories.html?tag=${storyTopic}"><button class="hashtag">#${storyTopic}</button></a>`;
   });
@@ -247,7 +247,7 @@ export async function buildStoryHTML() {
   authorNameMobileElement.innerText = storyItem.authorNames[0];
 
   document.querySelector(".story-panel .mobile-story-metadata .story-publish-date")
-    .innerText = formatDate(storyItem.publishedDate);
+    .innerText = utils.formatDate(storyItem.publishedDate);
   document.querySelector(".story-panel .mobile-story-metadata .story-length")
     .innerText = storyItem.lengthInMins + " mins";
 
@@ -273,7 +273,7 @@ export async function buildStoryHTML() {
   document.querySelector(".story-panel .story-content").innerHTML = stringWithHtmlLineBreak;
 
   document.querySelector(".aside .story-metadata .story-publish-date")
-    .innerText = formatDate(storyItem.publishedDate);
+    .innerText = utils.formatDate(storyItem.publishedDate);
   document.querySelector(".aside .story-metadata .story-length")
     .innerText = storyItem.lengthInMins + " mins";
 
@@ -287,18 +287,10 @@ export async function buildStoryHTML() {
 }
 // End: Backend API call, fetch data and load HTML content for a single story
 
-// Common functions
-const timeout = function (s) {
-  return new Promise(function (_, reject) {
-    setTimeout(function () {
-      reject(new Error(`Request took too long! Timeout after ${s} second`));
-    }, s * 1000);
-  });
-};
-
+// Common asynchronous functions
 const fetchData = async function (url) {
   try {
-    const response = await Promise.race([fetch(url), timeout(TIMEOUT_SEC)]);
+    const response = await Promise.race([fetch(url), utils.timeout(constants.TIMEOUT_SEC)]);
     response.add;
     if (!response.ok) {
       throw new Error("${response.statusText} (${response.status})");
@@ -309,49 +301,3 @@ const fetchData = async function (url) {
     throw error;
   }
 };
-
-function formatDate(inputDate) {
-  const dateObject = new Date(inputDate);
-
-  const months = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ];
-
-  const year = dateObject.getFullYear();
-  const month = months[dateObject.getMonth()];
-  const day = dateObject.getDate();
-
-  return `${month} ${day}, ${year}`;
-}
-
-function findTopOccurringElements(arr, topCount) {
-  let elementCount = {};
-
-  // Count occurrences of each element
-  arr.forEach(element => {
-    elementCount[element] = (elementCount[element] || 0) + 1;
-  });
-
-  // Convert the element count object to an array of [element, count] pairs
-  let countArray = Object.entries(elementCount);
-
-  // Sort the array based on the count in descending order
-  countArray.sort((a, b) => b[1] - a[1]);
-
-  // Extract the top elements
-  let topElements = countArray.slice(0, topCount);
-
-  // Return only the elements (discard the counts)
-  return topElements.map(pair => pair[0]);
-}

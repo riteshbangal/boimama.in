@@ -1,5 +1,10 @@
+import config from '../../configuration/config.js'; // Configurations
+import constants  from './constants.js'; // Constants
+import utils from './utils.js'; // Utility functions
 
-
+// Decide environment's associated configurations.
+const environment = utils.containsAny(window.location.host, constants.LOCAL_HOSTS) ? "development" : "production";
+const currentConfig = config[environment];
 
 document
   .querySelector(".contact-form")
@@ -26,7 +31,7 @@ document
     };
 
     // Make a POST request using the Fetch API
-    fetch('http://localhost:8080/api/user/contact', {
+    fetch(currentConfig.apiUrl + '/user/contact', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

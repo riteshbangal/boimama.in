@@ -1,5 +1,6 @@
 "use strict";
 
+// main js file or entry point of the application
 import { loadmoreStories, renderLoadingScreen, buildStoriesHTML } from './DataService.js'
 
 // Set theme

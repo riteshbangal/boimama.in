@@ -617,7 +617,8 @@ header .btn-group {
 
 
 /* Start: Load More Function */
-.story-card-group .story-card:nth-child(3)~.story-card {
+/* TODO: Handle this hardcoded value to dynamic */
+.story-card-group .story-card:nth-child(2)~.story-card {
   display: none;
 }
 
