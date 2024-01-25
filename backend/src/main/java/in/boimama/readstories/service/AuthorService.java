@@ -42,9 +42,7 @@ public class AuthorService {
     @Autowired(required = true)
     private ModelMapperHelper modelMapperHelper;
 
-    public AuthorResponse addAuthor(final AuthorRequest pRequest,
-                                  final String pServerPath,
-                                  final String pContextPath) throws ApplicationServerException {
+    public AuthorResponse addAuthor(final AuthorRequest pRequest) throws ApplicationServerException {
 
         if (authorRepository.isAuthorAlreadyExists(pRequest.getUsername())) {
             logger.error("Author with same username ({}) already exists", pRequest.getUsername());
@@ -62,7 +60,7 @@ public class AuthorService {
         author.setPublishedWorks(pRequest.getPublishedWorks());
         author.setContactDetails(pRequest.getContactDetails());
         author.setJoiningDate(pRequest.getJoiningDate() == null ? LocalDate.now() : pRequest.getJoiningDate());
-        author.setImagePath(pServerPath + pContextPath + "/author/" + authorId + "/image");
+        author.setImagePath("/author/" + authorId + "/image");
 
         // Store image into Database
         author.setImage(getFileBytes(pRequest.getAuthorImage()));

@@ -45,9 +45,7 @@ public class StoryService {
     @Autowired(required = true)
     private ModelMapperHelper modelMapperHelper;
 
-    public StoryResponse addStory(final StoryRequest pRequest,
-                                  final String pServerPath,
-                                  final String pContextPath) throws ApplicationServerException {
+    public StoryResponse addStory(final StoryRequest pRequest) throws ApplicationServerException {
 
         if (storyRepository.isStoryWithSameAuthorsAlreadyExists(pRequest.getTitle(),
                 pRequest.getAuthorIds().stream().map(UUID::fromString).toList())) {
@@ -69,7 +67,7 @@ public class StoryService {
         story.setCategory(isEmpty(pRequest.getCategory()) ? UNCATEGORIZED_TYPE : pRequest.getCategory());
         story.setPublishedDate(LocalDate.now());
         story.setContent(pRequest.getContent());
-        story.setImagePath(pServerPath + pContextPath + "/story/" + storyId + "/image");
+        story.setImagePath("/story/" + storyId + "/image");
 
         // Store image into Database
         story.setImage(getFileBytes(pRequest.getStoryImage()));

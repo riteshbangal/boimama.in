@@ -6,7 +6,6 @@ import in.boimama.readstories.dto.Response;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.hibernate.validator.constraints.UUID;
 import org.slf4j.Logger;
@@ -53,9 +52,8 @@ public class AuthorController extends AbstractController {
 
     @PostMapping(path = "/add", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE  }, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<Response> addAuthor(@Valid @ModelAttribute("authorRequest") AuthorRequest pAuthorRequest, HttpServletRequest pHttpRequest) {
-        final AuthorResponse response = authorService.addAuthor(pAuthorRequest,
-                getServerPath(pHttpRequest), getContextPath(pHttpRequest));
+    public ResponseEntity<Response> addAuthor(@Valid @ModelAttribute("authorRequest") AuthorRequest pAuthorRequest) {
+        final AuthorResponse response = authorService.addAuthor(pAuthorRequest);
         if (response == null) {
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(getErrorResponse(AUTHOR_NOT_ADDED));
         }
