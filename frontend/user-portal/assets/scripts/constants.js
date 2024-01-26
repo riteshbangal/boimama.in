@@ -4,6 +4,10 @@ const constants = {
     TIMEOUT_SEC: 30,
     LOADING_TIME_IN_MILLISECONDS: 2000,
     LOAD_MORE_ITEMS_COUNT: 5,
+    ionIcons: [ // Array of possible ion-icon names // TODO: select as per relevancy 
+        'alarm', 'at', 'basketball', 'beer', 'bicycle', 'book', 'brush', 'cafe', 'camera', 'car',
+        'cloud', 'desktop', 'flash', 'football', 'globe', 'hammer', 'heart', 'home', 'ice-cream', 'key'
+    ],
 };
 
 export default constants;

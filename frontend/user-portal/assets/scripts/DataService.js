@@ -188,17 +188,12 @@ export async function buildStoriesHTML() {
   loadmoreStories(stories);
 
   // Prepare Story topics for the side panels
-  const ionIcons = [ // TODO: select as per relevancy 
-    'alarm', 'at', 'basketball', 'beer', 'bicycle', 'book', 'brush', 'cafe', 'camera', 'car',
-    'cloud', 'desktop', 'flash', 'football', 'globe', 'hammer', 'heart', 'home', 'ice-cream', 'key'
-  ]; // Array of possible ion-icon names
-
   let storyTopicsHtml = ``;
   utils.findTopOccurringElements(storyTopics, 4).forEach(storyTopic => {
     storyTopicsHtml = storyTopicsHtml + `
         <a href="./pages/stories.html?category=${storyTopic}" class="topic-btn">
           <div class="icon-box">
-            <ion-icon name="${ionIcons[Math.floor(Math.random() * ionIcons.length)]}"></ion-icon>
+            <ion-icon name="${constants.ionIcons[Math.floor(Math.random() * constants.ionIcons.length)]}"></ion-icon>
           </div>
           <p>${storyTopic}</p>
         </a>`;
