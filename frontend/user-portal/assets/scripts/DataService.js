@@ -288,7 +288,14 @@ export async function buildStoryHTML() {
 // Common asynchronous functions
 const fetchData = async function (url) {
   try {
-    const response = await Promise.race([fetch(url), utils.timeout(constants.TIMEOUT_SEC)]);
+    // console.log("URL: ", url);
+    const response = await Promise.race([
+      fetch(url, {
+        headers: {
+          'Content-Type': 'application/json',
+          // TODO: Conditional! Also, add other headers as needed
+        },
+      }), utils.timeout(constants.TIMEOUT_SEC)]);
     response.add;
     if (!response.ok) {
       throw new Error("${response.statusText} (${response.status})");
