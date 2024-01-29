@@ -16,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -34,7 +33,7 @@ import static in.boimama.readstories.dto.ResponseCode.STORY_NOT_FOUND;
 import static in.boimama.readstories.dto.ResponseCode.STORY_NOT_UPDATED;
 
 @RestController
-@CrossOrigin(origins = "http://127.0.0.1:5500") // TODO: Temporary Change
+//@CrossOrigin(origins = "http://127.0.0.1:5500") // TODO: Temporary Change
 @RequestMapping("/story")
 @Validated // Enable validation for this controller
 public class StoryController extends AbstractController {
@@ -116,12 +115,15 @@ public class StoryController extends AbstractController {
 
         byte[] storyImage = storyService.getStoryImage(storyId);
         if (storyImage != null) { // If image not retrieved through S3 Bucket, try to fetch it from Database.
+            headers.setContentType(MediaType.APPLICATION_JSON); // Set the appropriate content type
             return new ResponseEntity<>(storyImage, headers, HttpStatus.OK);
         }
 
         final StoryResponse response = storyService.getStory(storyId);
         if (response == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(getErrorResponse(STORY_NOT_FOUND));
+            headers.setContentType(MediaType.APPLICATION_JSON); // Set the appropriate content type
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .headers(headers).body(getErrorResponse(STORY_NOT_FOUND));
         }
         storyImage = response.getImage();
         return new ResponseEntity<>(storyImage, headers, HttpStatus.OK);

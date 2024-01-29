@@ -105,12 +105,15 @@ public class AuthorController extends AbstractController {
 
         byte[] authorImage = authorService.getAuthorImage(authorId);
         if (authorImage != null) { // If image not retrieved through S3 Bucket, try to fetch it from Database.
+            headers.setContentType(MediaType.APPLICATION_JSON); // Set the appropriate content type
             return new ResponseEntity<>(authorImage, headers, HttpStatus.OK);
         }
 
         final AuthorResponse response = authorService.getAuthor(authorId);
         if (response == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(getErrorResponse(AUTHOR_NOT_FOUND));
+            headers.setContentType(MediaType.APPLICATION_JSON); // Set the appropriate content type
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .headers(headers).body(getErrorResponse(AUTHOR_NOT_FOUND));
         }
         authorImage = response.getImage();
         return new ResponseEntity<>(authorImage, headers, HttpStatus.OK);

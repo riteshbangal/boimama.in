@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,7 +22,7 @@ import static in.boimama.readstories.utils.ApplicationConstants.FAILURE_MESSAGE;
 import static in.boimama.readstories.utils.ApplicationUtils.isEmpty;
 
 @RestController
-@CrossOrigin(origins = "http://127.0.0.1:5500") // TODO: Temporary Change
+//@CrossOrigin(origins = "http://127.0.0.1:5500") // TODO: Temporary Change
 @RequestMapping("/user")
 @Validated // Enable validation for this controller
 public class UserController extends AbstractController {
