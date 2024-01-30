@@ -15,15 +15,15 @@ paths:
         schema:
           type: "string"
       x-amazon-apigateway-integration:
+        type: "http_proxy"
         httpMethod: "GET"
-        uri: "https://boimama-app-demo.onrender.com/api/author/{id}/image"
+        uri: "https://boimama-app.onrender.com/api/author/{id}/image"
         responses:
           default:
             statusCode: "200"
         requestParameters:
           integration.request.path.id: "method.request.path.id"
         passthroughBehavior: "when_no_match"
-        type: "http_proxy"
     options:
       parameters:
       - name: "id"
@@ -46,17 +46,17 @@ paths:
                 type: "string"
           content: {}
       x-amazon-apigateway-integration:
+        type: "mock"
         responses:
           default:
             statusCode: "200"
             responseParameters:
               method.response.header.Access-Control-Allow-Methods: "'GET,OPTIONS'"
               method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
-              method.response.header.Access-Control-Allow-Origin: "'http://127.0.0.1:5500'"
+              method.response.header.Access-Control-Allow-Origin: "'https://boimama.in'"
         requestTemplates:
           application/json: "{\"statusCode\": 200}"
         passthroughBehavior: "when_no_match"
-        type: "mock"
   /author/{id}:
     get:
       parameters:
@@ -74,17 +74,17 @@ paths:
                 type: "string"
           content: {}
       x-amazon-apigateway-integration:
+        type: "http"
         httpMethod: "GET"
-        uri: "https://boimama-app-demo.onrender.com/api/author/{id}"
+        uri: "https://boimama-app.onrender.com/api/author/{id}"
         responses:
           default:
             statusCode: "200"
             responseParameters:
-              method.response.header.Access-Control-Allow-Origin: "'http://127.0.0.1:5500'"
+              method.response.header.Access-Control-Allow-Origin: "'https://boimama.in'"
         requestParameters:
           integration.request.path.id: "method.request.path.id"
         passthroughBehavior: "when_no_match"
-        type: "http"
     options:
       parameters:
       - name: "id"
@@ -107,17 +107,17 @@ paths:
                 type: "string"
           content: {}
       x-amazon-apigateway-integration:
+        type: "mock"
         responses:
           default:
             statusCode: "200"
             responseParameters:
               method.response.header.Access-Control-Allow-Methods: "'GET,OPTIONS'"
               method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
-              method.response.header.Access-Control-Allow-Origin: "'http://127.0.0.1:5500'"
+              method.response.header.Access-Control-Allow-Origin: "'https://boimama.in'"
         requestTemplates:
           application/json: "{\"statusCode\": 200}"
         passthroughBehavior: "when_no_match"
-        type: "mock"
   /health:
     get:
       responses:
@@ -128,13 +128,60 @@ paths:
               schema:
                 $ref: "#/components/schemas/Empty"
       x-amazon-apigateway-integration:
+        type: "http"
         httpMethod: "GET"
-        uri: "https://boimama-app-demo.onrender.com/api/story/health"
+        uri: "https://boimama-app.onrender.com/api/story/health"
         responses:
           default:
             statusCode: "200"
         passthroughBehavior: "when_no_match"
+  /user/contact:
+    post:
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content: {}
+      x-amazon-apigateway-integration:
         type: "http"
+        httpMethod: "POST"
+        uri: "https://boimama-app.onrender.com/api/user/contact"
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'https://boimama.in'"
+        passthroughBehavior: "when_no_match"
+    options:
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+            Access-Control-Allow-Methods:
+              schema:
+                type: "string"
+            Access-Control-Allow-Headers:
+              schema:
+                type: "string"
+          content: {}
+      x-amazon-apigateway-integration:
+        type: "mock"
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Methods: "'OPTIONS,POST'"
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+              method.response.header.Access-Control-Allow-Origin: "'https://boimama.in'"
+        requestTemplates:
+          application/json: "{\"statusCode\": 200}"
+        passthroughBehavior: "when_no_match"
   /story/{id}:
     get:
       parameters:
@@ -152,17 +199,17 @@ paths:
                 type: "string"
           content: {}
       x-amazon-apigateway-integration:
+        type: "http"
         httpMethod: "GET"
-        uri: "https://boimama-app-demo.onrender.com/api/story/{id}"
+        uri: "https://boimama-app.onrender.com/api/story/{id}"
         responses:
           default:
             statusCode: "200"
             responseParameters:
-              method.response.header.Access-Control-Allow-Origin: "'http://127.0.0.1:5500'"
+              method.response.header.Access-Control-Allow-Origin: "'https://boimama.in'"
         requestParameters:
           integration.request.path.id: "method.request.path.id"
         passthroughBehavior: "when_no_match"
-        type: "http"
     options:
       parameters:
       - name: "id"
@@ -185,17 +232,17 @@ paths:
                 type: "string"
           content: {}
       x-amazon-apigateway-integration:
+        type: "mock"
         responses:
           default:
             statusCode: "200"
             responseParameters:
               method.response.header.Access-Control-Allow-Methods: "'GET,OPTIONS'"
               method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
-              method.response.header.Access-Control-Allow-Origin: "'http://127.0.0.1:5500'"
+              method.response.header.Access-Control-Allow-Origin: "'https://boimama.in'"
         requestTemplates:
           application/json: "{\"statusCode\": 200}"
         passthroughBehavior: "when_no_match"
-        type: "mock"
   /story/{id}/image:
     get:
       parameters:
@@ -205,15 +252,15 @@ paths:
         schema:
           type: "string"
       x-amazon-apigateway-integration:
+        type: "http_proxy"
         httpMethod: "GET"
-        uri: "https://boimama-app-demo.onrender.com/api/story/{id}/image"
+        uri: "https://boimama-app.onrender.com/api/story/{id}/image"
         responses:
           default:
             statusCode: "200"
         requestParameters:
           integration.request.path.id: "method.request.path.id"
         passthroughBehavior: "when_no_match"
-        type: "http_proxy"
     options:
       parameters:
       - name: "id"
@@ -236,29 +283,29 @@ paths:
                 type: "string"
           content: {}
       x-amazon-apigateway-integration:
+        type: "mock"
         responses:
           default:
             statusCode: "200"
             responseParameters:
               method.response.header.Access-Control-Allow-Methods: "'GET,OPTIONS'"
               method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
-              method.response.header.Access-Control-Allow-Origin: "'http://127.0.0.1:5500'"
+              method.response.header.Access-Control-Allow-Origin: "'https://boimama.in'"
         requestTemplates:
           application/json: "{\"statusCode\": 200}"
         passthroughBehavior: "when_no_match"
-        type: "mock"
 components:
   schemas:
     Empty:
       type: "object"
 x-amazon-apigateway-gateway-responses:
-  DEFAULT_5XX:
-    responseParameters:
-      gatewayresponse.header.Access-Control-Allow-Methods: "'GET,OPTIONS'"
-      gatewayresponse.header.Access-Control-Allow-Origin: "'http://127.0.0.1:5500'"
-      gatewayresponse.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
   DEFAULT_4XX:
     responseParameters:
-      gatewayresponse.header.Access-Control-Allow-Methods: "'GET,OPTIONS'"
-      gatewayresponse.header.Access-Control-Allow-Origin: "'http://127.0.0.1:5500'"
+      gatewayresponse.header.Access-Control-Allow-Methods: "'OPTIONS,POST'"
+      gatewayresponse.header.Access-Control-Allow-Origin: "'https://boimama.in'"
+      gatewayresponse.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+  DEFAULT_5XX:
+    responseParameters:
+      gatewayresponse.header.Access-Control-Allow-Methods: "'OPTIONS,POST'"
+      gatewayresponse.header.Access-Control-Allow-Origin: "'https://boimama.in'"
       gatewayresponse.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
