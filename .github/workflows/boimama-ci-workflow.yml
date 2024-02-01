@@ -52,7 +52,7 @@ jobs:
     - name: Set up AWS CLI
       uses: aws-actions/configure-aws-credentials@v2
       with:
-        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }} # TODO: Restrict more! Create Role for github-actions-user and use Role in Principal.
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: eu-central-1
 
@@ -61,3 +61,39 @@ jobs:
         cd frontend/user-portal
         chmod +x upload.sh  # Make the script executable
         ./upload.sh
+  
+  deploy-api-gateway:
+    runs-on: ubuntu-latest
+    if: false  # This job will never run. Fix the below issue and try!
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Set up AWS CLI
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: eu-central-1
+
+    - name: Encode API Gateway Configuration
+      run: |
+        ENCODED_FILE=$(base64 < api-gateway/boimama-api-development-0.0.1-SNAPSHOT.yaml | tr -d '\n')
+        echo "::set-output name=ENCODED_FILE::$ENCODED_FILE"
+      id: encode
+    
+    # This is failing due to OpenAPI 3.0 format. 
+    # TODO: Validate and fix it through https://editor.swagger.io or https://editor-next.swagger.io
+    - name: Import OpenAPI Specification
+      run: |
+        aws apigateway import-rest-api \
+          --fail-on-warnings \
+          --body file://api-gateway/boimama-api-development-0.0.1-SNAPSHOT.yaml
+          # --body "$(echo ${{ steps.encode.outputs.ENCODED_FILE }} | base64 --decode)"
+        
+    - name: Deploy API Gateway
+      run: |
+        aws apigateway create-deployment \
+          --rest-api-id fl4jogavq9 \
+          --stage-name development
