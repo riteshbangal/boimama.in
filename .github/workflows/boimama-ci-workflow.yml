@@ -39,6 +39,7 @@ jobs:
       run: |
         docker build -t $IMAGE_NAME:$IMAGE_TAG -f backend/Dockerfile backend
         echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
+        docker tag $IMAGE_NAME:$IMAGE_TAG 314201/$IMAGE_NAME:$IMAGE_TAG
         docker push 314201/$IMAGE_NAME:$IMAGE_TAG 
 
   frontend-build:
