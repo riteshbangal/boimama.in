@@ -19,6 +19,7 @@
         <java.version>17</java.version>
         <aws.s3.version>2.22.9</aws.s3.version>
         <springdoc-openapi.version>2.1.0</springdoc-openapi.version>
+        <org.jacoco.version>0.8.8</org.jacoco.version>
     </properties>
 
     <dependencies>
@@ -80,6 +81,28 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+
+            <!-- Add JaCoCo Maven Plugin -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${org.jacoco.version}</version> <!-- Use the latest version -->
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 

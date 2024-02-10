@@ -24,14 +24,27 @@ jobs:
     # It performs additional verification steps, all in non-interactive mode. 
     # This is a common command used in continuous integration (CI) pipelines to ensure a clean build and verify the quality of the code.
     - name: Build with Maven
+      if: false # This step will be skipped. 
       run: |
         cd backend 
         mvn -B clean verify
       
     - name: Run Unit Tests
+      if: false # This step will be skipped.
       run: |
         cd backend
         mvn test
+       
+    - name: Build with Maven and JaCoCo
+      run: |
+        cd backend  
+        mvn clean verify -P jacoco
+
+    - name: Publish JaCoCo coverage report # TODO: Choose better solution
+      uses: actions/upload-artifact@v2
+      with:
+        name: jacoco-report
+        path: backend/target/site/jacoco
   
     - name: Build Backend (Springboot Application)
       run: |
