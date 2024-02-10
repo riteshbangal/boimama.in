@@ -21,11 +21,23 @@ jobs:
         distribution: 'adopt'
         java-version: '17'
 
+    # It performs additional verification steps, all in non-interactive mode. 
+    # This is a common command used in continuous integration (CI) pipelines to ensure a clean build and verify the quality of the code.
+    - name: Build with Maven
+      run: |
+        cd backend 
+        mvn -B clean verify
+      
+    - name: Run Unit Tests
+      run: |
+        cd backend
+        mvn test
+  
     - name: Build Backend (Springboot Application)
       run: |
         cd backend  
-        # mvn clean install
-        mvn package -DskipTests # Skip Unit Tests
+        # mvn clean install -DskipTests
+        mvn clean package -DskipTests # Skip Unit Tests
 
     - name: Setup Docker
       uses: docker/setup-buildx-action@v1

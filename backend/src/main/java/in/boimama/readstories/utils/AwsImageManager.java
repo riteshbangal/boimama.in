@@ -38,8 +38,8 @@ public class AwsImageManager {
 
     public String uploadImage(String imageDirectory, String imageName, MultipartFile imageFile) throws ApplicationServerException {
         if (!passAwsCredentials) {
-            logger.info("Skipping image uploaded into S3 Bucket!");
-            return "Skipping image uploaded into S3 Bucket!";
+            logger.info("Skipping image upload into S3 Bucket!");
+            return "Skipping image upload into S3 Bucket!";
         }
 
         File localFile;
