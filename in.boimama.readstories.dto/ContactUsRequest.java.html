@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ContactUsRequest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">boimama-app</a> &gt; <a href="index.source.html" class="el_package">in.boimama.readstories.dto</a> &gt; <span class="el_source">ContactUsRequest.java</span></div><h1>ContactUsRequest.java</h1><pre class="source lang-java linenums">package in.boimama.readstories.dto;
+
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.RequestScope;
+
+@Component
+@RequestScope
+<span class="nc" id="L12">public class ContactUsRequest {</span>
+
+    @Schema(description = &quot;Name of the user&quot;, minLength = 5, maxLength = 50)
+    @NotNull(message = &quot;'name' is missing in request body&quot;)
+    @Size(min=5, message = &quot;'name' should be at least 5 character&quot;)
+    @Size(max=50, message = &quot;'name' should not be greater than 50 characters&quot;)
+    private String name;
+
+    @Schema(description = &quot;Email Id of the user&quot;)
+    @NotNull(message = &quot;'email' is missing in request body&quot;)
+    @Email
+    private String email;
+
+    @Schema(description = &quot;Phone number of the user&quot;)
+    @NotNull(message = &quot;'phone' is missing in request body&quot;)
+    private String phone;
+
+    @Schema(description = &quot;message of the author in the contact-us form&quot;, minLength = 5, maxLength = 1000)
+    @NotNull(message = &quot;'message' is missing in request body&quot;)
+    @Size(min=5, message = &quot;'message' should be at least 4 character&quot;)
+    @Size(max=1000, message = &quot;'message' should not be greater than 1000 characters&quot;)
+    private String message;
+
+    public String getName() {
+<span class="nc" id="L36">        return name;</span>
+    }
+
+    public void setName(String name) {
+<span class="nc" id="L40">        this.name = name;</span>
+<span class="nc" id="L41">    }</span>
+
+    public String getEmail() {
+<span class="nc" id="L44">        return email;</span>
+    }
+
+    public void setEmail(String email) {
+<span class="nc" id="L48">        this.email = email;</span>
+<span class="nc" id="L49">    }</span>
+
+    public String getPhone() {
+<span class="nc" id="L52">        return phone;</span>
+    }
+
+    public void setPhone(String phone) {
+<span class="nc" id="L56">        this.phone = phone;</span>
+<span class="nc" id="L57">    }</span>
+
+    public String getMessage() {
+<span class="nc" id="L60">        return message;</span>
+    }
+
+    public void setMessage(String message) {
+<span class="nc" id="L64">        this.message = message;</span>
+<span class="nc" id="L65">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L69">        return &quot;ContactUsRequest{&quot; +</span>
+                &quot;name='&quot; + name + '\'' +
+                &quot;, email='&quot; + email + '\'' +
+                &quot;, phone=&quot; + phone +
+                &quot;, message='&quot; + message + '\'' +
+                '}';
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

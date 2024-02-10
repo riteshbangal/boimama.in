@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>StoryController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">boimama-app</a> &gt; <a href="index.source.html" class="el_package">in.boimama.readstories.controller</a> &gt; <span class="el_source">StoryController.java</span></div><h1>StoryController.java</h1><pre class="source lang-java linenums">package in.boimama.readstories.controller;
+
+import in.boimama.readstories.dto.Response;
+import in.boimama.readstories.dto.StoryRequest;
+import in.boimama.readstories.dto.StoryResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import org.hibernate.validator.constraints.UUID;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
+import static in.boimama.readstories.dto.ResponseCode.GENERIC_APPLICATION_ERROR;
+import static in.boimama.readstories.dto.ResponseCode.STORY_NOT_ADDED;
+import static in.boimama.readstories.dto.ResponseCode.STORY_NOT_FOUND;
+import static in.boimama.readstories.dto.ResponseCode.STORY_NOT_UPDATED;
+
+@RestController
+//@CrossOrigin(origins = &quot;http://127.0.0.1:5500&quot;) // TODO: Temporary Change
+@RequestMapping(&quot;/story&quot;)
+@Validated // Enable validation for this controller
+<span class="nc" id="L39">public class StoryController extends AbstractController {</span>
+
+<span class="nc" id="L41">    private static final Logger logger = LoggerFactory.getLogger(StoryController.class);</span>
+
+    @Operation(description = &quot;Health check API&quot;)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = &quot;200&quot;, description = &quot;Healthy&quot;),
+            @ApiResponse(responseCode = &quot;500&quot;, description = &quot;Internal server error&quot;),
+            @ApiResponse(responseCode = &quot;503&quot;, description = &quot;Unhealthy&quot;)
+    })
+    @GetMapping(value = &quot;/health&quot;)
+    public String healthCheck() {
+<span class="nc" id="L51">        return &quot;Healthy&quot;;</span>
+    }
+
+    @PostMapping(path = &quot;/add&quot;, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE  }, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity&lt;Response&gt; addStory(@Valid @ModelAttribute(&quot;storyRequest&quot;) StoryRequest pStoryRequest) {
+<span class="nc" id="L57">        final StoryResponse response = storyService.addStory(pStoryRequest);</span>
+<span class="nc bnc" id="L58" title="All 2 branches missed.">        if (response == null) {</span>
+<span class="nc" id="L59">            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(getErrorResponse(STORY_NOT_ADDED));</span>
+        }
+<span class="nc" id="L61">        return ResponseEntity.status(HttpStatus.CREATED).body(response);</span>
+    }
+
+    @GetMapping(value = &quot;/{id}&quot;)
+    @ResponseBody
+    public ResponseEntity&lt;Response&gt; getStory(@UUID(message = &quot;Story id must be a valid UUID&quot;) @PathVariable(name = &quot;id&quot;) String storyId) {
+<span class="nc" id="L67">        final StoryResponse response = storyService.getStory(storyId);</span>
+<span class="nc bnc" id="L68" title="All 2 branches missed.">        if (response == null) {</span>
+<span class="nc" id="L69">            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(getErrorResponse(STORY_NOT_FOUND));</span>
+        }
+<span class="nc" id="L71">        return ResponseEntity.ok(response);</span>
+    }
+
+    @GetMapping(value = &quot;/all&quot;)
+    @ResponseBody
+    public ResponseEntity&lt;?&gt; getAllStories() {
+<span class="nc" id="L77">        return ResponseEntity.ok(storyService.getAllStories());</span>
+    }
+
+    @GetMapping(value = &quot;/search&quot;)
+    @ResponseBody
+    public ResponseEntity&lt;?&gt; getStories(@NotEmpty(message = &quot;Search input must be a valid&quot;) @RequestParam(name = &quot;searchText&quot;) String searchText,
+                                        @RequestParam(name = &quot;categorySearch&quot;, required = false) boolean isCategorySearch) {
+<span class="nc bnc" id="L84" title="All 2 branches missed.">        if (isCategorySearch)</span>
+<span class="nc" id="L85">            return ResponseEntity.ok(storyService.searchStoriesByCategory(searchText));</span>
+<span class="nc" id="L86">        return ResponseEntity.ok(storyService.searchStories(searchText));</span>
+    }
+
+    @DeleteMapping(value = &quot;/{id}&quot;)
+    @ResponseBody
+    public ResponseEntity&lt;Response&gt; deleteStory(@UUID(message = &quot;Story id must be a valid UUID&quot;) @PathVariable(name = &quot;id&quot;) String storyId) {
+        /**
+         * Check if the story is present against the id,
+         * And if presents, then do delete operation. Else, return 404.
+         */
+<span class="nc" id="L96">        final StoryResponse storyResponse = storyService.getStory(storyId);</span>
+<span class="nc bnc" id="L97" title="All 2 branches missed.">        if (storyResponse == null) {</span>
+<span class="nc" id="L98">            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(getErrorResponse(STORY_NOT_FOUND));</span>
+        }
+
+<span class="nc bnc" id="L101" title="All 2 branches missed.">        if (storyService.deleteStory(storyId)) {</span>
+<span class="nc" id="L102">            return ResponseEntity.status(HttpStatus.ACCEPTED).body(storyResponse);</span>
+        }
+<span class="nc" id="L104">        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(getErrorResponse(GENERIC_APPLICATION_ERROR));</span>
+    }
+
+    @GetMapping(path = &quot;/{id}/image&quot;, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @ResponseBody
+    public ResponseEntity&lt;?&gt; getStoryCoverImage(@UUID(message = &quot;Story id must be a valid UUID&quot;) @PathVariable(name = &quot;id&quot;) String storyId) {
+
+        // Create HttpHeaders and set Content-Type, Content-Disposition headers
+<span class="nc" id="L112">        final HttpHeaders headers = new HttpHeaders();</span>
+<span class="nc" id="L113">        headers.setContentType(MediaType.IMAGE_JPEG); // Set the appropriate content type</span>
+        // headers.setContentDispositionFormData(&quot;attachment&quot;, storyId + &quot;.jpg&quot;); // Specify filename for download
+
+<span class="nc" id="L116">        byte[] storyImage = storyService.getStoryImage(storyId);</span>
+<span class="nc bnc" id="L117" title="All 2 branches missed.">        if (storyImage != null) { // If image not retrieved through S3 Bucket, try to fetch it from Database.</span>
+<span class="nc" id="L118">            headers.setContentType(MediaType.APPLICATION_JSON); // Set the appropriate content type</span>
+<span class="nc" id="L119">            return new ResponseEntity&lt;&gt;(storyImage, headers, HttpStatus.OK);</span>
+        }
+
+<span class="nc" id="L122">        final StoryResponse response = storyService.getStory(storyId);</span>
+<span class="nc bnc" id="L123" title="All 2 branches missed.">        if (response == null) {</span>
+<span class="nc" id="L124">            headers.setContentType(MediaType.APPLICATION_JSON); // Set the appropriate content type</span>
+<span class="nc" id="L125">            return ResponseEntity.status(HttpStatus.NOT_FOUND)</span>
+<span class="nc" id="L126">                    .headers(headers).body(getErrorResponse(STORY_NOT_FOUND));</span>
+        }
+<span class="nc" id="L128">        storyImage = response.getImage();</span>
+<span class="nc" id="L129">        return new ResponseEntity&lt;&gt;(storyImage, headers, HttpStatus.OK);</span>
+    }
+
+
+    @PutMapping(path = &quot;/{id}/update&quot;, consumes = { MediaType.MULTIPART_FORM_DATA_VALUE  }, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public ResponseEntity&lt;Response&gt; updateStory(@UUID(message = &quot;Story id must be a valid UUID&quot;) @PathVariable(name = &quot;id&quot;) String storyId,
+                                                @Valid @ModelAttribute(&quot;storyRequest&quot;) StoryRequest pStoryRequest) {
+        /**
+         * Check if the story is present against the id,
+         * And if presents, then do update operation. Else, return 404.
+         */
+<span class="nc" id="L141">        final StoryResponse storyResponse = storyService.getStory(storyId);</span>
+<span class="nc bnc" id="L142" title="All 2 branches missed.">        if (storyResponse == null) {</span>
+<span class="nc" id="L143">            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(getErrorResponse(STORY_NOT_FOUND));</span>
+        }
+
+<span class="nc" id="L146">        final StoryResponse response = storyService.updateStory(storyId, pStoryRequest);</span>
+<span class="nc bnc" id="L147" title="All 2 branches missed.">        if (response == null) {</span>
+<span class="nc" id="L148">            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(getErrorResponse(STORY_NOT_UPDATED));</span>
+        }
+<span class="nc" id="L150">        return ResponseEntity.status(HttpStatus.OK).body(response);</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

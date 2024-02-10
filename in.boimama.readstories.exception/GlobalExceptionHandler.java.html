@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GlobalExceptionHandler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">boimama-app</a> &gt; <a href="index.source.html" class="el_package">in.boimama.readstories.exception</a> &gt; <span class="el_source">GlobalExceptionHandler.java</span></div><h1>GlobalExceptionHandler.java</h1><pre class="source lang-java linenums">package in.boimama.readstories.exception;
+
+import in.boimama.readstories.dto.ErrorResponse;
+import in.boimama.readstories.dto.ResponseCode;
+import jakarta.validation.ConstraintViolationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@ControllerAdvice
+<span class="nc" id="L18">public class GlobalExceptionHandler {</span>
+
+<span class="nc" id="L20">    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);</span>
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity&lt;ErrorResponse&gt; handleException(Exception exception) {
+<span class="nc" id="L24">        logger.error(exception.getMessage(), exception);</span>
+<span class="nc" id="L25">        return new ResponseEntity&lt;&gt;(new ErrorResponse(ResponseCode.GENERIC_SERVER_ERROR.getResponseCode(),</span>
+<span class="nc" id="L26">                exception.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);</span>
+    }
+
+    @ExceptionHandler(ApplicationClientException.class)
+    public ResponseEntity&lt;ErrorResponse&gt; handleException(ApplicationClientException exception) {
+<span class="nc" id="L31">        logger.error(exception.getMessage(), exception);</span>
+<span class="nc" id="L32">        return new ResponseEntity&lt;&gt;(new ErrorResponse(ResponseCode.GENERIC_CLIENT_VALIDATION_ERROR.getResponseCode(),</span>
+<span class="nc" id="L33">                exception.getMessage()), HttpStatus.BAD_REQUEST);</span>
+    }
+
+    @ExceptionHandler(ApplicationServerException.class)
+    public ResponseEntity&lt;ErrorResponse&gt; handleException(ApplicationServerException exception) {
+<span class="nc" id="L38">        logger.error(exception.getMessage(), exception);</span>
+<span class="nc" id="L39">        return new ResponseEntity&lt;&gt;(new ErrorResponse(ResponseCode.GENERIC_SERVER_ERROR.getResponseCode(),</span>
+<span class="nc" id="L40">                exception.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);</span>
+    }
+
+    @ExceptionHandler({MethodArgumentNotValidException.class})
+    public ResponseEntity&lt;Object&gt; handleValidationException(MethodArgumentNotValidException exception) {
+<span class="nc" id="L45">        logger.error(exception.getMessage(), exception);</span>
+<span class="nc" id="L46">        final Map&lt;String, String&gt; errorMessages = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L47">        exception.getBindingResult().getFieldErrors()</span>
+<span class="nc" id="L48">                .forEach(error -&gt; errorMessages.put(error.getField(), error.getDefaultMessage()));</span>
+<span class="nc" id="L49">        return new ResponseEntity&lt;&gt;(new ErrorResponse(ResponseCode.GENERIC_CLIENT_VALIDATION_ERROR.getResponseCode(),</span>
+<span class="nc" id="L50">                errorMessages.values().toString()), HttpStatus.BAD_REQUEST);</span>
+    }
+
+    @ExceptionHandler({ConstraintViolationException.class})
+    public ResponseEntity&lt;Object&gt; handleValidationException(ConstraintViolationException exception) {
+<span class="nc" id="L55">        logger.error(exception.getMessage(), exception);</span>
+<span class="nc" id="L56">        return new ResponseEntity&lt;&gt;(new ErrorResponse(ResponseCode.GENERIC_CLIENT_VALIDATION_ERROR.getResponseCode(),</span>
+<span class="nc" id="L57">                exception.getMessage()), HttpStatus.BAD_REQUEST);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

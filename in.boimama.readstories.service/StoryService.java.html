@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>StoryService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">boimama-app</a> &gt; <a href="index.source.html" class="el_package">in.boimama.readstories.service</a> &gt; <span class="el_source">StoryService.java</span></div><h1>StoryService.java</h1><pre class="source lang-java linenums">package in.boimama.readstories.service;
+
+import in.boimama.readstories.config.cassandra.CassandraConfig;
+import in.boimama.readstories.data.StoryRepository;
+import in.boimama.readstories.data.model.Story;
+import in.boimama.readstories.dto.StoryRequest;
+import in.boimama.readstories.dto.StoryResponse;
+import in.boimama.readstories.exception.ApplicationClientException;
+import in.boimama.readstories.exception.ApplicationServerException;
+import in.boimama.readstories.utils.AwsImageManager;
+import in.boimama.readstories.utils.ModelMapperHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.io.File;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import static in.boimama.readstories.utils.ApplicationConstants.UNCATEGORIZED_TYPE;
+import static in.boimama.readstories.utils.ApplicationUtils.estimateStoryLengthInMinutes;
+import static in.boimama.readstories.utils.ApplicationUtils.getFileBytes;
+import static in.boimama.readstories.utils.ApplicationUtils.isEmpty;
+
+@Service
+<span class="nc" id="L30">public class StoryService {</span>
+
+<span class="nc" id="L32">    private static final Logger logger = LoggerFactory.getLogger(StoryService.class);</span>
+
+    public static final String STORY_COVER_IMAGE_DIRECTORY_NAME = &quot;story-cover-images&quot;;
+
+    @Autowired(required = true)
+    private CassandraConfig cassandraConfig;
+
+    @Autowired(required = true)
+    private StoryRepository storyRepository;
+
+    @Autowired(required = false)
+    private AwsImageManager awsImageManager;
+
+    @Autowired(required = true)
+    private ModelMapperHelper modelMapperHelper;
+
+    public StoryResponse addStory(final StoryRequest pRequest) throws ApplicationServerException {
+
+<span class="nc bnc" id="L50" title="All 2 branches missed.">        if (storyRepository.isStoryWithSameAuthorsAlreadyExists(pRequest.getTitle(),</span>
+<span class="nc" id="L51">                pRequest.getAuthorIds().stream().map(UUID::fromString).toList())) {</span>
+<span class="nc" id="L52">            logger.error(&quot;Story with same title ({}) and authors {} already exists&quot;,</span>
+<span class="nc" id="L53">                    pRequest.getTitle(), pRequest.getAuthorIds());</span>
+<span class="nc" id="L54">            throw new ApplicationClientException(&quot;Story with same title and authors already exists&quot;);</span>
+        }
+
+<span class="nc" id="L57">        final Story story = new Story();</span>
+<span class="nc" id="L58">        final UUID storyId = UUID.randomUUID();</span>
+
+<span class="nc" id="L60">        story.setStoryId(storyId);</span>
+<span class="nc" id="L61">        story.setStoryTitle(pRequest.getTitle());</span>
+<span class="nc" id="L62">        story.setLengthInMins(estimateStoryLengthInMinutes(pRequest.getContent()));</span>
+<span class="nc" id="L63">        story.setDescription(pRequest.getDescription());</span>
+<span class="nc" id="L64">        story.setAuthorIds(pRequest.getAuthorIds().stream().map(UUID::fromString).toList());</span>
+<span class="nc" id="L65">        story.setAuthorNames(pRequest.getAuthorNames());</span>
+<span class="nc" id="L66">        story.setRating(0); // Initially no ratings. Setting value to 0</span>
+<span class="nc bnc" id="L67" title="All 2 branches missed.">        story.setCategory(isEmpty(pRequest.getCategory()) ? UNCATEGORIZED_TYPE : pRequest.getCategory());</span>
+<span class="nc" id="L68">        story.setPublishedDate(LocalDate.now());</span>
+<span class="nc" id="L69">        story.setContent(pRequest.getContent());</span>
+<span class="nc" id="L70">        story.setImagePath(&quot;/story/&quot; + storyId + &quot;/image&quot;);</span>
+
+        // Store image into Database
+<span class="nc" id="L73">        story.setImage(getFileBytes(pRequest.getStoryImage()));</span>
+        // Store image into S3 Bucket
+<span class="nc" id="L75">        awsImageManager.uploadImage(STORY_COVER_IMAGE_DIRECTORY_NAME, storyId.toString(), pRequest.getStoryImage());</span>
+
+<span class="nc" id="L77">        storyRepository.insert(story);</span>
+<span class="nc" id="L78">        return modelMapperHelper.mapStory(story, StoryResponse.class);</span>
+    }
+
+    public StoryResponse getStory(String storyId) {
+<span class="nc" id="L82">        final Story story = storyRepository.findByStoryId(UUID.fromString(storyId));</span>
+<span class="nc bnc" id="L83" title="All 2 branches missed.">        if (story == null) {</span>
+<span class="nc" id="L84">            logger.warn(&quot;Story not found against id: {}&quot;, storyId);</span>
+<span class="nc" id="L85">            return null;</span>
+        }
+
+<span class="nc" id="L88">        logger.debug(&quot;Story found against id: {}&quot;, storyId);</span>
+<span class="nc" id="L89">        return modelMapperHelper.mapStory(story, StoryResponse.class);</span>
+    }
+
+    public byte[] getStoryImage(String storyId) {
+<span class="nc" id="L93">        final File imageFile = awsImageManager.getImage(STORY_COVER_IMAGE_DIRECTORY_NAME + &quot;/&quot; + storyId);</span>
+<span class="nc bnc" id="L94" title="All 2 branches missed.">        if (imageFile == null) {</span>
+<span class="nc" id="L95">            logger.warn(&quot;Image not found into AWS S3 Bucket against id: {}&quot;, storyId);</span>
+<span class="nc" id="L96">            return null;</span>
+        }
+
+<span class="nc" id="L99">        logger.debug(&quot;Image found into AWS S3 Bucket against id: {}&quot;, storyId);</span>
+<span class="nc" id="L100">        return getFileBytes(imageFile);</span>
+    }
+
+    public List&lt;StoryResponse&gt; getAllStories() {
+<span class="nc" id="L104">        final List&lt;StoryResponse&gt; storiesResponse = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L105">        storyRepository.findAll()</span>
+<span class="nc" id="L106">                .forEach(story -&gt; storiesResponse.add(modelMapperHelper.mapStory(story, StoryResponse.class)));</span>
+<span class="nc bnc" id="L107" title="All 2 branches missed.">        if (isEmpty(storiesResponse))</span>
+<span class="nc" id="L108">            logger.warn(&quot;No story found!&quot;);</span>
+<span class="nc" id="L109">        return storiesResponse;</span>
+    }
+
+    public List&lt;StoryResponse&gt; searchStories(final String pSearchText) {
+        /**
+         * This is not a recommended practice!
+         * AWS Keyspace (Cassandra) doesn't support operator LIKE.
+         * TODO: Hence we need some better integrated solution for searching.
+         * For now do it via Java coding! Get all stories and match them with the search keyword!
+         */
+<span class="nc" id="L119">        final List&lt;StoryResponse&gt; storiesResponse = storyRepository.findAll().stream()</span>
+<span class="nc bnc" id="L120" title="All 2 branches missed.">                .filter(story -&gt; story.getStoryTitle().toLowerCase().contains(pSearchText.toLowerCase())</span>
+<span class="nc bnc" id="L121" title="All 2 branches missed.">                        || story.getDescription().toLowerCase().contains(pSearchText.toLowerCase())</span>
+<span class="nc bnc" id="L122" title="All 2 branches missed.">                        || story.getContent().toLowerCase().contains(pSearchText.toLowerCase())</span>
+<span class="nc" id="L123">                        || story.getAuthorNames().stream()</span>
+<span class="nc bnc" id="L124" title="All 2 branches missed.">                        .anyMatch(authorName -&gt; authorName.toLowerCase().contains(pSearchText.toLowerCase()))</span>
+<span class="nc bnc" id="L125" title="All 2 branches missed.">                        || story.getCategory().toLowerCase().contains(pSearchText.toLowerCase())</span>
+                )
+<span class="nc" id="L127">                .map(story -&gt; modelMapperHelper.mapStory(story, StoryResponse.class))</span>
+<span class="nc" id="L128">                .collect(Collectors.toList());</span>
+<span class="nc bnc" id="L129" title="All 2 branches missed.">        if (isEmpty(storiesResponse))</span>
+<span class="nc" id="L130">            logger.warn(&quot;No story found!&quot;);</span>
+<span class="nc" id="L131">        return storiesResponse;</span>
+    }
+
+    public List&lt;StoryResponse&gt; searchStoriesByCategory(final String pStoryCategory) {
+<span class="nc" id="L135">        final List&lt;StoryResponse&gt; storiesResponse = new ArrayList&lt;&gt;();</span>
+        /**
+         * This is not a recommended practice!
+         * AWS Keyspace (Cassandra) doesn't support operator LIKE.
+         * TODO: Hence we need some better integrated solution for searching.
+         * For now do it via Java coding! Get all stories and match them with the search keyword!
+         */
+<span class="nc" id="L142">        storyRepository.findAll().stream()</span>
+<span class="nc" id="L143">                .filter(story -&gt; story.getCategory().toLowerCase().contains(pStoryCategory.toLowerCase()))</span>
+<span class="nc" id="L144">                .forEach(story -&gt; storiesResponse.add(modelMapperHelper.mapStory(story, StoryResponse.class)));</span>
+        /**
+         * AWS Keyspace (Cassandra) doesn't support operator LIKE.
+         * And due to case-sensitive search, this is not working as expected!
+         */
+        /*
+        storyRepository.findByStoryCategory(pStoryCategory)
+                .forEach(story -&gt; storiesResponse.add(modelMapperHelper.mapStory(story, StoryResponse.class)));
+        */
+<span class="nc bnc" id="L153" title="All 2 branches missed.">        if (isEmpty(storiesResponse))</span>
+<span class="nc" id="L154">            logger.warn(&quot;No story found!&quot;);</span>
+<span class="nc" id="L155">        return storiesResponse;</span>
+    }
+
+    public boolean deleteStory(String storyId) {
+        try {
+<span class="nc" id="L160">            logger.debug(&quot;Story found against id: {}&quot;, storyId);</span>
+<span class="nc" id="L161">            storyRepository.deleteByStoryId(UUID.fromString(storyId)); // Doesn't throw any error, if resource doesn't exist!</span>
+<span class="nc" id="L162">            logger.debug(&quot;Deleted story with id: {}&quot;, storyId);</span>
+<span class="nc" id="L163">        } catch (Exception exception) {</span>
+<span class="nc" id="L164">            logger.error(&quot;Unable to delete story with id: {}&quot;, storyId, exception);</span>
+<span class="nc" id="L165">            return Boolean.FALSE;</span>
+<span class="nc" id="L166">        }</span>
+<span class="nc" id="L167">        return Boolean.TRUE;</span>
+    }
+
+    public boolean deleteAllStories() {
+        try {
+<span class="nc" id="L172">            logger.info(&quot;Deleting all stories&quot;);</span>
+            // storyRepository.deleteAll(); // CassandraInvalidQueryException: Query; CQL [TRUNCATE story];
+<span class="nc" id="L174">            storyRepository.findAll().forEach(storyRepository::delete);  // ArrayIndexOutOfBoundsException: Index 12 out of bounds for length 12 - when duplicate ids present</span>
+<span class="nc" id="L175">            logger.info(&quot;Deleted all stories&quot;);</span>
+<span class="nc" id="L176">        } catch (Exception exception) {</span>
+<span class="nc" id="L177">            logger.error(&quot;Unable to delete all stories!&quot;, exception);</span>
+<span class="nc" id="L178">            return Boolean.FALSE;</span>
+<span class="nc" id="L179">        }</span>
+<span class="nc" id="L180">        return Boolean.TRUE;</span>
+    }
+
+    public StoryResponse updateStory(final String storyId,
+                                     final StoryRequest pRequest) throws ApplicationServerException {
+<span class="nc" id="L185">        final Story story = storyRepository.findByStoryId(UUID.fromString(storyId));</span>
+<span class="nc bnc" id="L186" title="All 2 branches missed.">        if (story == null) {</span>
+<span class="nc" id="L187">            logger.error(&quot;Story not found against id: {}&quot;, storyId);</span>
+<span class="nc" id="L188">            throw new ApplicationClientException(&quot;Story not found against id: &quot; + storyId);</span>
+        }
+
+<span class="nc" id="L191">        logger.debug(&quot;Story to be updated, have id: {}&quot;, storyId);</span>
+<span class="nc bnc" id="L192" title="All 2 branches missed.">        if (storyRepository.isStoryWithSameAuthorsAlreadyExists(pRequest.getTitle(),</span>
+<span class="nc" id="L193">                pRequest.getAuthorIds().stream().map(UUID::fromString).toList())) {</span>
+<span class="nc" id="L194">            logger.debug(&quot;Story: {} with same title ({}) and authors {} already exists&quot;,</span>
+<span class="nc" id="L195">                    storyId, pRequest.getTitle(), pRequest.getAuthorIds());</span>
+        } else {
+<span class="nc" id="L197">            story.setStoryTitle(pRequest.getTitle());</span>
+        }
+<span class="nc" id="L199">        story.setLengthInMins(estimateStoryLengthInMinutes(pRequest.getContent()));</span>
+<span class="nc" id="L200">        story.setDescription(pRequest.getDescription());</span>
+<span class="nc" id="L201">        story.setAuthorIds(pRequest.getAuthorIds().stream().map(UUID::fromString).toList());</span>
+<span class="nc" id="L202">        story.setAuthorNames(pRequest.getAuthorNames());</span>
+<span class="nc bnc" id="L203" title="All 2 branches missed.">        story.setCategory(isEmpty(pRequest.getCategory()) ?</span>
+<span class="nc bnc" id="L204" title="All 2 branches missed.">                (isEmpty(story.getCategory()) ? UNCATEGORIZED_TYPE : story.getCategory()) : pRequest.getCategory());</span>
+<span class="nc bnc" id="L205" title="All 2 branches missed.">        story.setPublishedDate(pRequest.getPublishedDate() == null ? story.getPublishedDate() : pRequest.getPublishedDate());</span>
+<span class="nc" id="L206">        story.setContent(pRequest.getContent());</span>
+<span class="nc" id="L207">        story.setImage(getFileBytes(pRequest.getStoryImage()));</span>
+
+<span class="nc" id="L209">        storyRepository.save(story);</span>
+<span class="nc" id="L210">        return modelMapperHelper.mapStory(story, StoryResponse.class);</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

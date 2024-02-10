@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>StoryRequest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">boimama-app</a> &gt; <a href="index.source.html" class="el_package">in.boimama.readstories.dto</a> &gt; <span class="el_source">StoryRequest.java</span></div><h1>StoryRequest.java</h1><pre class="source lang-java linenums">package in.boimama.readstories.dto;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import in.boimama.readstories.utils.validation.NonEmptyStringList;
+import in.boimama.readstories.utils.validation.UuidList;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.RequestScope;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.time.LocalDate;
+import java.util.List;
+
+@Component
+@RequestScope
+<span class="nc" id="L19">public class StoryRequest {</span>
+
+    @Schema(description = &quot;Title of the story&quot;, required = true, minLength = 5, maxLength = 50)
+    @NotNull(message = &quot;'title' is missing in request body&quot;)
+    @Size(min=5, message = &quot;'title' should be at least 5 character&quot;)
+    @Size(max=50, message = &quot;'title' should not be greater than 50 characters&quot;)
+    private String title;
+
+    @Schema(description = &quot;Category of the story. By default it's not categorised&quot;)
+    private String category;
+
+    @Schema(description = &quot;Description of the story&quot;, required = true, minLength = 10, maxLength = 500)
+    @NotNull(message = &quot;'description' is missing in request body&quot;)
+    @Size(min=10, message = &quot;'description' should be at least 10 character&quot;)
+    @Size(max=500, message = &quot;'description' should not be greater than 500 characters&quot;)
+    private String description;
+
+    @Schema(description = &quot;Content of the story&quot;)
+    @NotNull(message = &quot;'content' is missing in request body&quot;)
+    @Size(min=10, message = &quot;'content' should be at least 10 character&quot;)
+    private String content;
+
+    @Schema(description = &quot;Published date of the story. In case of empty input, it will pick current date&quot;)
+    private LocalDate publishedDate;
+
+    @Schema(description = &quot;Author's id(s) of the story&quot;, required = true)
+    @NotNull(message = &quot;Author id(s) must not be null&quot;)
+    @NotEmpty(message = &quot;Author id(s) must not be empty&quot;)
+    @UuidList(message = &quot;Author id list must contain valid UUID(s)&quot;)
+    private List&lt;String&gt; authorIds;
+
+    @Schema(description = &quot;Author's name(s) of the story&quot;, required = true)
+    @NotNull(message = &quot;Author name(s) must not be null&quot;)
+    @NotEmpty(message = &quot;Author name(s) must not be empty&quot;)
+    @NonEmptyStringList(message = &quot;Author name(s) must be non-empty strings, with 2-50 characters&quot;, minLength = 2, maxLength = 50)
+    private List&lt;String&gt; authorNames;
+
+    @JsonIgnore
+    @Schema(description = &quot;Cover image of the story&quot;)
+    private MultipartFile storyImage;
+
+    public String getTitle() {
+<span class="nc" id="L61">        return title;</span>
+    }
+
+    public void setTitle(String title) {
+<span class="nc" id="L65">        this.title = title;</span>
+<span class="nc" id="L66">    }</span>
+
+    public String getCategory() {
+<span class="nc" id="L69">        return category;</span>
+    }
+
+    public void setCategory(String category) {
+<span class="nc" id="L73">        this.category = category;</span>
+<span class="nc" id="L74">    }</span>
+
+    public String getDescription() {
+<span class="nc" id="L77">        return description;</span>
+    }
+
+    public void setDescription(String description) {
+<span class="nc" id="L81">        this.description = description;</span>
+<span class="nc" id="L82">    }</span>
+
+    public String getContent() {
+<span class="nc" id="L85">        return content;</span>
+    }
+
+    public void setContent(String content) {
+<span class="nc" id="L89">        this.content = content;</span>
+<span class="nc" id="L90">    }</span>
+
+    public LocalDate getPublishedDate() {
+<span class="nc" id="L93">        return publishedDate;</span>
+    }
+
+    public void setPublishedDate(LocalDate publishedDate) {
+<span class="nc" id="L97">        this.publishedDate = publishedDate;</span>
+<span class="nc" id="L98">    }</span>
+
+    public List&lt;String&gt; getAuthorIds() {
+<span class="nc" id="L101">        return authorIds;</span>
+    }
+
+    public void setAuthorIds(List&lt;String&gt; authorIds) {
+<span class="nc" id="L105">        this.authorIds = authorIds;</span>
+<span class="nc" id="L106">    }</span>
+
+    public List&lt;String&gt; getAuthorNames() {
+<span class="nc" id="L109">        return authorNames;</span>
+    }
+
+    public void setAuthorNames(List&lt;String&gt; authorNames) {
+<span class="nc" id="L113">        this.authorNames = authorNames;</span>
+<span class="nc" id="L114">    }</span>
+
+    public MultipartFile getStoryImage() {
+<span class="nc" id="L117">        return storyImage;</span>
+    }
+
+    public void setStoryImage(MultipartFile storyImage) {
+<span class="nc" id="L121">        this.storyImage = storyImage;</span>
+<span class="nc" id="L122">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L126">        return &quot;StoryResponse{&quot; +</span>
+                &quot;title='&quot; + title + '\'' +
+                &quot;, category='&quot; + category + '\'' +
+                &quot;, description='&quot; + description + '\'' +
+                &quot;, content='&quot; + content + '\'' +
+                &quot;, publishedDate=&quot; + publishedDate +
+                &quot;, authorIds=&quot; + authorIds +
+                &quot;, authorNames=&quot; + authorNames +
+                '}';
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

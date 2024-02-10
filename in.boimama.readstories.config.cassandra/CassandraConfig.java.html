@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CassandraConfig.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">boimama-app</a> &gt; <a href="index.source.html" class="el_package">in.boimama.readstories.config.cassandra</a> &gt; <span class="el_source">CassandraConfig.java</span></div><h1>CassandraConfig.java</h1><pre class="source lang-java linenums">package in.boimama.readstories.config.cassandra;
+
+import com.datastax.oss.driver.api.core.CqlSession;
+import com.datastax.oss.driver.api.core.config.DriverConfigLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
+
+import javax.net.ssl.SSLContext;
+import java.io.File;
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+
+@Configuration
+<span class="nc" id="L21">public class CassandraConfig {</span>
+
+<span class="nc" id="L23">    private static final Logger logger = LoggerFactory.getLogger(CassandraConfig.class);</span>
+
+    @Autowired
+    private ResourceLoader resourceLoader;
+
+    @Value(&quot;${spring.data.cassandra.configFile}&quot;)
+    private String cassandraConfigFile;
+
+    @Value(&quot;${spring.data.cassandra.keyspaceName}&quot;)
+    private String keyspaceName;
+
+    @Primary
+    public @Bean CqlSession session() throws NoSuchAlgorithmException, IOException {
+
+<span class="nc" id="L37">        logger.debug(&quot;Building CQL Session for keyspace/cassandra database.&quot;);</span>
+<span class="nc" id="L38">        return CqlSession.builder()</span>
+<span class="nc" id="L39">                .withConfigLoader(DriverConfigLoader.fromFile(getDriverConfig()))</span>
+<span class="nc" id="L40">                .withSslContext(SSLContext.getDefault())</span>
+<span class="nc" id="L41">                .withKeyspace(keyspaceName)</span>
+<span class="nc" id="L42">                .build();</span>
+    }
+
+    private File getDriverConfig() {
+
+<span class="nc" id="L47">        final Resource cassandraConfigResource = resourceLoader</span>
+<span class="nc" id="L48">                .getResource(&quot;classpath:&quot; + cassandraConfigFile);</span>
+        try {
+<span class="nc bnc" id="L50" title="All 2 branches missed.">            if (cassandraConfigResource.exists()) {</span>
+<span class="nc" id="L51">                logger.info(&quot;Resource exists!&quot;);</span>
+<span class="nc" id="L52">                return cassandraConfigResource.getFile();</span>
+                /**
+                 * TODO: This is giving java.io.FileNotFoundException with docker container:
+                 * class path resource [cassandra/config/keyspaces-application.conf] cannot be resolved to absolute file path
+                 * because it does not reside in the file system: jar:file:/app/boimama-app.jar!/BOOT-INF/classes!/cassandra/config/keyspaces-application.conf
+                 *
+                 * Fix this!
+                 */
+            }
+<span class="nc" id="L61">        } catch (IOException exception) {</span>
+<span class="nc" id="L62">            logger.error(&quot;Unable to load keyspace configuration file&quot;, exception);</span>
+<span class="nc" id="L63">        }</span>
+
+<span class="nc" id="L65">        logger.debug(&quot;Could not find the cassandra configuration file inside classpath! &quot; +</span>
+                &quot;Looking for system directory.&quot;);
+<span class="nc" id="L67">        return new File(&quot;/app&quot; + cassandraConfigFile); // TODO: Temporary workaround for the above exception!</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

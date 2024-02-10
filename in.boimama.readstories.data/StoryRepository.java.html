@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>StoryRepository.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">boimama-app</a> &gt; <a href="index.source.html" class="el_package">in.boimama.readstories.data</a> &gt; <span class="el_source">StoryRepository.java</span></div><h1>StoryRepository.java</h1><pre class="source lang-java linenums">package in.boimama.readstories.data;
+
+import in.boimama.readstories.data.model.Story;
+import org.springframework.data.cassandra.repository.CassandraRepository;
+import org.springframework.data.cassandra.repository.Query;
+import org.springframework.stereotype.Repository;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+@Repository
+public interface StoryRepository extends CassandraRepository&lt;Story, UUID&gt; {
+
+    Story findByStoryId(final UUID storyId);
+
+    /**
+     * This method doesn't throw any error, if resource doesn't exist
+     *
+     * @param storyId
+     */
+    void deleteByStoryId(final UUID storyId);
+
+    @Query(&quot;SELECT * FROM story WHERE story_title = ?0 ALLOW FILTERING&quot;)
+    List&lt;Story&gt; findByStoryTitle(final String storyTitle);
+
+    @Query(&quot;SELECT * FROM story WHERE story_id = ?0 and story_title = ?1 ALLOW FILTERING&quot;)
+    List&lt;Story&gt; findByStoryIdAndTitle(final UUID storyId, final String storyTitle);
+
+    @Query(&quot;SELECT * FROM story WHERE story_category = ?0 ALLOW FILTERING&quot;)
+    List&lt;Story&gt; findByStoryCategory(final String storyCategory);
+
+    default List&lt;List&lt;UUID&gt;&gt; findAuthorIdsByStoryTitle(final String storyTitle) {
+<span class="nc" id="L35">        return findByStoryTitle(storyTitle).stream()</span>
+<span class="nc" id="L36">                .map(Story::getAuthorIds)</span>
+<span class="nc" id="L37">                .collect(Collectors.toList());</span>
+    }
+
+    /**
+     * It takes a story title and a list of author IDs as inputs
+     * and checks whether the combination of the story title and author IDs already exists.
+     *
+     * @param pStoryTitle
+     * @param pAuthorIds
+     * @return result of uniqueness check
+     */
+    default boolean isStoryWithSameAuthorsAlreadyExists(final String pStoryTitle, final List&lt;UUID&gt; pAuthorIds) {
+        /**
+         * This use case needs to validate if the list/set contains the same elements but in a different order.
+         * The equals method for sets considers two sets to be equal if they contain the same elements, regardless of their order.
+         */
+<span class="nc" id="L53">        return findByStoryTitle(pStoryTitle).stream()</span>
+<span class="nc" id="L54">                .anyMatch(story -&gt; new HashSet&lt;&gt;(story.getAuthorIds()).equals(new HashSet&lt;&gt;(pAuthorIds)));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

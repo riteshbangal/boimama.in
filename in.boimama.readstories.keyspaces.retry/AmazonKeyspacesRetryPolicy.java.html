@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AmazonKeyspacesRetryPolicy.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">boimama-app</a> &gt; <a href="index.source.html" class="el_package">in.boimama.readstories.keyspaces.retry</a> &gt; <span class="el_source">AmazonKeyspacesRetryPolicy.java</span></div><h1>AmazonKeyspacesRetryPolicy.java</h1><pre class="source lang-java linenums">package in.boimama.readstories.keyspaces.retry;
+
+import com.datastax.oss.driver.api.core.ConsistencyLevel;
+import com.datastax.oss.driver.api.core.config.DriverExecutionProfile;
+import com.datastax.oss.driver.api.core.context.DriverContext;
+import com.datastax.oss.driver.api.core.retry.RetryDecision;
+import com.datastax.oss.driver.api.core.retry.RetryPolicy;
+import com.datastax.oss.driver.api.core.servererrors.CoordinatorException;
+import com.datastax.oss.driver.api.core.servererrors.ReadTimeoutException;
+import com.datastax.oss.driver.api.core.servererrors.WriteTimeoutException;
+import com.datastax.oss.driver.api.core.servererrors.WriteType;
+import com.datastax.oss.driver.api.core.session.Request;
+import com.datastax.oss.driver.shaded.guava.common.annotations.VisibleForTesting;
+import edu.umd.cs.findbugs.annotations.NonNull;
+import net.jcip.annotations.ThreadSafe;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
+/**
+ * This is a conservative retry policy adapted for the Amazon Keyspaces Service.
+ * It allows for a configurable number of attempts, but by default the number of attempts is {@value AmazonKeyspacesRetryOption#DEFAULT_KEYSPACES_RETRY_MAX_ATTEMPTS}
+ * &lt;p&gt;
+ * This policy will either reattempt request on the same host or rethrow the exception to the calling thread. The main difference between
+ * this policy from the original {@link com.datastax.oss.driver.internal.core.retry.DefaultRetryPolicy} is that the {@link AmazonKeyspacesRetryPolicy} will call {@link RetryDecision#RETRY_SAME} instead of {@link RetryDecision#RETRY_NEXT}
+ * &lt;p&gt;
+ * In Amazon Keyspaces, it's likely that {@link WriteTimeoutException} or {@link ReadTimeoutException} is the result of exceeding current table
+ * capacity. Learn more about Amazon Keyspaces capacity here: @see &lt;a href=&quot;https://docs.aws.amazon.com/keyspaces/latest/devguide/ReadWriteCapacityMode.html&quot;&gt;Amazon Keyspaces CapacityModes&lt;/a&gt;.
+ * In most cases you should allow for small number of retries, and handle the exception in your application threads.
+ *
+ * &lt;p&gt;To activate this policy, modify the {@code advanced.retry-policy} section in the driver
+ * configuration, for example:
+ *
+ * &lt;pre&gt;
+ * datastax-java-driver {
+ *   advanced.retry-policy {
+ *     class = in.boimama.readstories.keyspaces.retry.AmazonKeyspacesRetryPolicy
+ *     max-attempts = 2
+ *   }
+ * }
+ * &lt;/pre&gt;
+ */
+
+@ThreadSafe
+public class AmazonKeyspacesRetryPolicy implements RetryPolicy {
+
+<span class="nc" id="L47">    private static final Logger logger = LoggerFactory.getLogger(AmazonKeyspacesRetryPolicy.class);</span>
+
+    @VisibleForTesting
+    public static final String RETRYING_ON_READ_TIMEOUT = &quot;[{}] Retrying on read timeout on same host (consistency: {}, required responses: {}, received responses: {}, data retrieved: {}, retries: {})&quot;;
+    @VisibleForTesting
+    public static final String RETRYING_ON_WRITE_TIMEOUT = &quot;[{}] Retrying on write timeout on same host (consistency: {}, write type: {}, required acknowledgments: {}, received acknowledgments: {}, retries: {})&quot;;
+    @VisibleForTesting
+    public static final String RETRYING_ON_UNAVAILABLE = &quot;[{}] Retrying on unavailable exception on next host (consistency: {}, required replica: {}, alive replica: {}, retries: {})&quot;;
+    @VisibleForTesting
+    public static final String RETRYING_ON_ABORTED = &quot;[{}] Retrying on aborted request on next host (retries: {})&quot;;
+    @VisibleForTesting
+    public static final String RETRYING_ON_ERROR = &quot;[{}] Retrying on node error on next host (retries: {})&quot;;
+
+    private final String logPrefix;
+
+    private final Integer maxRetryCount;
+
+
+    public AmazonKeyspacesRetryPolicy(DriverContext context) {
+<span class="nc" id="L66">        this(context, context.getConfig().getDefaultProfile().getName());</span>
+<span class="nc" id="L67">    }</span>
+
+<span class="nc" id="L69">    public AmazonKeyspacesRetryPolicy(DriverContext context, Integer maxRetryCount) {</span>
+
+<span class="nc" id="L71">        String profileName = context.getConfig().getDefaultProfile().getName();</span>
+
+<span class="nc" id="L73">        this.maxRetryCount = maxRetryCount;</span>
+
+<span class="nc bnc" id="L75" title="All 2 branches missed.">        this.logPrefix = (context != null ? context.getSessionName() : null) + &quot;|&quot; + profileName;</span>
+<span class="nc" id="L76">    }</span>
+
+<span class="nc" id="L78">    public AmazonKeyspacesRetryPolicy(DriverContext context, String profileName) {</span>
+<span class="nc" id="L79">        DriverExecutionProfile retryExecutionProfile = context.getConfig().getProfile(profileName);</span>
+
+<span class="nc" id="L81">        maxRetryCount = retryExecutionProfile.getInt(AmazonKeyspacesRetryOption.KEYSPACES_RETRY_MAX_ATTEMPTS, AmazonKeyspacesRetryOption.DEFAULT_KEYSPACES_RETRY_MAX_ATTEMPTS);</span>
+
+<span class="nc bnc" id="L83" title="All 2 branches missed.">        this.logPrefix = (context != null ? context.getSessionName() : null) + &quot;|&quot; + profileName;</span>
+<span class="nc" id="L84">    }</span>
+
+
+    protected RetryDecision determineRetryDecision(int retryCount) {
+<span class="nc bnc" id="L88" title="All 2 branches missed.">        if (retryCount &lt; maxRetryCount) {</span>
+<span class="nc" id="L89">            return RetryDecision.RETRY_SAME;</span>
+        } else {
+<span class="nc" id="L91">            return RetryDecision.RETHROW;</span>
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * &lt;p&gt;This implementation triggers a maximum of configured retry (to the same connection)
+     *
+     * &lt;p&gt;Otherwise, the exception is rethrown.
+     */
+    @Override
+    public RetryDecision onReadTimeout(
+            @NonNull Request request,
+            @NonNull ConsistencyLevel cl,
+            int blockFor,
+            int received,
+            boolean dataPresent,
+            int retryCount) {
+
+<span class="nc" id="L111">        RetryDecision decision = determineRetryDecision(retryCount);</span>
+
+<span class="nc" id="L113">        logger.trace(RETRYING_ON_READ_TIMEOUT, logPrefix, cl, blockFor, received, false, retryCount);</span>
+
+<span class="nc" id="L115">        return decision;</span>
+
+    }
+
+
+    /**
+     * {@inheritDoc}
+     *
+     * &lt;p&gt;This implementation triggers a maximum of configured retry (to the same connection)
+     *
+     * &lt;p&gt;Otherwise, the exception is rethrown.
+     */
+    @Override
+    public RetryDecision onWriteTimeout(
+            @NonNull Request request,
+            @NonNull ConsistencyLevel cl,
+            @NonNull WriteType writeType,
+            int blockFor,
+            int received,
+            int retryCount) {
+
+<span class="nc" id="L136">        RetryDecision decision = determineRetryDecision(retryCount);</span>
+
+<span class="nc" id="L138">        logger.trace(RETRYING_ON_WRITE_TIMEOUT, logPrefix, cl, blockFor, received, false, retryCount);</span>
+
+<span class="nc" id="L140">        return decision;</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * &lt;p&gt;This implementation triggers a maximum of configured retry (to the same connection)
+     *
+     * &lt;p&gt;Otherwise, the exception is rethrown.
+     */
+    @Override
+    public RetryDecision onUnavailable(
+            @NonNull Request request,
+            @NonNull ConsistencyLevel cl,
+            int required,
+            int alive,
+            int retryCount) {
+
+<span class="nc" id="L158">        RetryDecision decision = determineRetryDecision(retryCount);</span>
+
+<span class="nc" id="L160">        logger.trace(RETRYING_ON_UNAVAILABLE, logPrefix, cl, required, alive, retryCount);</span>
+
+<span class="nc" id="L162">        return decision;</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * &lt;p&gt;This implementation triggers a maximum of configured retry (to the same connection)
+     */
+    @Override
+    public RetryDecision onRequestAborted(
+            @NonNull Request request, @NonNull Throwable error, int retryCount) {
+
+<span class="nc" id="L174">        RetryDecision decision = determineRetryDecision(retryCount);</span>
+
+<span class="nc" id="L176">        logger.trace(RETRYING_ON_ABORTED, logPrefix, retryCount, error);</span>
+
+<span class="nc" id="L178">        return decision;</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * &lt;p&gt;This implementation triggers a maximum of configured retry (to the same connection)
+     */
+    @Override
+    public RetryDecision onErrorResponse(
+            @NonNull Request request, @NonNull CoordinatorException error, int retryCount) {
+
+<span class="nc" id="L190">        RetryDecision decision = determineRetryDecision(retryCount);</span>
+
+<span class="nc" id="L192">        logger.trace(RETRYING_ON_ERROR, logPrefix, retryCount, error);</span>
+
+<span class="nc" id="L194">        return decision;</span>
+    }
+
+    @Override
+    public void close() {
+        // nothing to do
+<span class="nc" id="L200">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

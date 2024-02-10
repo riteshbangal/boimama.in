@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AuthorResponse.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">boimama-app</a> &gt; <a href="index.source.html" class="el_package">in.boimama.readstories.dto</a> &gt; <span class="el_source">AuthorResponse.java</span></div><h1>AuthorResponse.java</h1><pre class="source lang-java linenums">package in.boimama.readstories.dto;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.validation.constraints.NotNull;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.UUID;
+
+// TODO: Use Lombok to eliminate boilerplate code
+<span class="fc" id="L11">public class AuthorResponse implements Response {</span>
+
+    @NotNull(message = &quot;'author id' is can not be null in response body&quot;)
+    private UUID id;
+
+    private String name;
+    private String username;
+    private String biography;
+    private int numberOfFollowers;
+    private LocalDate joiningDate;
+    private String contactDetails;
+    private List&lt;String&gt; publishedWorks;
+    private String imagePath;
+    @JsonIgnore
+    private byte[] image;
+
+    public UUID getId() {
+<span class="fc" id="L28">        return id;</span>
+    }
+
+    public void setId(UUID id) {
+<span class="fc" id="L32">        this.id = id;</span>
+<span class="fc" id="L33">    }</span>
+
+    public String getName() {
+<span class="fc" id="L36">        return name;</span>
+    }
+
+    public void setName(String name) {
+<span class="fc" id="L40">        this.name = name;</span>
+<span class="fc" id="L41">    }</span>
+
+    public String getUsername() {
+<span class="fc" id="L44">        return username;</span>
+    }
+
+    public void setUsername(String username) {
+<span class="fc" id="L48">        this.username = username;</span>
+<span class="fc" id="L49">    }</span>
+
+    public String getBiography() {
+<span class="fc" id="L52">        return biography;</span>
+    }
+
+    public void setBiography(String biography) {
+<span class="fc" id="L56">        this.biography = biography;</span>
+<span class="fc" id="L57">    }</span>
+
+    public int getNumberOfFollowers() {
+<span class="fc" id="L60">        return numberOfFollowers;</span>
+    }
+
+    public void setNumberOfFollowers(int numberOfFollowers) {
+<span class="fc" id="L64">        this.numberOfFollowers = numberOfFollowers;</span>
+<span class="fc" id="L65">    }</span>
+
+    public LocalDate getJoiningDate() {
+<span class="fc" id="L68">        return joiningDate;</span>
+    }
+
+    public void setJoiningDate(LocalDate joiningDate) {
+<span class="fc" id="L72">        this.joiningDate = joiningDate;</span>
+<span class="fc" id="L73">    }</span>
+
+    public String getContactDetails() {
+<span class="fc" id="L76">        return contactDetails;</span>
+    }
+
+    public void setContactDetails(String contactDetails) {
+<span class="fc" id="L80">        this.contactDetails = contactDetails;</span>
+<span class="fc" id="L81">    }</span>
+
+    public List&lt;String&gt; getPublishedWorks() {
+<span class="fc" id="L84">        return publishedWorks;</span>
+    }
+
+    public void setPublishedWorks(List&lt;String&gt; publishedWorks) {
+<span class="fc" id="L88">        this.publishedWorks = publishedWorks;</span>
+<span class="fc" id="L89">    }</span>
+
+    public String getImagePath() {
+<span class="fc" id="L92">        return imagePath;</span>
+    }
+
+    public void setImagePath(String imagePath) {
+<span class="fc" id="L96">        this.imagePath = imagePath;</span>
+<span class="fc" id="L97">    }</span>
+
+    public byte[] getImage() {
+<span class="fc" id="L100">        return image;</span>
+    }
+
+    public void setImage(byte[] image) {
+<span class="fc" id="L104">        this.image = image;</span>
+<span class="fc" id="L105">    }</span>
+
+    @Override
+    public String toString() {
+<span class="nc" id="L109">        return &quot;AuthorResponse{&quot; +</span>
+                &quot;id=&quot; + id +
+                &quot;, name='&quot; + name + '\'' +
+                &quot;, username='&quot; + username + '\'' +
+                &quot;, biography='&quot; + biography + '\'' +
+                &quot;, numberOfFollowers=&quot; + numberOfFollowers +
+                &quot;, joiningDate=&quot; + joiningDate +
+                &quot;, contactDetails='&quot; + contactDetails + '\'' +
+                &quot;, publishedWorks=&quot; + publishedWorks +
+                &quot;, imagePath='&quot; + imagePath + '\'' +
+                '}';
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

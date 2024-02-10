@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AuthorService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">boimama-app</a> &gt; <a href="index.source.html" class="el_package">in.boimama.readstories.service</a> &gt; <span class="el_source">AuthorService.java</span></div><h1>AuthorService.java</h1><pre class="source lang-java linenums">package in.boimama.readstories.service;
+
+import in.boimama.readstories.config.cassandra.CassandraConfig;
+import in.boimama.readstories.data.AuthorRepository;
+import in.boimama.readstories.data.model.Author;
+import in.boimama.readstories.dto.AuthorRequest;
+import in.boimama.readstories.dto.AuthorResponse;
+import in.boimama.readstories.exception.ApplicationClientException;
+import in.boimama.readstories.exception.ApplicationServerException;
+import in.boimama.readstories.utils.AwsImageManager;
+import in.boimama.readstories.utils.ModelMapperHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.io.File;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import static in.boimama.readstories.utils.ApplicationUtils.getFileBytes;
+import static in.boimama.readstories.utils.ApplicationUtils.isEmpty;
+
+@Service
+<span class="nc" id="L27">public class AuthorService {</span>
+
+<span class="nc" id="L29">    private static final Logger logger = LoggerFactory.getLogger(AuthorService.class);</span>
+
+    public static final String AUTHOR_COVER_IMAGE_DIRECTORY_NAME = &quot;author-cover-images&quot;;
+
+    @Autowired(required = true)
+    private CassandraConfig cassandraConfig;
+
+    @Autowired(required = true)
+    private AuthorRepository authorRepository;
+
+    @Autowired(required = false)
+    private AwsImageManager awsImageManager;
+
+    @Autowired(required = true)
+    private ModelMapperHelper modelMapperHelper;
+
+    public AuthorResponse addAuthor(final AuthorRequest pRequest) throws ApplicationServerException {
+
+<span class="nc bnc" id="L47" title="All 2 branches missed.">        if (authorRepository.isAuthorAlreadyExists(pRequest.getUsername())) {</span>
+<span class="nc" id="L48">            logger.error(&quot;Author with same username ({}) already exists&quot;, pRequest.getUsername());</span>
+<span class="nc" id="L49">            throw new ApplicationClientException(&quot;Author with same username already exists&quot;);</span>
+        }
+
+<span class="nc" id="L52">        final Author author = new Author();</span>
+<span class="nc" id="L53">        final UUID authorId = UUID.randomUUID();</span>
+
+<span class="nc" id="L55">        author.setAuthorId(authorId);</span>
+<span class="nc" id="L56">        author.setAuthorName(pRequest.getName());</span>
+<span class="nc" id="L57">        author.setUsername(pRequest.getUsername());</span>
+<span class="nc" id="L58">        author.setBiography(pRequest.getBiography());</span>
+<span class="nc" id="L59">        author.setNumberOfFollowers(pRequest.getNumberOfFollowers());</span>
+<span class="nc" id="L60">        author.setPublishedWorks(pRequest.getPublishedWorks());</span>
+<span class="nc" id="L61">        author.setContactDetails(pRequest.getContactDetails());</span>
+<span class="nc bnc" id="L62" title="All 2 branches missed.">        author.setJoiningDate(pRequest.getJoiningDate() == null ? LocalDate.now() : pRequest.getJoiningDate());</span>
+<span class="nc" id="L63">        author.setImagePath(&quot;/author/&quot; + authorId + &quot;/image&quot;);</span>
+
+        // Store image into Database
+<span class="nc" id="L66">        author.setImage(getFileBytes(pRequest.getAuthorImage()));</span>
+        // Store image into S3 Bucket
+<span class="nc" id="L68">        awsImageManager.uploadImage(AUTHOR_COVER_IMAGE_DIRECTORY_NAME, authorId.toString(), pRequest.getAuthorImage());</span>
+
+<span class="nc" id="L70">        authorRepository.insert(author);</span>
+<span class="nc" id="L71">        return modelMapperHelper.mapAuthor(author, AuthorResponse.class);</span>
+    }
+
+    public AuthorResponse getAuthor(String authorId) {
+<span class="nc" id="L75">        final Author author = authorRepository.findByAuthorId(UUID.fromString(authorId));</span>
+<span class="nc bnc" id="L76" title="All 2 branches missed.">        if (author == null) {</span>
+<span class="nc" id="L77">            logger.warn(&quot;Author not found against id: {}&quot;, authorId);</span>
+<span class="nc" id="L78">            return null;</span>
+        }
+
+<span class="nc" id="L81">        logger.debug(&quot;Author found against id: {}&quot;, authorId);</span>
+<span class="nc" id="L82">        return modelMapperHelper.mapAuthor(author, AuthorResponse.class);</span>
+    }
+
+    public byte[] getAuthorImage(String authorId) {
+<span class="nc" id="L86">        final File imageFile = awsImageManager.getImage(AUTHOR_COVER_IMAGE_DIRECTORY_NAME + &quot;/&quot; + authorId);</span>
+<span class="nc bnc" id="L87" title="All 2 branches missed.">        if (imageFile == null) {</span>
+<span class="nc" id="L88">            logger.warn(&quot;Image not found into AWS S3 Bucket against id: {}&quot;, authorId);</span>
+<span class="nc" id="L89">            return null;</span>
+        }
+
+<span class="nc" id="L92">        logger.debug(&quot;Image found into AWS S3 Bucket against id: {}&quot;, authorId);</span>
+<span class="nc" id="L93">        return getFileBytes(imageFile);</span>
+    }
+
+    public List&lt;AuthorResponse&gt; getAllAuthors() {
+<span class="nc" id="L97">        final List&lt;AuthorResponse&gt; authorResponseList = new ArrayList&lt;&gt;();</span>
+<span class="nc" id="L98">        authorRepository.findAll()</span>
+<span class="nc" id="L99">                .forEach(author -&gt; authorResponseList.add(modelMapperHelper.mapAuthor(author, AuthorResponse.class)));</span>
+<span class="nc bnc" id="L100" title="All 2 branches missed.">        if (isEmpty(authorResponseList))</span>
+<span class="nc" id="L101">            logger.warn(&quot;No author found!&quot;);</span>
+<span class="nc" id="L102">        return authorResponseList;</span>
+    }
+
+    public boolean deleteAuthor(String authorId) {
+        try {
+<span class="nc" id="L107">            logger.debug(&quot;Author found against id: {}&quot;, authorId);</span>
+<span class="nc" id="L108">            authorRepository.deleteByAuthorId(UUID.fromString(authorId)); // Doesn't throw any error, if resource doesn't exist!</span>
+<span class="nc" id="L109">            logger.debug(&quot;Deleted author with id: {}&quot;, authorId);</span>
+<span class="nc" id="L110">        } catch (Exception exception) {</span>
+<span class="nc" id="L111">            logger.error(&quot;Unable to delete author with id: {}&quot;, authorId, exception);</span>
+<span class="nc" id="L112">            return Boolean.FALSE;</span>
+<span class="nc" id="L113">        }</span>
+<span class="nc" id="L114">        return Boolean.TRUE;</span>
+    }
+
+    public boolean deleteAllAuthors() {
+        try {
+<span class="nc" id="L119">            logger.info(&quot;Deleting all authors&quot;);</span>
+            // authorRepository.deleteAll(); // CassandraInvalidQueryException: Query; CQL [TRUNCATE author];
+<span class="nc" id="L121">            authorRepository.findAll().forEach(authorRepository::delete);  // ArrayIndexOutOfBoundsException: Index 12 out of bounds for length 12 - when duplicate ids present</span>
+<span class="nc" id="L122">            logger.info(&quot;Deleted all authors&quot;);</span>
+<span class="nc" id="L123">        } catch (Exception exception) {</span>
+<span class="nc" id="L124">            logger.error(&quot;Unable to delete all authors!&quot;, exception);</span>
+<span class="nc" id="L125">            return Boolean.FALSE;</span>
+<span class="nc" id="L126">        }</span>
+<span class="nc" id="L127">        return Boolean.TRUE;</span>
+    }
+
+    public AuthorResponse updateAuthor(final String authorId,
+                                     final AuthorRequest pRequest) throws ApplicationServerException {
+<span class="nc" id="L132">        final Author author = authorRepository.findByAuthorId(UUID.fromString(authorId));</span>
+<span class="nc bnc" id="L133" title="All 2 branches missed.">        if (author == null) {</span>
+<span class="nc" id="L134">            logger.error(&quot;Author not found against id: {}&quot;, authorId);</span>
+<span class="nc" id="L135">            throw new ApplicationClientException(&quot;Author not found against id: &quot; + authorId);</span>
+        }
+
+<span class="nc" id="L138">        logger.debug(&quot;Author to be updated, have id: {} and username: {}&quot;, authorId, author.getUsername());</span>
+
+        // Update of username is forbidden! Restricting this.
+<span class="nc bnc" id="L141" title="All 2 branches missed.">        if (!author.getUsername().equals(pRequest.getUsername())) {</span>
+<span class="nc" id="L142">            logger.error(&quot;We're sorry, but changing your username is not allowed. &quot; +</span>
+                            &quot;Username is a unique identifier associated with Author: {}&quot;, authorId);
+<span class="nc" id="L144">            throw new ApplicationClientException(&quot;Username update not allowed&quot;);</span>
+        }
+
+<span class="nc" id="L147">        author.setAuthorName(pRequest.getName());</span>
+<span class="nc" id="L148">        author.setBiography(pRequest.getBiography());</span>
+<span class="nc" id="L149">        author.setNumberOfFollowers(pRequest.getNumberOfFollowers());</span>
+<span class="nc" id="L150">        author.setPublishedWorks(pRequest.getPublishedWorks());</span>
+<span class="nc" id="L151">        author.setContactDetails(pRequest.getContactDetails());</span>
+<span class="nc bnc" id="L152" title="All 2 branches missed.">        author.setJoiningDate(pRequest.getJoiningDate() == null ? author.getJoiningDate() : pRequest.getJoiningDate());</span>
+
+        // Store image into Database.
+<span class="nc bnc" id="L155" title="All 2 branches missed.">        if (getFileBytes(pRequest.getAuthorImage()).length != 0) {</span>
+<span class="nc" id="L156">            author.setImage(getFileBytes(pRequest.getAuthorImage()));</span>
+        }
+
+<span class="nc" id="L159">        authorRepository.save(author);</span>
+<span class="nc" id="L160">        return modelMapperHelper.mapAuthor(author, AuthorResponse.class);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

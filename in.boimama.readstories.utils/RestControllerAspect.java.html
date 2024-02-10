@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RestControllerAspect.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">boimama-app</a> &gt; <a href="index.source.html" class="el_package">in.boimama.readstories.utils</a> &gt; <span class="el_source">RestControllerAspect.java</span></div><h1>RestControllerAspect.java</h1><pre class="source lang-java linenums">package in.boimama.readstories.utils;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletRequest;
+import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.AfterThrowing;
+import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.reflect.CodeSignature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@Aspect
+@Component
+<span class="fc" id="L26">public class RestControllerAspect {</span>
+<span class="fc" id="L27">    private static final Logger logger = LoggerFactory.getLogger(RestControllerAspect.class);</span>
+
+    @Autowired
+    private ObjectMapper mapper;
+
+    @Pointcut(&quot;within(in.boimama.readstories.controller.AdminController)&quot;)
+    public void adminControllerPointcut() {
+<span class="nc" id="L34">    }</span>
+
+    @Pointcut(&quot;within(in.boimama.readstories.controller.AuthorController)&quot;)
+    public void authorControllerPointcut() {
+<span class="nc" id="L38">    }</span>
+
+    @Pointcut(&quot;within(in.boimama.readstories.controller.StoryController)&quot;)
+    public void storyControllerPointcut() {
+<span class="nc" id="L42">    }</span>
+
+    @Pointcut(&quot;within(in.boimama.readstories.controller.UserController)&quot;)
+    public void userControllerPointcut() {
+<span class="nc" id="L46">    }</span>
+
+    @Pointcut(&quot;adminControllerPointcut() || authorControllerPointcut() || storyControllerPointcut() || userControllerPointcut()&quot;)
+    public void pointcut() {
+<span class="nc" id="L50">    }</span>
+
+    @Before(&quot;pointcut()&quot;)
+    public void logBefore(JoinPoint joinPoint) throws JsonProcessingException {
+<span class="fc" id="L54">        final String className = joinPoint.getTarget().getClass().getSimpleName();</span>
+<span class="fc" id="L55">        final String methodName = joinPoint.getSignature().getName();</span>
+<span class="fc" id="L56">        logger.info(&quot;Entering {}::{}&quot;, className, methodName);</span>
+
+<span class="fc" id="L58">        final HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();</span>
+<span class="fc" id="L59">        logger.info(&quot;Received request for {} with parameter: {}&quot;,</span>
+<span class="fc" id="L60">                request.getRequestURI(), mapper.writeValueAsString(getParameters(joinPoint)));</span>
+<span class="fc" id="L61">    }</span>
+
+    @AfterReturning(pointcut = &quot;pointcut()&quot;, returning = &quot;responseEntity&quot;)
+    public void logAfterReturning(JoinPoint joinPoint, ResponseEntity&lt;?&gt; responseEntity) {
+<span class="fc" id="L65">        final String className = joinPoint.getTarget().getClass().getSimpleName();</span>
+<span class="fc" id="L66">        final String methodName = joinPoint.getSignature().getName();</span>
+<span class="fc" id="L67">        logger.info(&quot;Exiting {}::{}&quot;, className, methodName);</span>
+<span class="fc" id="L68">        logger.debug(&quot;Returning response: {}&quot;, responseEntity.getBody());</span>
+<span class="fc" id="L69">    }</span>
+
+    @AfterThrowing(pointcut = &quot;pointcut()&quot;, throwing = &quot;ex&quot;)
+    public void logAfterThrowing(JoinPoint joinPoint, Throwable ex) {
+<span class="fc" id="L73">        String className = joinPoint.getTarget().getClass().getSimpleName();</span>
+<span class="fc" id="L74">        String methodName = joinPoint.getSignature().getName();</span>
+<span class="fc" id="L75">        logger.error(&quot;Exception in {}::{} - Error message: {}&quot;, className, methodName, ex.getMessage(), ex);</span>
+<span class="fc" id="L76">    }</span>
+
+    private Map&lt;String, Object&gt; getParameters(JoinPoint joinPoint) {
+<span class="fc" id="L79">        final CodeSignature signature = (CodeSignature) joinPoint.getSignature();</span>
+<span class="fc" id="L80">        final HashMap&lt;String, Object&gt; parameters = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L81">        final String[] parameterNames = signature.getParameterNames();</span>
+<span class="fc bfc" id="L82" title="All 2 branches covered.">        for (int i = 0; i &lt; parameterNames.length; i++) {</span>
+<span class="pc bpc" id="L83" title="1 of 2 branches missed.">            if (HttpServletRequest.class.isAssignableFrom(joinPoint.getArgs()[i].getClass()))</span>
+<span class="nc" id="L84">                continue; // Ignore if it's HttpServletRequest parameter</span>
+<span class="fc" id="L85">            parameters.put(parameterNames[i], joinPoint.getArgs()[i]);</span>
+        }
+<span class="fc" id="L87">        return parameters;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

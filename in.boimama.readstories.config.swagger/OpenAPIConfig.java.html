@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>OpenAPIConfig.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">boimama-app</a> &gt; <a href="index.source.html" class="el_package">in.boimama.readstories.config.swagger</a> &gt; <span class="el_source">OpenAPIConfig.java</span></div><h1>OpenAPIConfig.java</h1><pre class="source lang-java linenums">package in.boimama.readstories.config.swagger;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.info.Contact;
+import io.swagger.v3.oas.models.info.Info;
+import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.servers.Server;
+
+@Configuration
+<span class="nc" id="L16">public class OpenAPIConfig {</span>
+
+    @Value(&quot;${app.openapi.dev-url}&quot;)
+    private String devUrl;
+
+    @Value(&quot;${app.openapi.prod-url}&quot;)
+    private String prodUrl;
+
+    @Bean
+    public OpenAPI myOpenAPI() {
+
+<span class="nc" id="L27">        final Contact contact = new Contact();</span>
+<span class="nc" id="L28">        contact.setEmail(&quot;boimama@gmail.com&quot;);</span>
+<span class="nc" id="L29">        contact.setName(&quot;Boimama&quot;);</span>
+<span class="nc" id="L30">        contact.setUrl(&quot;https://www.boimama.in&quot;);</span>
+
+<span class="nc" id="L32">        final License mitLicense = new License().name(&quot;MIT License&quot;).url(&quot;https://choosealicense.com/licenses/mit/&quot;);</span>
+
+<span class="nc" id="L34">        final Info info = new Info()</span>
+<span class="nc" id="L35">                .title(&quot;Open API for Boimama.in&quot;)</span>
+<span class="nc" id="L36">                .version(&quot;0.0.1&quot;)</span>
+<span class="nc" id="L37">                .contact(contact)</span>
+<span class="nc" id="L38">                .description(&quot;API documentation for Boimama.in&quot;).termsOfService(&quot;https://www.boimama.in&quot;)</span>
+<span class="nc" id="L39">                .license(mitLicense);</span>
+
+<span class="nc" id="L41">        return new OpenAPI()</span>
+<span class="nc" id="L42">                .info(info)</span>
+<span class="nc" id="L43">                .servers(List.of(getDevServer(), getProdServer()));</span>
+    }
+
+    private Server getDevServer() {
+<span class="nc" id="L47">        return getServer(devUrl, &quot;Server URL for Development environment&quot;);</span>
+    }
+
+    private Server getProdServer() {
+<span class="nc" id="L51">        return getServer(prodUrl, &quot;Server URL for Production environment&quot;);</span>
+    }
+
+    private Server getServer(String pServerUrl, String pDescription) {
+<span class="nc" id="L55">        final Server server = new Server();</span>
+<span class="nc" id="L56">        server.setUrl(pServerUrl);</span>
+<span class="nc" id="L57">        server.setDescription(pDescription);</span>
+<span class="nc" id="L58">        return server;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

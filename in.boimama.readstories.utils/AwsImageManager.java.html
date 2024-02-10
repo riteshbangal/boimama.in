@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AwsImageManager.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">boimama-app</a> &gt; <a href="index.source.html" class="el_package">in.boimama.readstories.utils</a> &gt; <span class="el_source">AwsImageManager.java</span></div><h1>AwsImageManager.java</h1><pre class="source lang-java linenums">package in.boimama.readstories.utils;
+
+import in.boimama.readstories.exception.ApplicationServerException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.S3Exception;
+
+import java.io.File;
+import java.io.IOException;
+
+import static in.boimama.readstories.utils.ApplicationConstants.DEFAULT_IMAGE_FILE_EXTENSION;
+import static in.boimama.readstories.utils.ApplicationUtils.getFileExtension;
+import static in.boimama.readstories.utils.ApplicationUtils.hasImageExtension;
+
+@Component
+public class AwsImageManager {
+
+<span class="fc" id="L24">    private static final Logger logger = LoggerFactory.getLogger(AwsImageManager.class);</span>
+
+
+    @Value(&quot;${app.passAwsCredentials}&quot;)
+    private boolean passAwsCredentials;
+
+    @Value(&quot;${aws.data-bucket}&quot;)
+    private String bucketName;
+
+    private final S3Client s3Client;
+
+<span class="fc" id="L35">    public AwsImageManager(S3Client s3Client) {</span>
+<span class="fc" id="L36">        this.s3Client = s3Client;</span>
+<span class="fc" id="L37">    }</span>
+
+    public String uploadImage(String imageDirectory, String imageName, MultipartFile imageFile) throws ApplicationServerException {
+<span class="fc bfc" id="L40" title="All 2 branches covered.">        if (!passAwsCredentials) {</span>
+<span class="fc" id="L41">            logger.info(&quot;Skipping image upload into S3 Bucket!&quot;);</span>
+<span class="fc" id="L42">            return &quot;Skipping image upload into S3 Bucket!&quot;;</span>
+        }
+
+        File localFile;
+        try {
+<span class="fc" id="L47">            localFile = File.createTempFile(&quot;temp&quot;, null);</span>
+<span class="fc" id="L48">            imageFile.transferTo(localFile);</span>
+<span class="nc" id="L49">        } catch (IOException exception) {</span>
+<span class="nc" id="L50">            logger.error(&quot;Unable to create image file for S3 Upload!&quot;, exception);</span>
+<span class="nc" id="L51">            throw new ApplicationServerException(exception);</span>
+<span class="fc" id="L52">        }</span>
+
+<span class="fc" id="L54">        uploadImage(imageDirectory, imageName, localFile);</span>
+<span class="fc" id="L55">        localFile.delete();  // Delete the local file after upload</span>
+
+<span class="fc" id="L57">        logger.debug(&quot;Image uploaded in S3 Bucket successfully.&quot;);</span>
+<span class="fc" id="L58">        return imageDirectory + &quot;/&quot; + imageName;</span>
+    }
+
+    public void uploadImage(String imageDirectory, String imageName, File imageFile) {
+<span class="pc bpc" id="L62" title="1 of 2 branches missed.">        if (!passAwsCredentials) {</span>
+<span class="nc" id="L63">            logger.info(&quot;Skipping image uploaded into S3 Bucket!&quot;);</span>
+<span class="nc" id="L64">            return;</span>
+        }
+
+<span class="pc bpc" id="L67" title="1 of 2 branches missed.">        imageName = hasImageExtension(getFileExtension(imageName)) ?</span>
+<span class="pc" id="L68">                imageName : imageName + &quot;.&quot; + DEFAULT_IMAGE_FILE_EXTENSION;</span>
+<span class="fc" id="L69">        final PutObjectRequest request = PutObjectRequest.builder()</span>
+<span class="fc" id="L70">                .bucket(bucketName)</span>
+<span class="fc" id="L71">                .key(imageDirectory + &quot;/&quot; + imageName)</span>
+<span class="fc" id="L72">                .build();</span>
+
+<span class="fc" id="L74">        s3Client.putObject(request, imageFile.toPath());</span>
+<span class="fc" id="L75">    }</span>
+
+    public File getImage(String imageName) {
+<span class="fc bfc" id="L78" title="All 2 branches covered.">        if (!passAwsCredentials) {</span>
+<span class="fc" id="L79">            logger.info(&quot;Skipping image uploaded into S3 Bucket!&quot;);</span>
+<span class="fc" id="L80">            return null;</span>
+        }
+
+<span class="pc bpc" id="L83" title="1 of 2 branches missed.">        imageName = hasImageExtension(getFileExtension(imageName)) ?</span>
+<span class="pc" id="L84">                imageName : imageName + &quot;.&quot; + DEFAULT_IMAGE_FILE_EXTENSION;</span>
+<span class="fc" id="L85">        final GetObjectRequest request = GetObjectRequest.builder()</span>
+<span class="fc" id="L86">                .bucket(bucketName)</span>
+<span class="fc" id="L87">                .key(imageName)</span>
+<span class="fc" id="L88">                .build();</span>
+
+        // Create a local file to store the downloaded image
+<span class="fc" id="L91">        final File tempImageFile = new File(&quot;temp_story_image.jpg&quot;);</span>
+<span class="pc bpc" id="L92" title="1 of 2 branches missed.">        if (tempImageFile.exists()) {</span>
+<span class="nc" id="L93">            tempImageFile.delete(); // This will resolve UnixException due to duplicate file name!</span>
+        }
+
+        try {
+<span class="fc" id="L97">            s3Client.getObject(request, tempImageFile.toPath());</span>
+<span class="nc" id="L98">        } catch (S3Exception exception) {</span>
+<span class="nc" id="L99">            logger.error(&quot;Unable to find image file from S3 Bucket!&quot;, exception);</span>
+<span class="nc" id="L100">            return null;</span>
+<span class="fc" id="L101">        }</span>
+<span class="fc" id="L102">        return tempImageFile;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

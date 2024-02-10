@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ApplicationClientException.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">boimama-app</a> &gt; <a href="index.source.html" class="el_package">in.boimama.readstories.exception</a> &gt; <span class="el_source">ApplicationClientException.java</span></div><h1>ApplicationClientException.java</h1><pre class="source lang-java linenums">/*
+ * Copyright (c) 2023, Ritesh. All rights reserved.
+ */
+package in.boimama.readstories.exception;
+
+
+/**
+ * This exception class is used to handle some client validation errors or bad request related error.
+ * This class is wrapper over Runtime Exception.
+ * Packer will throw a runtime exception, if incorrect parameters are being passed.
+ *
+ * @author - Ritesh
+ * @version 1.0
+ * @since &lt;24-July-2023&gt;
+ */
+public class ApplicationClientException extends RuntimeException {
+
+    /**
+     * The Constant serialVersionUID.
+     */
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * Instantiates a new Generic exception.
+     *
+     * @param errorMessage the error message
+     */
+    public ApplicationClientException(final String errorMessage) {
+<span class="nc" id="L29">        super(errorMessage);</span>
+<span class="nc" id="L30">    }</span>
+
+    /**
+     * Instantiates a new Generic exception.
+     *
+     * @param errorMessage the error message
+     * @param cause        the cause
+     */
+    public ApplicationClientException(final String errorMessage, final Throwable cause) {
+<span class="nc" id="L39">        super(errorMessage, cause);</span>
+<span class="nc" id="L40">    }</span>
+
+    /**
+     * Constructs a new exception with the specified cause
+     *
+     * @param cause the cause
+     */
+
+    public ApplicationClientException(Throwable cause) {
+<span class="nc" id="L49">        super(cause);</span>
+<span class="nc" id="L50">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

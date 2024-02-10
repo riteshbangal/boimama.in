@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AuthorRepository.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">boimama-app</a> &gt; <a href="index.source.html" class="el_package">in.boimama.readstories.data</a> &gt; <span class="el_source">AuthorRepository.java</span></div><h1>AuthorRepository.java</h1><pre class="source lang-java linenums">package in.boimama.readstories.data;
+
+import in.boimama.readstories.data.model.Author;
+import org.springframework.data.cassandra.repository.CassandraRepository;
+import org.springframework.data.cassandra.repository.Query;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.UUID;
+
+import static in.boimama.readstories.utils.ApplicationUtils.isEmpty;
+
+@Repository
+public interface AuthorRepository extends CassandraRepository&lt;Author, UUID&gt; {
+
+    Author findByAuthorId(final UUID authorId);
+
+    /**
+     * This method doesn't throw any error, if resource doesn't exist
+     *
+     * @param authorId
+     */
+    void deleteByAuthorId(final UUID authorId);
+
+    @Query(&quot;SELECT * FROM author WHERE author_name = ?0 ALLOW FILTERING&quot;)
+    List&lt;Author&gt; findByAuthorName(final String authorName);
+
+    @Query(&quot;SELECT * FROM author WHERE user_name = ?0 ALLOW FILTERING&quot;)
+    List&lt;Author&gt; findByAuthorUsername(final String authorUsername);
+
+    @Query(&quot;SELECT * FROM author WHERE author_id = ?0 and author_name = ?1 ALLOW FILTERING&quot;)
+    List&lt;Author&gt; findByAuthorIdAndName(final UUID authorId, final String authorName);
+
+    /**
+     * It takes a author's User-Name/ID as inputs and checks whether the author already exists.
+     *
+     * @param pAuthorUsername
+     * @return result of uniqueness check
+     */
+    default boolean isAuthorAlreadyExists(final String pAuthorUsername) {
+        /**
+         * This use case needs to validate if the list/set contains the same elements but in a different order.
+         * The equals method for sets considers two sets to be equal if they contain the same elements, regardless of their order.
+         */
+<span class="nc" id="L45">        List&lt;Author&gt; authorList = findByAuthorUsername(pAuthorUsername);</span>
+<span class="nc bnc" id="L46" title="All 2 branches missed.">        return !isEmpty(authorList);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

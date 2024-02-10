@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ModelMapperHelper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">boimama-app</a> &gt; <a href="index.source.html" class="el_package">in.boimama.readstories.utils</a> &gt; <span class="el_source">ModelMapperHelper.java</span></div><h1>ModelMapperHelper.java</h1><pre class="source lang-java linenums">package in.boimama.readstories.utils;
+
+import in.boimama.readstories.data.model.Author;
+import in.boimama.readstories.data.model.Story;
+import in.boimama.readstories.dto.AuthorResponse;
+import in.boimama.readstories.dto.StoryResponse;
+import in.boimama.readstories.exception.ApplicationServerException;
+import org.springframework.stereotype.Component;
+
+@Component
+<span class="fc" id="L11">public class ModelMapperHelper {</span>
+
+    public &lt;S, D&gt; AuthorResponse mapAuthor(Author authorDAO, Class&lt;D&gt; authorDTO) throws ApplicationServerException { // TODO: Fix the Generic type
+<span class="fc" id="L14">        final AuthorResponse authorResponse = new AuthorResponse();</span>
+<span class="fc" id="L15">        authorResponse.setId(authorDAO.getAuthorId());</span>
+<span class="fc" id="L16">        authorResponse.setName(authorDAO.getAuthorName());</span>
+<span class="fc" id="L17">        authorResponse.setUsername(authorDAO.getUsername());</span>
+<span class="fc" id="L18">        authorResponse.setBiography(authorDAO.getBiography());</span>
+<span class="fc" id="L19">        authorResponse.setNumberOfFollowers(authorDAO.getNumberOfFollowers());</span>
+<span class="fc" id="L20">        authorResponse.setJoiningDate(authorDAO.getJoiningDate());</span>
+<span class="fc" id="L21">        authorResponse.setContactDetails(authorDAO.getContactDetails());</span>
+<span class="fc" id="L22">        authorResponse.setPublishedWorks(authorDAO.getPublishedWorks());</span>
+<span class="fc" id="L23">        authorResponse.setImagePath(authorDAO.getImagePath());</span>
+<span class="fc" id="L24">        authorResponse.setImage(authorDAO.getImage());</span>
+
+<span class="fc" id="L26">        return authorResponse;</span>
+    }
+
+    public &lt;S, D&gt; StoryResponse mapStory(Story storyDAO, Class&lt;D&gt; storyDTO) throws ApplicationServerException { // TODO: Fix the Generic type
+<span class="fc" id="L30">        final StoryResponse storyResponse = new StoryResponse();</span>
+<span class="fc" id="L31">        storyResponse.setId(storyDAO.getStoryId());</span>
+<span class="fc" id="L32">        storyResponse.setTitle(storyDAO.getStoryTitle());</span>
+<span class="fc" id="L33">        storyResponse.setCategory(storyDAO.getCategory());</span>
+<span class="fc" id="L34">        storyResponse.setDescription(storyDAO.getDescription());</span>
+<span class="fc" id="L35">        storyResponse.setContent(storyDAO.getContent());</span>
+<span class="fc" id="L36">        storyResponse.setPublishedDate(storyDAO.getPublishedDate());</span>
+<span class="fc" id="L37">        storyResponse.setAuthorIds(storyDAO.getAuthorIds());</span>
+<span class="fc" id="L38">        storyResponse.setAuthorNames(storyDAO.getAuthorNames());</span>
+<span class="fc" id="L39">        storyResponse.setRating(storyDAO.getRating());</span>
+<span class="fc" id="L40">        storyResponse.setLengthInMins(storyDAO.getLengthInMins());</span>
+<span class="fc" id="L41">        storyResponse.setImagePath(storyDAO.getImagePath());</span>
+<span class="fc" id="L42">        storyResponse.setImage(storyDAO.getImage());</span>
+
+<span class="fc" id="L44">        return storyResponse;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

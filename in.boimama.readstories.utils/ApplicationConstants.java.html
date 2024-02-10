@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ApplicationConstants.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">boimama-app</a> &gt; <a href="index.source.html" class="el_package">in.boimama.readstories.utils</a> &gt; <span class="el_source">ApplicationConstants.java</span></div><h1>ApplicationConstants.java</h1><pre class="source lang-java linenums">package in.boimama.readstories.utils;
+
+public class ApplicationConstants {
+
+    // Private constructor to prevent external instantiation
+    private ApplicationConstants() {
+    }
+
+    // Define constant fields here
+    public static final String SUCCESS_MESSAGE = &quot;success&quot;;
+    public static final String FAILURE_MESSAGE = &quot;failure&quot;;
+
+    public static final String UNCATEGORIZED_TYPE = &quot;Uncategorized&quot;;
+
+    // List of common image file extensions
+<span class="fc" id="L16">    public static final String[] IMAGE_FILE_EXTENSIONS = {&quot;jpg&quot;, &quot;jpeg&quot;, &quot;png&quot;, &quot;gif&quot;, &quot;bmp&quot;};</span>
+
+    public static final String DEFAULT_IMAGE_FILE_EXTENSION = &quot;jpg&quot;;
+
+    public static final int AVERAGE_READING_SPEED = 100; // Default average reading speed in words per minute.
+
+
+    // Singleton instance holder
+<span class="fc" id="L24">    private static final ApplicationConstants instance = new ApplicationConstants();</span>
+
+    // Public static method to access the singleton instance
+    public static ApplicationConstants getInstance() {
+<span class="nc" id="L28">        return instance;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
