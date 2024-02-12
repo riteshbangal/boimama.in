@@ -49,7 +49,7 @@ public class AuthorControllerIntegrationTest {
      * In case of non-static, each test method will get the variable/object from the instances associated with those test methods.
      */
     final static AuthorRequest authorRequest = new AuthorRequest();
-    private static String testAuthourId;
+    private static String testAuthorId;
 
     @BeforeAll
     static void setUp() {
@@ -97,12 +97,12 @@ public class AuthorControllerIntegrationTest {
     void testGetAuthorById() throws Exception {
         System.out.println("testGetAuthorById");
 
-        final ResultActions response = mockMvc.perform(get("/author/{id}", testAuthourId)
+        final ResultActions response = mockMvc.perform(get("/author/{id}", testAuthorId)
                 .contentType(MediaType.APPLICATION_JSON));
 
         response.andExpect(status().isOk())
                 .andDo(print());
-        response.andExpect(jsonPath("$.id", is(testAuthourId)));
+        response.andExpect(jsonPath("$.id", is(testAuthorId)));
         response.andExpect(jsonPath("$.username", is(authorRequest.getUsername())));
     }
 
@@ -112,7 +112,7 @@ public class AuthorControllerIntegrationTest {
     void testGetAuthorImage() throws Exception {
         System.out.println("testGetAuthorImage");
 
-        final ResultActions response = mockMvc.perform(get("/author/{id}/image", testAuthourId)
+        final ResultActions response = mockMvc.perform(get("/author/{id}/image", testAuthorId)
                 .contentType(MediaType.APPLICATION_JSON));
 
         response.andExpect(status().isOk())
@@ -149,9 +149,9 @@ public class AuthorControllerIntegrationTest {
 
         // Extract the "id" field from the response
         String authorResponse = testResponse.andReturn().getResponse().getContentAsString();
-        testAuthourId = objectMapper.readValue(authorResponse, AuthorResponse.class).getId().toString();
+        testAuthorId = objectMapper.readValue(authorResponse, AuthorResponse.class).getId().toString();
 
-        testResponse.andExpect(jsonPath("$.id", is(testAuthourId)));
+        testResponse.andExpect(jsonPath("$.id", is(testAuthorId)));
         testResponse.andExpect(jsonPath("$.username", is(authorRequest.getUsername())));
     }
 
@@ -168,7 +168,7 @@ public class AuthorControllerIntegrationTest {
         );
 
         final ResultActions response = mockMvc.perform(
-                MockMvcRequestBuilders.multipart("/author/{id}/update", testAuthourId)
+                MockMvcRequestBuilders.multipart("/author/{id}/update", testAuthorId)
                         .file(authorImageFile)
                         .param("name", authorRequest.getName())
                         .param("username", authorRequest.getUsername())
@@ -184,7 +184,7 @@ public class AuthorControllerIntegrationTest {
 
         response.andExpect(status().isOk())
                 .andDo(print());;
-        response.andExpect(jsonPath("$.id", is(testAuthourId)));
+        response.andExpect(jsonPath("$.id", is(testAuthorId)));
         response.andExpect(jsonPath("$.username", is(authorRequest.getUsername())));
         response.andExpect(jsonPath("$.biography", is("Updated, " + authorRequest.getBiography())));
     }
@@ -195,10 +195,10 @@ public class AuthorControllerIntegrationTest {
     void testDeleteAuthor() throws Exception {
         System.out.println("testDeleteAuthor");
         final ResultActions response = mockMvc
-                .perform(delete("/author/{id}", testAuthourId));
+                .perform(delete("/author/{id}", testAuthorId));
 
         response.andExpect(status().isAccepted())
                 .andDo(print());;
-        response.andExpect(jsonPath("$.id", is(testAuthourId)));
+        response.andExpect(jsonPath("$.id", is(testAuthorId)));
     }
 }
