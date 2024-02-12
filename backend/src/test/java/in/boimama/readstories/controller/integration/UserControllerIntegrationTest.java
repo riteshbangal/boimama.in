@@ -53,11 +53,26 @@ public class UserControllerIntegrationTest {
 
     @Test
     void testContactUserSuccess() throws Exception {
+        // Use correct user-input!
+        request.setEmail("john.doe@example.com");
+
         // Act & Assert
         mockMvc.perform(MockMvcRequestBuilders.post("/user/contact")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.content().json("{\"response\": \"success\"}"));
+    }
+
+    @Test
+    void testContactUserFailure() throws Exception {
+        // Use wrong user-input!
+        request.setEmail(null);
+
+        // Act & Assert
+        mockMvc.perform(MockMvcRequestBuilders.post("/user/contact")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(MockMvcResultMatchers.status().is4xxClientError());
     }
 }
