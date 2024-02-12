@@ -20,6 +20,7 @@
         <aws.s3.version>2.22.9</aws.s3.version>
         <springdoc-openapi.version>2.1.0</springdoc-openapi.version>
         <org.jacoco.version>0.8.8</org.jacoco.version>
+        <org.testcontainers.version>1.19.4</org.testcontainers.version>
     </properties>
 
     <dependencies>
@@ -72,6 +73,26 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!-- For Integration Tests: Add the TestContainers dependency for Cassandra -->
+        <!--<dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>testcontainers</artifactId>
+            <version>${org.testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${org.testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>cassandra</artifactId>
+            <version>${org.testcontainers.version}</version>
+            <scope>test</scope>
+        </dependency>-->
 
     </dependencies>
 
