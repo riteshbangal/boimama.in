@@ -1,0 +1,750 @@
+{
+	"info": {
+		"_postman_id": "a44c6d46-cc9a-4059-a42e-bc29106c76a9",
+		"name": "Boimama.in",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "2979099"
+	},
+	"item": [
+		{
+			"name": "Story",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{DOMAIN}}/story/health",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"story",
+								"health"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Story",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{DOMAIN}}/story/e0e0e0c6-b109-47fc-9de0-718330db55ff",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"story",
+								"e0e0e0c6-b109-47fc-9de0-718330db55ff"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Story Image",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/octet-stream",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{DOMAIN}}/story/8ee1baba-9ad7-4437-a29b-ac8c1c31ae85/image",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"story",
+								"8ee1baba-9ad7-4437-a29b-ac8c1c31ae85",
+								"image"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Stories",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"accept": true
+						}
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{DOMAIN}}/story/all",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"story",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Stories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{DOMAIN}}/story/search?searchText=comedy&categorySearch=true",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"story",
+								"search"
+							],
+							"query": [
+								{
+									"key": "searchText",
+									"value": "comedy"
+								},
+								{
+									"key": "categorySearch",
+									"value": "true"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Story",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{DOMAIN}}/story/8e925b7d-dbf3-44aa-abb4-63170ccb70c9",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"story",
+								"8e925b7d-dbf3-44aa-abb4-63170ccb70c9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Story",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "description",
+									"value": "এটি হয়ে গিয়েছে একটি \"গোয়েন্দা গল্প\" যেখানে মাধ্যমিক আরোপের দিকে গোয়েন্দা হয়েছে এবং শেষে সত্যি প্রজাপতি হয়েছে!",
+									"type": "text"
+								},
+								{
+									"key": "category",
+									"value": "গোয়েন্দা গল্প",
+									"type": "text"
+								},
+								{
+									"key": "title",
+									"value": "আকাশের রঙ",
+									"type": "text"
+								},
+								{
+									"key": "content",
+									"value": "সোমরা গ্রামের একটি ছোট বাড়িতে একটি অদ্ভুত ঘটনা ঘটেছে। একদিন বাড়ির মাধ্যমিক ছাত্র রহিম অত্যন্ত হতাশ হয়ে পড়ে। তার মাধ্যমিক এবং প্রিয় শিক্ষক, শরৎ স্যার, একদিন অদৃশ্যভাবে মারা যায়।\n\nরহিম মনে করতে লাগলো এই মৃত্যুটি কোনো সাধুবাবা নয়, তা হতে পারে কোনো অপরাধের ফল। তার মতে, এটি একটি গোয়েন্দা কাহিনি হতে চলেছে!\n\nরহিম নিজেকে একজন সাধুবাবা বানিয়ে ধরতে নিয়ে শোক করতে দেখা গোয়েন্দা কথা। তিনি আত্মীয়বার্তা দেয় এবং সকল তথ্য রয়েছে। রহিম স্থানীয় পুলিশ অফিসার জামিল ভাই কে ইনফর্ম করে।\n\nজামিল ভাই রহিমের সাথে এসে সকল প্রমাণ দেখলে তার মতে, এটি একটি মাধ্যমিক আরোপ হতে পারে। তিনি রহিম এর সাথে একটি পৌরাণিক বিচার প্রণালি অনুসরণ করার চেষ্টা করতে শুরু করে।\n\nএক সপ্তাহ পর, জামিল ভাই এসে বলতে পারেন, \"রহিম, আমি তোমার সাথে একটি স্পষ্ট কিছু খুঁজে পাইনি। তোমার অভিভাবকেরা তাদের প্রতি কোনো করণীয় হিসেবে তোমার এবং শরৎ স্যারের মধ্যে কোনো দ্বন্দ্ব বুঝিয়ে দেয়নি।\"\n\nমাধ্যমিক আরোপ মুক্তি পেয়ে রহিম ও স্যারের মধ্যে পুনর্বিচার হয়। এই গোয়েন্দা কথা একটি মজার তবু তার আত্মবিশ্বাস বাড়াতে সাহায্য করে এবং বুঝাতে সাহায্য করে যে, সময় কেমন কতটুকু পরিবর্তন এনে দিতে পারে!",
+									"type": "text"
+								},
+								{
+									"key": "publishedDate",
+									"value": "2024-01-22",
+									"type": "text"
+								},
+								{
+									"key": "authorIds",
+									"value": "672d35f6-0642-47cb-98d0-09cc51ae5e2c",
+									"type": "text"
+								},
+								{
+									"key": "authorNames",
+									"value": "আই লেখক",
+									"type": "text"
+								},
+								{
+									"key": "storyImage",
+									"type": "file",
+									"src": "/Users/riteshbangal/Downloads/story-15.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{DOMAIN}}/story/add",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"story",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Story",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "description",
+									"value": "This is my first story",
+									"type": "text"
+								},
+								{
+									"key": "category",
+									"value": "Comedy lol",
+									"type": "text"
+								},
+								{
+									"key": "title",
+									"value": "test thiss",
+									"type": "text"
+								},
+								{
+									"key": "content",
+									"value": "Once upon a time I start writing stories for children. They found my stories very very interesting. They really like it! I was very happy. But, one day it was a mess! What happen? ",
+									"type": "text"
+								},
+								{
+									"key": "authorIds",
+									"value": "53059326-89e1-445d-9ebd-1b0ad1518a",
+									"type": "text"
+								},
+								{
+									"key": "authorNames",
+									"value": "Bor Dadaa",
+									"type": "text"
+								},
+								{
+									"key": "storyImage",
+									"type": "file",
+									"src": "/Users/riteshbangal/Pictures/IMG_20191124_115837.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "https://app-gw.boimama.in/story/6ec01967-6fe6-487e-a344-524dd32f2009/update",
+							"protocol": "https",
+							"host": [
+								"app-gw",
+								"boimama",
+								"in"
+							],
+							"path": [
+								"story",
+								"6ec01967-6fe6-487e-a344-524dd32f2009",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "API Documentations",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/v3/api-docs",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"v3",
+								"api-docs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete All Stories",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "boimama",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{DOMAIN}}/admin/delete-all-stories",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"admin",
+								"delete-all-stories"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Author",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{DOMAIN}}/author/health",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"author",
+								"health"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Author",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{DOMAIN}}/author/652ea623-2c3c-4458-8d97-885569ece939",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"author",
+								"652ea623-2c3c-4458-8d97-885569ece939"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Author Image",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{DOMAIN}}/author/617cba68-bc5a-49a3-83b2-83caf4bd5daa/image",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"author",
+								"617cba68-bc5a-49a3-83b2-83caf4bd5daa",
+								"image"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Authors",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{DOMAIN}}/author/all",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"author",
+								"all"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Author",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{DOMAIN}}/author/f317004a-66d4-477b-84aa-8be73ea7526c",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"author",
+								"f317004a-66d4-477b-84aa-8be73ea7526c"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Author",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "multipart/form-data",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "আই লেখক",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "ailekhok",
+									"type": "text"
+								},
+								{
+									"key": "biography",
+									"value": "আই লেখক, হলো একটি প্রযুক্তির অগ্রগামী লেখক, যিনি একধরনের কৃত্রিম বুদ্ধিমত্তা সহজে উৎপন্ন করতে সক্ষম। তার লেখা বিশিষ্ট এবং উৎসাহজনক, এবং তিনি বিভিন্ন প্রযুক্তি এবং বৈজ্ঞানিক বিষয়ে পুনরায় চিন্তা করতে প্রবৃদ্ধ। কৌশিক এআইর লেখার মাধ্যমে পড়কর্তাদের একটি নতুন দিকে নিয়ে যাওয়ার জন্য এবং তার ভবিষ্যতে প্রযুক্তির ক্ষেত্রে একটি অমূল্য সাধনা করতে আগ্রহী হতে পারে।",
+									"type": "text"
+								},
+								{
+									"key": "numberOfFollowers",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "joiningDate",
+									"value": "2024-01-21",
+									"type": "text"
+								},
+								{
+									"key": "contactDetails",
+									"value": "ailekhok@boimma.in",
+									"type": "text"
+								},
+								{
+									"key": "publishedWorks",
+									"value": "আই লেখকের লেখা বিভিন্ন রচনা ও গ্রন্থ প্রকাশিত হয়েছে, যা পাঠকদের মাঝে এক আদর্শ সাহিত্যিক হিসেবে পরিচিত হয়েছে।",
+									"type": "text"
+								},
+								{
+									"key": "authorImage",
+									"type": "file",
+									"src": "/Users/riteshbangal/Downloads/author-ai.jpeg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{DOMAIN}}/author/add",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"author",
+								"add"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Author",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "অহীন্দ্র",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "ahindra",
+									"type": "text"
+								},
+								{
+									"key": "biography",
+									"value": "অহীন্দ্র, একজন নতুন বাঙালি লেখক, তার সাহিত্যিক পথে অনুগামীদের দিকে আকৃষ্ট করতে চলেছেন। তার জন্ম হয়েছিল কলকাতা শহরে, এবং শিক্ষার প্রারম্ভ থেকেই তার আগ্রহ ও উৎসাহ সৃষ্টি করেছিল। অহীন্দ্রের লেখা সাহিত্য নগরের প্রতি জনপ্রিয় হয়ে উঠছে এবং তার কাহিনীগুলি পাঠকের মাঝে উদার প্রশংসা পায়।\n\nঅহীন্দ্র তার লেখার মাধ্যমে সমাজের ভিন্ন দিকের ঘটনাগুলির সমর্থন করতে চেষ্টা করে এবং তার চেতনা বিস্তারিতভাবে ব্যক্ত করে। তার লেখার মাধ্যমে পাঠকরা নতুন কিছু ভাবতে উৎসাহিত হয় এবং তাদের মনোভাব উন্নত হয়।\n\nঅহীন্দ্রের লেখা সাহিত্যে এক নতুন দিক দেখাচ্ছে, এবং সমৃদ্ধির দিকে একটি নতুন যাত্রায় এক নতুন তারকা হতের পথে অগ্রসর হতে চলেছেন।",
+									"type": "text"
+								},
+								{
+									"key": "numberOfFollowers",
+									"value": "17",
+									"type": "text"
+								},
+								{
+									"key": "joiningDate",
+									"value": "2024-01-20",
+									"type": "text"
+								},
+								{
+									"key": "contactDetails",
+									"value": "ahindra@boimma.in",
+									"type": "text"
+								},
+								{
+									"key": "publishedWorks",
+									"value": "অহীন্দ্রের লেখা বিভিন্ন রচনা ও গ্রন্থ প্রকাশিত হয়েছে, যা পাঠকদের মাঝে এক আদর্শ সাহিত্যিক হিসেবে পরিচিত হয়েছে। যেমন অফিস কর্মচারী, স্বয়ং ভূত, উত্তরাধিকার, বাগদত্তা।",
+									"type": "text"
+								},
+								{
+									"key": "authorImage",
+									"type": "file",
+									"src": "/Users/riteshbangal/Geeks/project_ws/boimama.in-v0.0.1/frontend/user-portal/assets/images/author.jpg"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{DOMAIN}}/author/62304ea1-ef1e-4a0d-b69c-543654be389f/update",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"author",
+								"62304ea1-ef1e-4a0d-b69c-543654be389f",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "API Documentations",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{DOMAIN}}/v3/api-docs",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"v3",
+								"api-docs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete All Authors",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "boimama",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{DOMAIN}}/admin/delete-all-authors",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"admin",
+								"delete-all-authors"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{DOMAIN}}/user/health",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"user",
+								"health"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Contact Us",
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {
+							"content-type": true
+						}
+					},
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Ritesh\",\n    \"email\": \"rcb@boimamma.com\",\n    \"phone\": \"91987356678\",\n    \"message\": \"test message\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{DOMAIN}}/user/contact",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"user",
+								"contact"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "API Documentations",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{DOMAIN}}/v3/api-docs",
+							"host": [
+								"{{DOMAIN}}"
+							],
+							"path": [
+								"v3",
+								"api-docs"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
