@@ -2,6 +2,15 @@ server:
   servlet:
     context-path: /api
 
+management:
+  server:
+    port: 8081
+  endpoints:
+    web:
+      base-path: '/mgmt'
+      exposure:
+        include: '*'
+
 spring:
   data:
     cassandra:
