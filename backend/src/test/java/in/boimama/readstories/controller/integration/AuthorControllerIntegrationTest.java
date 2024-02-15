@@ -16,14 +16,21 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.testcontainers.containers.CassandraContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDate;
 import java.util.Arrays;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -34,6 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@Testcontainers
 public class AuthorControllerIntegrationTest {
 
     @Autowired
@@ -77,6 +85,35 @@ public class AuthorControllerIntegrationTest {
         System.out.println("testHealthCheck");
         mockMvc.perform(get("/author/health"))
                 .andExpect(status().isOk());
+    }
+
+    @Container // TODO: Implement test-container: https://java.testcontainers.org/modules/databases/cassandra/
+    private static final CassandraContainer<?> cassandraContainer = new CassandraContainer<>("cassandra:latest")
+            .withExposedPorts(9042); // TODO: Not working! Fix this.
+
+    @DynamicPropertySource // TODO: Not working! Fix.
+    public static void dynamicPropertySource(DynamicPropertyRegistry registry) {
+        // registry.add("spring.data.cassandra.configFile", "/cassandra/config/cassandra-test.conf"::toString);
+
+        // Set dynamic properties for connecting to Cassandra
+        registry.add("spring.data.cassandra.contact-points", cassandraContainer::getContactPoint);
+        registry.add("spring.data.cassandra.port", "9042"::toString);
+        registry.add("spring.data.cassandra.keyspace", "boimama"::toString);
+        registry.add("spring.data.cassandra.username", cassandraContainer::getUsername);
+        registry.add("spring.data.cassandra.password", cassandraContainer::getPassword);
+    }
+
+    @Test
+    @DisplayName("Test Containers")
+    public void testContainers() {
+        // You can use the container IP and port to connect to Cassandra
+        String containerIpAddress = cassandraContainer.getContainerIpAddress();
+        int containerPort = cassandraContainer.getMappedPort(9042);
+
+        // Example: Check if Cassandra is reachable
+        assertTrue(cassandraContainer.isRunning());
+        // assertEquals("127.0.0.1:" + containerPort, containerIpAddress + ":" + containerPort); // Failing!
+        assertEquals("localhost:" + containerPort, containerIpAddress + ":" + containerPort);
     }
 
     @Test

@@ -20,7 +20,7 @@
         <aws.s3.version>2.22.9</aws.s3.version>
         <springdoc-openapi.version>2.1.0</springdoc-openapi.version>
         <org.jacoco.version>0.8.8</org.jacoco.version>
-        <org.testcontainers.version>1.19.4</org.testcontainers.version>
+        <org.testcontainers.version>1.19.5</org.testcontainers.version>
     </properties>
 
     <dependencies>
@@ -75,7 +75,7 @@
         </dependency>
 
         <!-- For Integration Tests: Add the TestContainers dependency for Cassandra -->
-        <!--<dependency>
+        <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>testcontainers</artifactId>
             <version>${org.testcontainers.version}</version>
@@ -92,7 +92,7 @@
             <artifactId>cassandra</artifactId>
             <version>${org.testcontainers.version}</version>
             <scope>test</scope>
-        </dependency>-->
+        </dependency>
 
     </dependencies>
 
