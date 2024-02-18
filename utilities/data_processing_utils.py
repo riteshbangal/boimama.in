@@ -2,11 +2,12 @@ from cassandra.cluster import Cluster
 from cassandra import ConsistencyLevel
 from ssl import SSLContext, PROTOCOL_TLSv1_2 , CERT_REQUIRED
 from cassandra.auth import PlainTextAuthProvider
+from os import environment
 
 # Replace these values with your AWS Keyspaces connection details
 contact_points = ['cassandra.eu-central-1.amazonaws.com']
-username = '<aws_access_key_id>'
-password = "<aws_secret_access_key>"
+username = environment.get('aws_cassandra_access_key_id')
+password = environment.get('aws_cassandra_secret_access_key')
 keyspace = 'boimama'
 
 # Setup SSL Configuration: 
