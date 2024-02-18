@@ -8,6 +8,7 @@ on:
     branches: [ "develop", "master" ]
 
 jobs:
+  
   backend-build:
     runs-on: ubuntu-latest
 
@@ -46,6 +47,12 @@ jobs:
         name: jacoco-report
         path: backend/target/site/jacoco
   
+    - name: SonarCloud Scan
+      uses: sonarsource/sonarcloud-github-action@master
+      env:
+          # GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }} # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
     - name: Build Backend (Springboot Application)
       run: |
         cd backend  

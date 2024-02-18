@@ -109,7 +109,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
 
-            <!-- Add JaCoCo Maven Plugin -->
+            <!-- JaCoCo Maven Plugin -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
@@ -128,6 +128,13 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+
+            <!-- SonarQube Plugin... -->
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>3.9.1.2184</version>
             </plugin>
 
         </plugins>

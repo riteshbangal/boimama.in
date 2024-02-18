@@ -44,7 +44,7 @@ public class AwsImageManager {
 
         File localFile;
         try {
-            localFile = File.createTempFile("temp", null);
+            localFile = new File("temp");
             imageFile.transferTo(localFile);
         } catch (IOException exception) {
             logger.error("Unable to create image file for S3 Upload!", exception);
