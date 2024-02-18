@@ -8,7 +8,7 @@ on:
     branches: [ "develop", "master" ]
 
 jobs:
-  
+
   backend-build:
     runs-on: ubuntu-latest
 
@@ -48,10 +48,21 @@ jobs:
         path: backend/target/site/jacoco
   
     - name: SonarCloud Scan
+      id: sonar
       uses: sonarsource/sonarcloud-github-action@master
       env:
           # GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }} # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+    - name: Check SonarCloud Analysis Status
+      run: |
+        sonar_status=$(curl -sSfL https://sonarcloud.io/api/qualitygates/project_status?projectKey=riteshbangal_boimama.in)
+        if [[ "$sonar_status" == *"\"status\":\"ERROR\""* ]]; then
+          echo "SonarCloud analysis failed!"
+          exit 1  # Indicate failure
+        else
+          echo "SonarCloud analysis succeeded!"
+        fi
 
     - name: Build Backend (Springboot Application)
       run: |
