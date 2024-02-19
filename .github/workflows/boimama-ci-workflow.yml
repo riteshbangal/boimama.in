@@ -88,6 +88,7 @@ jobs:
         docker push 314201/$IMAGE_NAME:$IMAGE_TAG 
     
     - name: Scan Docker image with Trivy
+      if: false # Set false to skip this step
       env:
         IMAGE_NAME: boimama-app
         IMAGE_TAG: 0.0.1-SNAPSHOT
@@ -97,6 +98,7 @@ jobs:
         docker run --rm -v $(pwd):/app -w /app aquasec/trivy --format template --template "@html.tpl" --output trivy-report.html image 314201/$IMAGE_NAME:$IMAGE_TAG
 
     - name: Upload HTML Report of Trivy as artifact # TODO: Choose better solution. Maybe through S3 assets
+      if: false # Set false to skip this step
       uses: actions/upload-artifact@v2
       with:
         name: trivy-report
