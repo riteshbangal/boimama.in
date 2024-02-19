@@ -31,17 +31,19 @@ jobs:
         mvn -B clean verify
       
     - name: Run Unit Tests
-      if: false # This step will be skipped.
+      if: false # Set false to skip this step
       run: |
         cd backend
         mvn test
        
     - name: Build with Maven and JaCoCo
+      if: true # Set false to skip this step
       run: |
         cd backend  
         mvn clean verify -P jacoco
 
-    - name: Publish JaCoCo coverage report # TODO: Choose better solution
+    - name: Publish JaCoCo coverage report # TODO: Choose better solution. Maybe through S3 assets
+      if: true # Set false to skip this step
       uses: actions/upload-artifact@v2
       with:
         name: jacoco-report
@@ -84,6 +86,21 @@ jobs:
         echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
         docker tag $IMAGE_NAME:$IMAGE_TAG 314201/$IMAGE_NAME:$IMAGE_TAG
         docker push 314201/$IMAGE_NAME:$IMAGE_TAG 
+    
+    - name: Scan Docker image with Trivy
+      env:
+        IMAGE_NAME: boimama-app
+        IMAGE_TAG: 0.0.1-SNAPSHOT
+        TRIVY_SEVERITY: "HIGH,CRITICAL,MEDIUM"  # Set the severity level you want to fail the build on
+      run: |
+        cd utilities
+        docker run --rm -v $(pwd):/app -w /app aquasec/trivy --format template --template "@html.tpl" --output trivy-report.html image 314201/$IMAGE_NAME:$IMAGE_TAG
+
+    - name: Upload HTML Report of Trivy as artifact # TODO: Choose better solution. Maybe through S3 assets
+      uses: actions/upload-artifact@v2
+      with:
+        name: trivy-report
+        path: utilities/trivy-report.html
 
   frontend-build:
     runs-on: ubuntu-latest
