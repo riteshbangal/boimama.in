@@ -37,3 +37,7 @@ nb-configuration.xml
 
 # Local environment
 .env
+
+# Utility files
+/utilities/input.txt
+/utilities/output.txt

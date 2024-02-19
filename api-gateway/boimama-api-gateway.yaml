@@ -18,7 +18,7 @@ paths:
       x-amazon-apigateway-integration:
         type: "http"
         httpMethod: "GET"
-        uri: "https://boimama-app-demo.onrender.com/api/story/health"
+        uri: "https://boimama-app.onrender.com/api/story/health"
         responses:
           default:
             statusCode: "200"
@@ -39,7 +39,7 @@ paths:
       x-amazon-apigateway-integration:
         type: "http_proxy"
         httpMethod: "DELETE"
-        uri: "https://boimama-app-demo.onrender.com/api/admin/delete-all-stories"
+        uri: "https://boimama-app.onrender.com/api/admin/delete-all-stories"
         responses:
           default:
             statusCode: "200"
@@ -88,7 +88,7 @@ paths:
       x-amazon-apigateway-integration:
         type: "http_proxy"
         httpMethod: "POST"
-        uri: "https://boimama-app-demo.onrender.com/api/story/add"
+        uri: "https://boimama-app.onrender.com/api/story/add"
         responses:
           default:
             statusCode: "200"
@@ -111,7 +111,7 @@ paths:
       x-amazon-apigateway-integration:
         type: "http_proxy"
         httpMethod: "PUT"
-        uri: "https://boimama-app-demo.onrender.com/api/story/{id}/update"
+        uri: "https://boimama-app.onrender.com/api/story/{id}/update"
         responses:
           default:
             statusCode: "200"
@@ -136,7 +136,7 @@ paths:
       x-amazon-apigateway-integration:
         type: "http_proxy"
         httpMethod: "GET"
-        uri: "https://boimama-app-demo.onrender.com/api/story/{id}"
+        uri: "https://boimama-app.onrender.com/api/story/{id}"
         responses:
           default:
             statusCode: "200"
@@ -160,7 +160,7 @@ paths:
       x-amazon-apigateway-integration:
         type: "http_proxy"
         httpMethod: "DELETE"
-        uri: "https://boimama-app-demo.onrender.com/api/story/{id}"
+        uri: "https://boimama-app.onrender.com/api/story/{id}"
         responses:
           default:
             statusCode: "200"
@@ -185,7 +185,7 @@ paths:
       x-amazon-apigateway-integration:
         type: "http_proxy"
         httpMethod: "GET"
-        uri: "https://boimama-app-demo.onrender.com/api/story/{id}/image"
+        uri: "https://boimama-app.onrender.com/api/story/{id}/image"
         responses:
           default:
             statusCode: "200"
