@@ -19,12 +19,12 @@ export async function buildAuthorHTML() {
     const searchTag = new URLSearchParams(window.location.search).get('tag');
     const searchText = new URLSearchParams(window.location.search).get('searchText');
 
-    const apiUrl = "https://api-gw.boimama.in/author/672d35f6-0642-47cb-98d0-09cc51ae5e2c";
-    // const apiUrl = "https://api-gw.boimama.in/author/672d35f6-0642-47cb-98d0-09cc51ae5e2c/image";
+    const apiUrl = "https://api-gw-dev.boimama.in/author/all";
+    // const apiUrl = "https://api-gw-dev.boimama.in/author/672d35f6-0642-47cb-98d0-09cc51ae5e2c/image";
     
     dataResponse = await fetchData(apiUrl);
 
-    console.log("My Author Response: ", dataResponse);
+    // console.log("My Author Response: ", dataResponse);
   } catch (error) {
     console.error(error);
     return;
@@ -35,7 +35,7 @@ export async function buildAuthorHTML() {
 // Common asynchronous functions
 const fetchData = async function (url) {
   try {
-    console.log("Promise.race URL: ", url);
+    // console.log("Promise.race URL: ", url);
     // const response = await Promise.race([fetch(url), utils.timeout(constants.TIMEOUT_SEC)]);
     const response = await Promise.race([
       fetch(url, {
@@ -63,10 +63,8 @@ const fetchData = async function (url) {
 
 function fetchAuthorData() {
 
-  const apiUrl = "https://api-gw.boimama.in/story/8ee1baba-9ad7-4437-a29b-ac8c1c31ae85";
-  // const apiUrl = "https://api-gw.boimama.in/author/672d35f6-0642-47cb-98d0-09cc51ae5e2c";
-  // const apiUrl = "https://api-gw.boimama.in/author/672d35f6-0642-47cb-98d0-09cc51ae5e2c";
-  // const apiUrl = "http://localhost:8080/api/author/672d35f6-0642-47cb-98d0-09cc51ae5e2c";
+  // const apiUrl = "https://api-gw-dev.boimama.in/author/all";
+  const apiUrl = "https://api-gw-dev.boimama.in/author/672d35f6-0642-47cb-98d0-09cc51ae5e2c";
 
   fetch(apiUrl, {
     method: 'GET',
@@ -77,12 +75,12 @@ function fetchAuthorData() {
   })
   .then(response => {
     // Handle the response
-    console.log(response);
+    // console.log(response);
     return "success";
   })
   .then(data => {
     // Process the data
-    console.log(data);
+    // console.log(data);
   })
   .catch(error => {
     // Handle errors
@@ -92,8 +90,8 @@ function fetchAuthorData() {
 }
 
 const init = function () {
-  buildAuthorHTML();    // With Promice.race
-  // fetchAuthorData(); // Direct etch
+  // buildAuthorHTML();    // With Promice.race
+  fetchAuthorData(); // Direct etch
 
   menu.onclick = function toggleHeader() {
     menu.classList.toggle("fa-times");

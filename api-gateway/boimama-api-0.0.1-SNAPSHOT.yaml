@@ -1,0 +1,520 @@
+openapi: "3.0.1"
+info:
+  title: "boimama-api"
+  description: "AWS API Gateway for boimama-app. Version is 0.0.1-SNAPSHOT"
+  version: "2024-01-07T02:00:42Z"
+servers:
+- url: "https://api-gw-dev.boimama.in"
+paths:
+  /author/{id}/image:
+    get:
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content: {}
+      x-amazon-apigateway-integration:
+        httpMethod: "GET"
+        uri: "https://boimama-app.onrender.com/api/author/{id}/image"
+        responses:
+          default:
+            statusCode: "200"
+        requestParameters:
+          integration.request.path.id: "method.request.path.id"
+        passthroughBehavior: "when_no_match"
+        type: "http_proxy"
+    options:
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      x-amazon-apigateway-integration:
+        requestTemplates:
+          application/json: "{\"statusCode\": 200}"
+        passthroughBehavior: "when_no_match"
+        type: "mock"
+  /author/{id}:
+    get:
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content: {}
+        "201":
+          description: "201 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content: {}
+        "202":
+          description: "202 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content: {}
+        "400":
+          description: "400 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content: {}
+        "500":
+          description: "500 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content: {}
+        "401":
+          description: "401 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content: {}
+        "502":
+          description: "502 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content: {}
+        "403":
+          description: "403 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content: {}
+        "404":
+          description: "404 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content: {}
+        "503":
+          description: "503 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content: {}
+        "504":
+          description: "504 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content: {}
+        "406":
+          description: "406 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content: {}
+      x-amazon-apigateway-integration:
+        httpMethod: "GET"
+        uri: "https://boimama-app.onrender.com/api/author/{id}"
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          "201":
+            statusCode: "201"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          "400":
+            statusCode: "400"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          "202":
+            statusCode: "202"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          "500":
+            statusCode: "500"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          "401":
+            statusCode: "401"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          "502":
+            statusCode: "502"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          "403":
+            statusCode: "403"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          "503":
+            statusCode: "503"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          "404":
+            statusCode: "404"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          "504":
+            statusCode: "504"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          "406":
+            statusCode: "406"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+        requestParameters:
+          integration.request.path.id: "method.request.path.id"
+        passthroughBehavior: "when_no_match"
+        type: "http"
+    options:
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      x-amazon-apigateway-integration:
+        httpMethod: "POST"
+        uri: "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/arn:aws:lambda:eu-central-1:742608208319:function:corsHandler/invocations"
+        responses:
+          default:
+            statusCode: "200"
+        passthroughBehavior: "when_no_match"
+        contentHandling: "CONVERT_TO_TEXT"
+        type: "aws_proxy"
+  /health:
+    get:
+      responses:
+        "200":
+          description: "200 response"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Object"
+      x-amazon-apigateway-integration:
+        httpMethod: "GET"
+        uri: "https://boimama-app.onrender.com/api/story/health"
+        responses:
+          default:
+            statusCode: "200"
+        passthroughBehavior: "when_no_match"
+        type: "http"
+  /user/contact:
+    post:
+      responses:
+        "503":
+          description: "503 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content: {}
+        "504":
+          description: "504 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content: {}
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content: {}
+        "400":
+          description: "400 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content: {}
+        "500":
+          description: "500 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content: {}
+        "502":
+          description: "502 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content: {}
+      x-amazon-apigateway-integration:
+        httpMethod: "POST"
+        uri: "https://boimama-app.onrender.com/api/user/contact"
+        responses:
+          "4\\d{2}":
+            statusCode: "400"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          "200":
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          "500":
+            statusCode: "500"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          "502":
+            statusCode: "502"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          "503":
+            statusCode: "503"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          "504":
+            statusCode: "504"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+        passthroughBehavior: "when_no_match"
+        type: "http"
+    options:
+      x-amazon-apigateway-integration:
+        httpMethod: "POST"
+        uri: "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/arn:aws:lambda:eu-central-1:742608208319:function:corsHandler/invocations"
+        responses:
+          default:
+            statusCode: "200"
+        passthroughBehavior: "when_no_match"
+        contentHandling: "CONVERT_TO_TEXT"
+        type: "aws_proxy"
+  /story/{id}:
+    get:
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content: {}
+        "201":
+          description: "201 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content: {}
+        "202":
+          description: "202 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content: {}
+        "400":
+          description: "400 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content: {}
+        "401":
+          description: "401 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content: {}
+        "500":
+          description: "500 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content: {}
+        "403":
+          description: "403 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content: {}
+        "502":
+          description: "502 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content: {}
+        "404":
+          description: "404 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content: {}
+        "503":
+          description: "503 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content: {}
+        "504":
+          description: "504 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content: {}
+        "406":
+          description: "406 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content: {}
+      x-amazon-apigateway-integration:
+        httpMethod: "GET"
+        uri: "https://boimama-app.onrender.com/api/story/{id}"
+        responses:
+          default:
+            statusCode: "200"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          "201":
+            statusCode: "201"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          "400":
+            statusCode: "400"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          "202":
+            statusCode: "202"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          "500":
+            statusCode: "500"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          "401":
+            statusCode: "401"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          "502":
+            statusCode: "502"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          "403":
+            statusCode: "403"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          "503":
+            statusCode: "503"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          "404":
+            statusCode: "404"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          "504":
+            statusCode: "504"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          "406":
+            statusCode: "406"
+            responseParameters:
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+        requestParameters:
+          integration.request.path.id: "method.request.path.id"
+        passthroughBehavior: "when_no_match"
+        type: "http"
+    options:
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      x-amazon-apigateway-integration:
+        httpMethod: "POST"
+        uri: "arn:aws:apigateway:eu-central-1:lambda:path/2015-03-31/functions/arn:aws:lambda:eu-central-1:742608208319:function:corsHandler/invocations"
+        responses:
+          default:
+            statusCode: "200"
+        passthroughBehavior: "when_no_match"
+        contentHandling: "CONVERT_TO_TEXT"
+        type: "aws_proxy"
+  /story/{id}/image:
+    get:
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      responses:
+        "200":
+          description: "200 response"
+          headers:
+            Access-Control-Allow-Origin:
+              schema:
+                type: "string"
+          content: {}
+      x-amazon-apigateway-integration:
+        httpMethod: "GET"
+        uri: "https://boimama-app.onrender.com/api/story/{id}/image"
+        responses:
+          default:
+            statusCode: "200"
+        requestParameters:
+          integration.request.path.id: "method.request.path.id"
+        passthroughBehavior: "when_no_match"
+        type: "http_proxy"
+    options:
+      parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+      x-amazon-apigateway-integration:
+        requestTemplates:
+          application/json: "{\"statusCode\": 200}"
+        passthroughBehavior: "when_no_match"
+        type: "mock"
+components:
+  schemas:
+    Object:
+      type: "object"
