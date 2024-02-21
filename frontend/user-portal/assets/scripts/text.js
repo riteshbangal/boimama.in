@@ -1,11 +1,13 @@
 // Header: Banner Taglines
 document.querySelector(".banner .container .h1").innerHTML = `
-    Immerse yourself in endless <b>stories</b>
+    বাংলা গল্প পড়ুন, <b>বইমামার</b>  সাথে।
 `;
 
+// document.querySelector(".banner .container .h3").innerHTML = `
+//     ছোটবেলায় স্কুল থেকে ফিরে বা ছুটির দিনে, বাংলা গল্পের বই নিয়ে সময় কাটায়নি এমন বাঙালি নেই বললেই চলে..
+// `;
 document.querySelector(".banner .container .h3").innerHTML = `
-    Stories that inspire, connect and entertain. 
-    Let us take you on a journey through stories...
+    হাসির গল্প, প্রেমের গল্প, রোমাঞ্চকর অ্যাডভেঞ্চারের গল্প, গায়ে কাঁটা দেওয়া ভূতের গল্প, রহস্য গল্প, 'বইমামা'-তে আছে নানারকমের স্বাদ। 
 `;
 
 document.querySelector(".banner .container .h1 b").style.color = "#c28c69";
