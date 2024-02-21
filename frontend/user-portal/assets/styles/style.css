@@ -29,6 +29,11 @@
   --accent: hsl(229, 76%, 66%);
 }
 
+.grey-theme {
+  /* TODO: grey theme colors  */
+  --background-primary: #f4ecd8;
+}
+
 :root {
   /* color */
   --white: hsl(0, 0%, 100%);
