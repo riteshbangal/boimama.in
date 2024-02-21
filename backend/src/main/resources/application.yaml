@@ -4,7 +4,8 @@ server:
 
 management:
   server:
-    port: 8081
+    # port: 8181 # This should be the management port
+    port: 8080 # TODO: Workaround. Needs to be fixed from 'boimama-app.onrender.com'
   endpoints:
     web:
       base-path: '/mgmt'
