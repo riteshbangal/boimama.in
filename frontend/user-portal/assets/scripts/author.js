@@ -1,8 +1,13 @@
 "use strict";
 
 import config from '../../configuration/config.js'; // Configurations
-import constants from './constants.js'; // Constants
+import constants  from './constants.js'; // Constants
 import utils from './utils.js'; // Utility functions
+
+// Decide environment's associated configurations.
+const environment = utils.containsAny(window.location.host, constants.LOCAL_HOSTS) ? "development" : "production";
+const currentConfig = config[environment];
+// console.log("Environment: ", environment, "and API:", currentConfig.apiUrl );
 
 // Changes for 'scroll to the top button'
 let scrollTop = document.getElementById("top");
@@ -63,8 +68,11 @@ const fetchData = async function (url) {
 
 function fetchAuthorData() {
 
+  // Start: Backend API call, fetch data and load HTML content for stories
+  const API_BASE_URL = currentConfig.apiUrl;
+
   // const apiUrl = "https://api-gw-dev.boimama.in/author/all";
-  const apiUrl = "https://api-gw-dev.boimama.in/author/672d35f6-0642-47cb-98d0-09cc51ae5e2c";
+  const apiUrl = API_BASE_URL + "/author/672d35f6-0642-47cb-98d0-09cc51ae5e2c";
 
   fetch(apiUrl, {
     method: 'GET',

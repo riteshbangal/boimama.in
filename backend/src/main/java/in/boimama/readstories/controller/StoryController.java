@@ -79,7 +79,7 @@ public class StoryController extends AbstractController {
 
     @GetMapping(value = "/search")
     @ResponseBody
-    public ResponseEntity<?> getStories(@NotEmpty(message = "Search input must be a valid") @RequestParam(name = "searchText") String searchText,
+    public ResponseEntity<?> searchStories(@NotEmpty(message = "Search input must be a valid") @RequestParam(name = "searchText") String searchText,
                                         @RequestParam(name = "categorySearch", required = false) boolean isCategorySearch) {
         if (isCategorySearch)
             return ResponseEntity.ok(storyService.searchStoriesByCategory(searchText));
