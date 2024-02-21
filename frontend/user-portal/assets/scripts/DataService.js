@@ -187,10 +187,10 @@ export async function buildStoriesHTML() {
   const stories = [...document.querySelectorAll(".story-card")];
   loadmoreStories(stories);
 
-  // Prepare Story topics for the side panels
-  let storyTopicsHtml = ``;
+  // Prepare Story topics for the side panels - Desktop
+  let storyTopicsHtmlDesktop = ``;
   utils.findTopOccurringElements(storyTopics, 4).forEach(storyTopic => {
-    storyTopicsHtml = storyTopicsHtml + `
+    storyTopicsHtmlDesktop = storyTopicsHtmlDesktop + `
         <a href="./pages/stories.html?category=${storyTopic}" class="topic-btn">
           <div class="icon-box">
             <ion-icon name="${constants.ionIcons[Math.floor(Math.random() * constants.ionIcons.length)]}"></ion-icon>
@@ -200,7 +200,21 @@ export async function buildStoriesHTML() {
   });
 
   if (document.querySelector(".aside .topics")) {
-    document.querySelector(".aside .topics").innerHTML = `<h2 class="h2">Topics</h2> ${storyTopicsHtml}`;
+    document.querySelector(".aside .topics").innerHTML = `<h2 class="h2">Topics</h2> ${storyTopicsHtmlDesktop}`;
+  }
+
+  // Prepare Story topics for the side panels - Mobile
+  let storyTopicsHtmlMobile = ``;
+  utils.findTopOccurringElements(storyTopics, 4).forEach(storyTopic => {
+    storyTopicsHtmlMobile = storyTopicsHtmlMobile + `
+        <li class="nav-item">
+          <a href="./pages/stories.html?category=${storyTopic}" class="nav-link">${storyTopic}</a>
+        </li>`;
+  });
+  localStorage.setItem("storyTopicsHtmlMobile", storyTopicsHtmlMobile);
+
+  if (document.querySelector(".story-topics-mobile .story-topics-mobile-list")) {
+    document.querySelector(".story-topics-mobile .story-topics-mobile-list").innerHTML = `${storyTopicsHtmlMobile}`;
   }
 
   // Prepare Story tags for the side panels
