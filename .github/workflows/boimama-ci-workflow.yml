@@ -57,7 +57,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
     - name: Check SonarCloud Analysis Status
-      if: false # Set false to skip this step
+      if: true # Set false to skip this step
       run: |
         sonar_status=$(curl -sSfL https://sonarcloud.io/api/qualitygates/project_status?projectKey=riteshbangal_boimama.in)
         if [[ "$sonar_status" == *"\"status\":\"ERROR\""* ]]; then
