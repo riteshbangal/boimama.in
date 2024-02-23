@@ -105,6 +105,13 @@ jobs:
         name: trivy-report
         path: utilities/trivy-report.html
 
+    - name: Deploy Render Service
+      if: true # Set false to skip this step. TODO: Check if there is a new docker image 
+      env:
+        deploy_url: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+      run: |
+        curl "$deploy_url"        
+
   frontend-build:
     runs-on: ubuntu-latest
 
